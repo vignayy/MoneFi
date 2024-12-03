@@ -1,0 +1,85 @@
+<div class="income-container">
+  <!-- Header Section -->
+  <div class="header">
+    <div class="title-section">
+      <h1>Income Management</h1>
+      <p>Track and manage your income sources</p>
+    </div>
+    <button class="add-income-btn" (click)="addIncome()">
+      <i class="fas fa-plus"></i>
+      Add Income
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="card total-income">
+      <div class="card-content">
+        <h3>Total Income</h3>
+        <p class="amount">${{ totalIncome.toLocaleString() }}</p>
+        <p class="period">This Month</p>
+      </div>
+      <i class="fas fa-dollar-sign icon"></i>
+    </div>
+
+    <div class="card sources">
+      <div class="card-content">
+        <h3>Income Sources</h3>
+        <p class="amount">{{ incomeSources.length }}</p>
+        <p class="period">Active Sources</p>
+      </div>
+      <i class="fas fa-stream icon"></i>
+    </div>
+  </div>
+
+  <!-- Income Sources Table -->
+  <div class="table-container">
+    <h2>Income Sources</h2>
+    <table *ngIf="!loading && incomeSources.length > 0">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let income of incomeSources">
+          <td>{{ income.source }}</td>
+          <td>
+            <span class="category-badge">{{ income.category }}</span>
+          </td>
+          <td>${{ income.amount.toLocaleString() }}</td>
+          <td>{{ income.date | date:'mediumDate' }}</td>
+          <td>
+            <span class="type-badge" [class.recurring]="income.recurring">
+              {{ income.recurring ? 'Recurring' : 'One-time' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="action-btn edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="action-btn delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!loading && incomeSources.length === 0">
+      <i class="fas fa-money-bill-wave"></i>
+      <p>No income sources found</p>
+      <button class="add-income-btn" (click)="addIncome()">Add Your First Income</button>
+    </div>
+
+    <div class="loading" *ngIf="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading income data...</p>
+    </div>
+  </div>
+</div>

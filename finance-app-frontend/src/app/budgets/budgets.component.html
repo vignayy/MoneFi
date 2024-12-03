@@ -1,0 +1,111 @@
+<div class="budgets-container">
+    <!-- Header Section -->
+    <div class="header">
+      <div class="title-section">
+        <h1>Budget Management</h1>
+        <p>Track and manage your monthly budgets</p>
+      </div>
+      <button class="add-budget-btn" (click)="addBudget()">
+        <i class="fas fa-plus"></i>
+        Add Budget
+      </button>
+    </div>
+  
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="card total-budget">
+        <div class="card-content">
+          <h3>Total Budget</h3>
+          <p class="amount">${{ totalBudget.toLocaleString() }}</p>
+          <p class="period">Monthly Budget</p>
+        </div>
+        <i class="fas fa-wallet icon"></i>
+      </div>
+  
+      <div class="card spent">
+        <div class="card-content">
+          <h3>Total Spent</h3>
+          <p class="amount">${{ totalSpent.toLocaleString() }}</p>
+          <p class="period">This Month</p>
+        </div>
+        <i class="fas fa-credit-card icon"></i>
+      </div>
+  
+      <div class="card remaining">
+        <div class="card-content">
+          <h3>Remaining</h3>
+          <p class="amount">${{ (totalBudget - totalSpent).toLocaleString() }}</p>
+          <p class="period">Available</p>
+        </div>
+        <i class="fas fa-piggy-bank icon"></i>
+      </div>
+    </div>
+  
+    <!-- Budget Categories -->
+    <div class="budget-categories">
+      <h2>Budget Categories</h2>
+      
+      <div class="categories-grid">
+        <div class="budget-card" *ngFor="let budget of budgets">
+          <div class="budget-header" [style.borderColor]="budget.color">
+            <div class="icon-wrapper" [style.backgroundColor]="budget.color">
+              <i class="fas" [class]="budget.icon"></i>
+            </div>
+            <div class="category-info">
+              <h3>{{ budget.category }}</h3>
+              <p class="allocated">${{ budget.allocated.toLocaleString() }} Budget</p>
+            </div>
+          </div>
+  
+          <div class="budget-details">
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress" 
+                     [style.width.%]="getProgressPercentage(budget.spent, budget.allocated)"
+                     [style.backgroundColor]="getProgressColor(budget.spent, budget.allocated)">
+                </div>
+              </div>
+              <p class="progress-text">
+                {{ getProgressPercentage(budget.spent, budget.allocated) | number:'1.0-0' }}% Used
+              </p>
+            </div>
+  
+            <div class="amounts">
+              <div class="spent">
+                <p class="label">Spent</p>
+                <p class="value">${{ budget.spent.toLocaleString() }}</p>
+              </div>
+              <div class="remaining">
+                <p class="label">Remaining</p>
+                <p class="value">${{ budget.remaining.toLocaleString() }}</p>
+              </div>
+            </div>
+  
+            <div class="actions">
+              <button class="edit-btn">
+                <i class="fas fa-edit"></i>
+                Edit
+              </button>
+              <button class="details-btn">
+                <i class="fas fa-chart-bar"></i>
+                Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!loading && budgets.length === 0">
+        <i class="fas fa-clipboard-list"></i>
+        <p>No budgets found</p>
+        <button class="add-budget-btn" (click)="addBudget()">Create Your First Budget</button>
+      </div>
+  
+      <!-- Loading State -->
+      <div class="loading" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading budget data...</p>
+      </div>
+    </div>
+  </div>

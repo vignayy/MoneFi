@@ -1,0 +1,34 @@
+<header>
+    <div class="header-content">
+      <span class="brand-name" (click)="navigateTo('')" role="button" tabindex="0">BudgetTracker</span>
+      
+      <nav>
+        <ul class="nav-links">
+          <li>
+            <a (click)="navigateTo('')"
+               [class.active]="isRouteActive('')">Home</a>
+          </li>
+          <li>
+            <a (click)="navigateTo('/about')"
+               [class.active]="isRouteActive('/about')">About</a>
+          </li>
+          <li>
+            <a (click)="navigateTo('/contact')"
+               [class.active]="isRouteActive('/contact')">Contact</a>
+          </li>
+          <li>
+            <a (click)="navigateTo('/features')"
+               [class.active]="isRouteActive('/features')">Features</a>
+          </li>
+        </ul>
+      </nav>
+  
+      <div class="auth-buttons" *ngIf="!isLoggedIn">
+        <button class="btn-login" (click)="navigateTo('/login')">Login</button>
+        <button class="btn-signup" (click)="navigateTo('/signup')">Sign Up</button>
+      </div>
+      <div class="auth-buttons" *ngIf="isLoggedIn">
+        <button class="btn-logout" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </header>

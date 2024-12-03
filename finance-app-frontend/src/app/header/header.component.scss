@@ -1,0 +1,141 @@
+header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2a5298;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #1e3c72;
+  }
+}
+
+nav {
+  .nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+
+    li {
+      a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #2a5298;
+        }
+
+        &.active {
+          color: #2a5298;
+          border-bottom: 2px solid #2a5298;
+        }
+      }
+    }
+  }
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+
+  button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-login {
+    background: transparent;
+    border: 2px solid #2a5298;
+    color: #2a5298;
+
+    &:hover {
+      background: #2a5298;
+      color: white;
+    }
+  }
+
+  .btn-signup {
+    background: #2a5298;
+    border: 2px solid #2a5298;
+    color: white;
+
+    &:hover {
+      background: #1e3c72;
+      border-color: #1e3c72;
+    }
+  }
+
+  .btn-logout {
+    background: #dc3545;
+    border: 2px solid #dc3545;
+    color: white;
+
+    &:hover {
+      background: #c82333;
+      border-color: #c82333;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  nav {
+    width: 100%;
+    
+    .nav-links {
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+
+  .auth-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+// For very small screens
+@media (max-width: 480px) {
+  .auth-buttons {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

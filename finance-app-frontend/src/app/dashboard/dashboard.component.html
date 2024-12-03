@@ -1,0 +1,68 @@
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>MoneyFi</span>
+      </div>
+      
+      <div class="nav-links">
+        <button [class.active]="activeSection === 'overview'" (click)="setActiveSection('overview')">
+          <i class="fas fa-home"></i>
+          <span>Overview</span>
+        </button>
+  
+        <button [class.active]="activeSection === 'income'" (click)="setActiveSection('income')">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Income</span>
+        </button>
+  
+        <button [class.active]="activeSection === 'expenses'" (click)="setActiveSection('expenses')">
+          <i class="fas fa-receipt"></i>
+          <span>Expenses</span>
+        </button>
+  
+        <button [class.active]="activeSection === 'budgets'" (click)="setActiveSection('budgets')">
+          <i class="fas fa-wallet"></i>
+          <span>Budgets</span>
+        </button>
+  
+        <button [class.active]="activeSection === 'goals'" (click)="setActiveSection('goals')">
+          <i class="fas fa-bullseye"></i>
+          <span>Goals</span>
+        </button>
+  
+        <button [class.active]="activeSection === 'analysis'" (click)="setActiveSection('analysis')">
+          <i class="fas fa-chart-line"></i>
+          <span>Spending Analysis</span>
+        </button>
+      </div>
+  
+      <div class="user-section">
+        <button class="profile-btn">
+          <i class="fas fa-user-circle"></i>
+          <span>Profile</span>
+        </button>
+        <button class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </nav>
+  
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-container" [ngSwitch]="activeSection">
+        <!-- <app-overview *ngSwitchCase="'overview'"></app-overview> -->
+        <app-income *ngSwitchCase="'income'"></app-income>
+         <app-expenses *ngSwitchCase="'expenses'"></app-expenses>
+       <app-budgets *ngSwitchCase="'budgets'"></app-budgets>
+         <app-goals *ngSwitchCase="'goals'"></app-goals>
+       <!-- <app-analysis *ngSwitchCase="'analysis'"></app-analysis> -->
+      </div>
+    </main>
+  </div>

@@ -1,0 +1,85 @@
+<div class="expenses-container">
+    <!-- Header Section -->
+    <div class="header">
+      <div class="title-section">
+        <h1>Expense Management</h1>
+        <p>Track and manage your expenses</p>
+      </div>
+      <button class="add-expense-btn" (click)="addExpense()">
+        <i class="fas fa-plus"></i>
+        Add Expense
+      </button>
+    </div>
+  
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="card total-expenses">
+        <div class="card-content">
+          <h3>Total Expenses</h3>
+          <p class="amount">${{ totalExpenses.toLocaleString() }}</p>
+          <p class="period">This Month</p>
+        </div>
+        <i class="fas fa-wallet icon"></i>
+      </div>
+  
+      <div class="card categories">
+        <div class="card-content">
+          <h3>Expense Categories</h3>
+          <p class="amount">{{ expenses.length }}</p>
+          <p class="period">Active Categories</p>
+        </div>
+        <i class="fas fa-tags icon"></i>
+      </div>
+    </div>
+  
+    <!-- Expenses Table -->
+    <div class="table-container">
+      <h2>Expenses</h2>
+      <table *ngIf="!loading && expenses.length > 0">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let expense of expenses">
+            <td>{{ expense.description }}</td>
+            <td>
+              <span class="category-badge">{{ expense.category }}</span>
+            </td>
+            <td>${{ expense.amount.toLocaleString() }}</td>
+            <td>{{ expense.date | date:'mediumDate' }}</td>
+            <td>
+              <span class="type-badge" [class.recurring]="expense.recurring">
+                {{ expense.recurring ? 'Recurring' : 'One-time' }}
+              </span>
+            </td>
+            <td class="actions">
+              <button class="action-btn edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <div class="empty-state" *ngIf="!loading && expenses.length === 0">
+        <i class="fas fa-wallet"></i>
+        <p>No expenses found</p>
+        <button class="add-expense-btn" (click)="addExpense()">Add Your First Expense</button>
+      </div>
+  
+      <div class="loading" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading expense data...</p>
+      </div>
+    </div>
+  </div>
