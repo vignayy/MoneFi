@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { AddExpenseDialogComponent } from '../add-expense-dialog/add-expense-dialog.component';
 
 interface Expense {
   id: number;
-  description: string;
   amount: number;
   date: string;
   category: string;
+  description: string;  
   recurring: boolean;
 }
 
@@ -23,7 +25,7 @@ export class ExpensesComponent {
   expenses: Expense[] = [];
   loading: boolean = false;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private dialog: MatDialog) {}
 
   baseUrl = "http://localhost:8765";
 
@@ -31,17 +33,6 @@ export class ExpensesComponent {
     this.loadExpensesData();
   }
 
-  // loadExpensesData() {
-  //   this.loading = true;
-  //   // Simulated data - replace with actual API call
-  //   // this.expenses = [
-  //   //   { id: 1, description: 'Groceries', amount: 200, date: '2024-03-05', category: 'Food', recurring: true },
-  //   //   { id: 2, description: 'Electricity Bill', amount: 100, date: '2024-03-10', category: 'Utilities', recurring: true },
-  //   //   { id: 3, description: 'Gym Membership', amount: 50, date: '2024-03-15', category: 'Health', recurring: true },
-  //   // ];
-  //   this.calculateTotalExpenses();
-  //   this.loading = false;
-  // }
   loadExpensesData() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
@@ -76,7 +67,49 @@ export class ExpensesComponent {
   }
 
   addExpense() {
-    // Implement add expense logic
-    console.log('Add expense clicked');
+    const dialogRef = this.dialog.open(AddExpenseDialogComponent, {
+      width: '500px',
+      panelClass: 'income-dialog',
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const token = sessionStorage.getItem('finance.auth');
+        console.log(token);
+  
+        this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+          next: (userId) => {
+            console.log(userId);
+            
+            // Send POST request with the income data
+            const expenseData = {
+              ...result, // This should contain fields like source, amount, date, category, recurring, etc.
+              userId: userId, // Add userId if your backend requires it
+            };
+            console.log(expenseData);
+            this.httpClient.post<Expense>(`${this.baseUrl}/api/user/${userId}/expense`, expenseData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }).subscribe({
+              next: (newExpense) => {
+                this.expenses.push(newExpense);
+                this.calculateTotalExpenses();
+              },
+              error: (error) => {
+                console.error('Failed to add expense data:', error);
+              },
+              complete: () => {
+                this.loading = false;
+              },
+            });
+          },
+          error: (error) => {
+            console.error('Failed to fetch userId:', error);
+            this.loading = false;
+          },
+        });
+      }
+    });
   }
 }
