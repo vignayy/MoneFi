@@ -1,0 +1,52 @@
+package com.finance.goal.service;
+
+import com.finance.goal.model.GoalModel;
+import com.finance.goal.repository.GoalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class GoalServiceImplementation implements GoalService{
+
+    @Autowired
+    private GoalRepository goalRepository;
+
+    @Override
+    public GoalModel save(GoalModel goal) {
+        return goalRepository.save(goal);
+    }
+
+    @Override
+    public List<GoalModel> getAllGoals(int userId) {
+        return goalRepository.findAll();
+    }
+
+    @Override
+    public GoalModel updateByGoalName(int userId, String goalName, GoalModel goal) {
+        GoalModel goalModel = goalRepository.findByUserIdAndGoalName(userId, goalName);
+
+        goal.setUserId(userId);
+
+        if(goal.getGoalName() != null){
+            goalModel.setGoalName(goal.getGoalName());
+        }
+        if(goal.getCurrentAmount() > 0){
+            goalModel.setCurrentAmount(goal.getCurrentAmount());
+        }
+        if(goal.getTargetAmount() > 0){
+            goalModel.setTargetAmount(goal.getTargetAmount());
+        }
+        if(goal.getDeadLine() != null){
+            goalModel.setDeadLine(goal.getDeadLine());
+        }
+
+        return save(goalModel);
+    }
+
+    @Override
+    public void deleteParticularGoalByGoalName(int userId, String goalName) {
+        goalRepository.deleteParticularGoalByGoalName(userId, goalName);
+    }
+}

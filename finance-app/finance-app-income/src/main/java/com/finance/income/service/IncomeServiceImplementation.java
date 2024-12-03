@@ -1,0 +1,49 @@
+package com.finance.income.service;
+
+import com.finance.income.model.IncomeModel;
+import com.finance.income.repository.IncomeRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Slf4j
+@Service
+public class IncomeServiceImplementation implements IncomeService {
+
+    @Autowired
+    private IncomeRepository incomeRepository;
+
+    @Override
+    public IncomeModel save(IncomeModel income) {
+        return incomeRepository.save(income);
+    }
+
+    @Override
+    public List<IncomeModel> getAllIncomes(int userId) {
+        return incomeRepository.findByUserId(userId).stream().toList();
+    }
+
+    @Override
+    public IncomeModel updateBySource(int userId, String source, IncomeModel income) {
+        IncomeModel incomeModel = incomeRepository.findByUserIdAndSource(userId, source);
+
+        if(income.getAmount() > 0){
+            incomeModel.setAmount(income.getAmount());
+        }
+        if(income.getSource() != null){
+            incomeModel.setSource(income.getSource());
+        }
+        if(income.getDate() != null){
+            incomeModel.setDate(income.getDate());
+        }
+
+        return save(incomeModel);
+    }
+
+    @Override
+    public void deleteParticularIncomeBySource(int userId, String source) {
+        incomeRepository.deleteParticularIncomeBySource(userId, source);
+    }
+}
