@@ -4,6 +4,7 @@ import { IncomeComponent } from '../income/income.component';
 import { ExpensesComponent } from '../expenses/expenses.component';
 import { BudgetsComponent } from '../budgets/budgets.component';
 import { GoalsComponent } from '../goals/goals.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,9 +20,17 @@ import { GoalsComponent } from '../goals/goals.component';
   ]
 })
 export class DashboardComponent {
+
+  constructor(private router:Router){};
+
   activeSection: string = 'overview';
 
   setActiveSection(section: string) {
     this.activeSection = section;
+  }
+
+  logoutUser(){
+    sessionStorage.removeItem('finance.auth');
+    this.router.navigate(['']);
   }
 }

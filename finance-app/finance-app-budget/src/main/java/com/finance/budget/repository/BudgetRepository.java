@@ -6,9 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface BudgetRepository extends JpaRepository<BudgetModel, Integer> {
 
     public BudgetModel findByUserId(int userId);
+
+    @Query("select b from BudgetModel b where b.userId = :userId")
+    public List<BudgetModel> getBudgetsByUserId(int userId);
 
 //    public BudgetModel findByCategory(String category);
 

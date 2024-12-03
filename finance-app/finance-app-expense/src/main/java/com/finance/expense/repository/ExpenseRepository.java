@@ -18,6 +18,9 @@ public interface ExpenseRepository extends JpaRepository<ExpenseModel, Integer> 
 
     public ExpenseModel findByCategory(String category);
 
+    @Query("select e from ExpenseModel e where e.userId = :userId")
+    public List<ExpenseModel> findExpensesByUserId(int userId);
+
     @Query("select e from ExpenseModel e where e.userId=:userId and e.category=:category")
     public ExpenseModel findByUserIdAndCatergory(int userId, String category);
 

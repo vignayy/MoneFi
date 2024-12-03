@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface IncomeRepository extends JpaRepository<IncomeModel, Integer> {
 
-    public List<IncomeModel> findByUserId(int userId);
+    @Query("select i from IncomeModel i where i.userId = :userId")
+    public List<IncomeModel> findIncomesOfUser(int userId);
 
     @Query("select i from IncomeModel i where i.userId=:userId and i.source=:source")
     public IncomeModel findByUserIdAndSource(int userId, String source);
@@ -19,4 +20,5 @@ public interface IncomeRepository extends JpaRepository<IncomeModel, Integer> {
     @Modifying
     @Query("Delete from IncomeModel i where i.userId=:userId and i.source=:source")
     public void deleteParticularIncomeBySource(int userId, String source);
+
 }

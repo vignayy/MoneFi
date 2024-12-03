@@ -21,5 +21,7 @@ public class ExpenseModel {
     private String category;
     private double amount;
     private LocalDate date;
+    private boolean recurring;
+    private String description;
 
 }

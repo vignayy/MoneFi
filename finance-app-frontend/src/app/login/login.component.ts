@@ -38,11 +38,11 @@ export class LoginComponent {
   }
 
   onSubmit(loginCredentials:LoginCredentials) {
-      console.log('Login form submitted:', loginCredentials);
+      // console.log('Login form submitted:', loginCredentials);
       this.authApiService.loginApiFunction(loginCredentials)
       .subscribe (
         response=>{
-          console.log(response);
+          // console.log(response);
           sessionStorage.setItem('finance.auth',response.jwtToken)
           this.router.navigate(['dashboard'])
         },

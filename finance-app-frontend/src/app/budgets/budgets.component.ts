@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 interface Budget {
   id: number;
   category: string;
-  allocated: number;
-  spent: number;
-  remaining: number;
-  icon: string;
-  color: string;
+  moneyLimit: number;
+  currentSpending: number;
 }
 
 @Component({
@@ -19,6 +17,10 @@ interface Budget {
   imports: [CommonModule]
 })
 export class BudgetsComponent {
+
+  constructor(private httpClient:HttpClient){};
+  baseUrl = "http://localhost:8765";
+
   totalBudget: number = 0;
   totalSpent: number = 0;
   budgets: Budget[] = [];
@@ -28,63 +30,53 @@ export class BudgetsComponent {
     this.loadBudgetData();
   }
 
+  // loadBudgetData() {
+  //   this.loading = true;
+    
+    
+  //   this.calculateTotals();
+  //   this.loading = false;
+  // }
   loadBudgetData() {
     this.loading = true;
-    // Simulated data - replace with actual API call
-    this.budgets = [
-      { 
-        id: 1, 
-        category: 'Housing', 
-        allocated: 1500, 
-        spent: 1200, 
-        remaining: 300, 
-        icon: 'fa-home',
-        color: '#2196F3'
+    const token = sessionStorage.getItem('finance.auth');
+    console.log(token);
+  
+    this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next: (userId) => {
+        console.log(userId);
+  
+        this.httpClient.get<Budget[]>(`${this.baseUrl}/api/user/${userId}/budgets`).subscribe({
+          next: (data) => {
+            this.budgets = data;
+            this.calculateTotals();
+          },
+          error: (error) => {
+            console.error('Failed to load Budget data:', error);
+          },
+          complete: () => {
+            this.loading = false;
+          }
+        });
       },
-      { 
-        id: 2, 
-        category: 'Food & Dining', 
-        allocated: 600, 
-        spent: 450, 
-        remaining: 150, 
-        icon: 'fa-utensils',
-        color: '#4CAF50'
-      },
-      { 
-        id: 3, 
-        category: 'Transportation', 
-        allocated: 400, 
-        spent: 380, 
-        remaining: 20, 
-        icon: 'fa-car',
-        color: '#FF9800'
-      },
-      { 
-        id: 4, 
-        category: 'Entertainment', 
-        allocated: 300, 
-        spent: 250, 
-        remaining: 50, 
-        icon: 'fa-film',
-        color: '#9C27B0'
+      error: (error) => {
+        console.error('Failed to fetch userId:', error);
+        this.loading = false;
       }
-    ];
-    
-    this.calculateTotals();
-    this.loading = false;
+    });
   }
 
   calculateTotals() {
-    this.totalBudget = this.budgets.reduce((sum, budget) => sum + budget.allocated, 0);
-    this.totalSpent = this.budgets.reduce((sum, budget) => sum + budget.spent, 0);
+    this.totalBudget = this.budgets.reduce((sum, budget) => sum + budget.moneyLimit, 0);
+    this.totalSpent = this.budgets.reduce((sum, budget) => sum + budget.currentSpending, 0);
   }
 
-  getProgressPercentage(spent: number, allocated: number): number {
-    return (spent / allocated) * 100;
+  getProgressPercentage(currentSpending: number, moneyLimit: number): number {
+    return (currentSpending / moneyLimit) * 100;
   }
 
-  getProgressColor(spent: number, allocated: number): string {
-    const percentage = this.getProgressPercentage(spent, allocated);
+  getProgressColor(currentSpending: number, moneyLimit: number): string {
+    const percentage = this.getProgressPercentage(currentSpending, moneyLimit);
     if (percentage >= 90) return '#f44336';  // Red
     if (percentage >= 75) return '#ff9800';  // Orange
     return '#4caf50';  // Green
