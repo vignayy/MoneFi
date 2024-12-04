@@ -35,10 +35,7 @@ export class IncomeComponent {
   incomeSources: IncomeSource[] = [];
   loading: boolean = false;
 
-  constructor(
-    public httpClient: HttpClient,
-    private dialog: MatDialog
-  ) {}
+  constructor(public httpClient: HttpClient,private dialog: MatDialog) {};
 
   baseUrl = "http://localhost:8765";
   
