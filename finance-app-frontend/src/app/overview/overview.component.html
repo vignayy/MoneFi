@@ -1,0 +1,51 @@
+<div class="overview-container">
+    <!-- Header Section -->
+    <header class="header-section">
+      <h1>Hey, {{summary.username}}!</h1>
+      <p class="quote">{{financialQuote}}</p>
+    </header>
+  
+    <!-- Summary Boxes -->
+    <div class="summary-boxes">
+      <mat-card class="summary-box expenses">
+        <mat-icon>trending_down</mat-icon>
+        <h3>Spends</h3>
+        <p>${{summary.expenses}}</p>
+      </mat-card>
+  
+      <mat-card class="summary-box savings">
+        <mat-icon>savings</mat-icon>
+        <h3>Savings</h3>
+        <p>${{summary.savings}}</p>
+      </mat-card>
+  
+      <mat-card class="summary-box income">
+        <mat-icon>trending_up</mat-icon>
+        <h3>Income</h3>
+        <p>${{summary.income}}</p>
+      </mat-card>
+    </div>
+  
+    <!-- Progress Bars -->
+    <div class="progress-section">
+      <div class="progress-container">
+        <h3>Monthly Budget Progress</h3>
+        <mat-progress-bar
+          mode="determinate"
+          [value]="summary.budgetProgress"
+          [class.warning]="summary.budgetProgress > 75"
+        ></mat-progress-bar>
+        <p>{{summary.budgetProgress}}% of budget used</p>
+      </div>
+  
+      <div class="progress-container">
+        <h3>Goals Progress</h3>
+        <mat-progress-bar
+          mode="determinate"
+          [value]="summary.goalsProgress"
+        ></mat-progress-bar>
+        <p>{{summary.goalsProgress}}% towards goals</p>
+      </div>
+    </div>
+  </div>
+  
