@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 interface FinancialSummary {
   income: number;
   expenses: number;
   savings: number;
+  netWorth: number;
   budgetProgress: number;
   goalsProgress: number;
   username: string;
@@ -16,35 +19,57 @@ interface FinancialSummary {
 @Component({
   selector: 'app-overview',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatProgressBarModule, MatIconModule],
+  imports: [
+    CommonModule, 
+    MatCardModule, 
+    MatProgressBarModule, 
+    MatIconModule,
+    MatButtonModule
+  ],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'
 })
 export class OverviewComponent implements OnInit {
-  financialQuote = "You can make money two ways — make more, or spend less. – John Hope Bryant";
+  financialQuote = "Wealth is not about having a lot of money, it's about having a lot of options. – Chris Rock";
+  
   summary: FinancialSummary = {
     income: 0,
     expenses: 0,
     savings: 0,
+    netWorth: 0,
     budgetProgress: 0,
     goalsProgress: 0,
-    username: 'User' // This will be replaced with actual username
+    username: 'User'
   };
 
+  constructor(private router: Router) {}
+
   ngOnInit() {
-    // TODO: Implement service calls to fetch data
     this.loadFinancialData();
   }
 
   private loadFinancialData() {
-    // Temporary mock data - replace with actual service calls
+    // Simulated data - replace with actual service calls
     this.summary = {
-      income: 5000,
-      expenses: 3000,
-      savings: 2000,
-      budgetProgress: 60,
-      goalsProgress: 45,
-      username: 'John'
+      income: 5750,
+      expenses: 3200,
+      savings: 2550,
+      netWorth: 45000,
+      budgetProgress: 65,
+      goalsProgress: 55,
+      username: 'John Doe'
     };
+  }
+
+  addTransaction() {
+    this.router.navigate(['/transactions/add']);
+  }
+
+  createBudget() {
+    this.router.navigate(['/budget/create']);
+  }
+
+  viewReports() {
+    this.router.navigate(['/reports']);
   }
 }

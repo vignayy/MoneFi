@@ -1,51 +1,120 @@
 <div class="overview-container">
-    <!-- Header Section -->
-    <header class="header-section">
-      <h1>Hey, {{summary.username}}!</h1>
-      <p class="quote">{{financialQuote}}</p>
-    </header>
-  
-    <!-- Summary Boxes -->
-    <div class="summary-boxes">
-      <mat-card class="summary-box expenses">
-        <mat-icon>trending_down</mat-icon>
-        <h3>Spends</h3>
-        <p>${{summary.expenses}}</p>
-      </mat-card>
-  
-      <mat-card class="summary-box savings">
-        <mat-icon>savings</mat-icon>
-        <h3>Savings</h3>
-        <p>${{summary.savings}}</p>
-      </mat-card>
-  
-      <mat-card class="summary-box income">
-        <mat-icon>trending_up</mat-icon>
-        <h3>Income</h3>
-        <p>${{summary.income}}</p>
-      </mat-card>
+  <!-- Elegant Header Section -->
+  <header class="header-section">
+    <div class="greeting-container">
+      <h1 class="welcome-text">Welcome back, {{summary.username}}!</h1>
+      <p class="financial-quote">{{financialQuote}}</p>
     </div>
-  
-    <!-- Progress Bars -->
-    <div class="progress-section">
-      <div class="progress-container">
-        <h3>Monthly Budget Progress</h3>
-        <mat-progress-bar
-          mode="determinate"
-          [value]="summary.budgetProgress"
-          [class.warning]="summary.budgetProgress > 75"
-        ></mat-progress-bar>
-        <p>{{summary.budgetProgress}}% of budget used</p>
+  </header>
+
+  <!-- Financial Overview Tiles -->
+  <div class="financial-overview">
+    <div class="overview-grid">
+      <!-- Income Tile -->
+      <div class="overview-tile income-tile">
+        <div class="tile-header">
+          <div class="tile-icon-title-container">
+            <mat-icon class="tile-icon">trending_up</mat-icon>
+            <h3 class="tile-title">Total Income</h3>
+          </div>
+        </div>
+        <div class="tile-content">
+          <p class="tile-amount">${{summary.income | number:'1.0-0'}}</p>
+          <span class="tile-subtext">This Month</span>
+        </div>
       </div>
-  
-      <div class="progress-container">
-        <h3>Goals Progress</h3>
-        <mat-progress-bar
-          mode="determinate"
-          [value]="summary.goalsProgress"
-        ></mat-progress-bar>
-        <p>{{summary.goalsProgress}}% towards goals</p>
+
+      <!-- Expenses Tile -->
+      <div class="overview-tile expenses-tile">
+        <div class="tile-header">
+          <div class="tile-icon-title-container">
+            <mat-icon class="tile-icon">trending_down</mat-icon>
+            <h3 class="tile-title">Total Expenses</h3>
+          </div>
+        </div>
+        <div class="tile-content">
+          <p class="tile-amount">${{summary.expenses | number:'1.0-0'}}</p>
+          <span class="tile-subtext">This Month</span>
+        </div>
+      </div>
+
+      <!-- Savings Tile -->
+      <div class="overview-tile savings-tile">
+        <div class="tile-header">
+          <div class="tile-icon-title-container">
+            <mat-icon class="tile-icon">savings</mat-icon>
+            <h3 class="tile-title">Total Savings</h3>
+          </div>
+        </div>
+        <div class="tile-content">
+          <p class="tile-amount">${{summary.savings | number:'1.0-0'}}</p>
+          <span class="tile-subtext">Current Balance</span>
+        </div>
+      </div>
+
+      <!-- Net Worth Tile -->
+      <div class="overview-tile net-worth-tile">
+        <div class="tile-header">
+          <div class="tile-icon-title-container">
+            <mat-icon class="tile-icon">account_balance</mat-icon>
+            <h3 class="tile-title">Net Worth</h3>
+          </div>
+        </div>
+        <div class="tile-content">
+          <p class="tile-amount">${{summary.netWorth | number:'1.0-0'}}</p>
+          <span class="tile-subtext">Total Assets</span>
+        </div>
       </div>
     </div>
   </div>
-  
+
+  <!-- Progress and Goals Section -->
+  <div class="progress-section">
+    <div class="progress-container">
+      <div class="progress-header">
+        <h3>Monthly Budget Tracking</h3>
+        <span class="progress-percentage">{{summary.budgetProgress}}% Used</span>
+      </div>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="summary.budgetProgress"
+        [class.warning]="summary.budgetProgress > 75"
+      ></mat-progress-bar>
+      <p class="progress-description">
+        {{ summary.budgetProgress > 75 ? 'Budget is running high! Consider cutting expenses.' : 'You\'re on track with your monthly budget.' }}
+      </p>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-header">
+        <h3>Financial Goals Progress</h3>
+        <span class="progress-percentage">{{summary.goalsProgress}}% Achieved</span>
+      </div>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="summary.goalsProgress"
+      ></mat-progress-bar>
+      <p class="progress-description">
+        {{ summary.goalsProgress < 30 ? 'Time to boost your goal contributions!' : 
+           summary.goalsProgress < 60 ? 'Making steady progress towards your goals.' : 
+           'You\'re doing great! Keep up the momentum.' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Quick Actions Section -->
+  <div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" (click)="addTransaction()">
+        <mat-icon>add</mat-icon> Add Transaction
+      </button>
+      <button mat-raised-button color="accent" (click)="createBudget()">
+        <mat-icon>edit</mat-icon> Create Budget
+      </button>
+      <button mat-raised-button color="warn" (click)="viewReports()">
+        <mat-icon>assignment</mat-icon> View Reports
+      </button>
+    </div>
+  </div>
+</div>
