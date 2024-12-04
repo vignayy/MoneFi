@@ -27,18 +27,23 @@
   
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Date</mat-label>
-        <input matInput [matDatepicker]="picker" [(ngModel)]="goalSource.date" name="date">
+        <input matInput [matDatepicker]="picker" [(ngModel)]="goalSource.deadLine" name="deadLine">
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
+
+      
   
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Category</mat-label>
         <mat-select [(ngModel)]="goalSource.category" name="category">
-          <mat-option value="Studies">Studies</mat-option>
+          <mat-option value="Education">Education</mat-option>
           <mat-option value="Savings">Savings</mat-option>
-          <mat-option value="investments">Investments</mat-option>
-          <mat-option value="other">Other</mat-option>
+          <mat-option value="Investments">Investments</mat-option>
+          <mat-option value="Vehicle">Vehicle</mat-option>
+          <mat-option value="Health">Health</mat-option>
+          <mat-option value="Home">Home</mat-option>
+          <mat-option value="Other">Other</mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
       </mat-form-field>
@@ -54,10 +59,10 @@
           Recurring Expense
         </mat-checkbox>
       </div> -->
-  
+      
       <div class="dialog-actions">
         <button mat-stroked-button (click)="onCancel()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="onSave()">Save Expense</button>
+        <button mat-raised-button color="primary" (click)="onSave()">Save Goal</button>
       </div>
     </form>
   </div>

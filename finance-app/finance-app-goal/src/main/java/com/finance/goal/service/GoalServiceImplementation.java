@@ -46,7 +46,7 @@ public class GoalServiceImplementation implements GoalService{
     }
 
     @Override
-    public void deleteParticularGoalByGoalName(int userId, String goalName) {
-        goalRepository.deleteParticularGoalByGoalName(userId, goalName);
+    public void deleteGoalById(int id) {
+        goalRepository.deleteById(id);
     }
 }

@@ -268,9 +268,9 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }
-    @DeleteMapping("/{userId}/goal/goalName")
-    public ResponseEntity<Void> deleteGoalByGoalName(@PathVariable("userId") int userId, @RequestParam("name") String goalName) {
-        boolean isDeleted = goalService.deleteGoalByGoalName(userId, goalName);
+    @DeleteMapping("/{id}/goal")
+    public ResponseEntity<Void> deleteGoalById(@PathVariable("id") int id) {
+        boolean isDeleted = goalService.deleteGoalById(id);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204: No Content
         } else {

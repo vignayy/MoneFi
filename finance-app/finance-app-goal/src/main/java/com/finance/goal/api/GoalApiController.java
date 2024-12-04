@@ -46,8 +46,8 @@ public class GoalApiController {
         }
     }
 
-    @DeleteMapping("/{userId}/goalName")
-    public void deleteByGoalName(@PathVariable("userId") int userId, @RequestParam("name") String goalName) {
-        goalService.deleteParticularGoalByGoalName(userId, goalName);
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable("id") int id) {
+        goalService.deleteGoalById(id);
     }
 }

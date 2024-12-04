@@ -58,6 +58,12 @@
           <span class="days-left">{{ getDaysRemaining(goal.deadLine) }} days left</span>
           <span class="deadline">Due by {{ goal.deadLine | date }}</span>
         </div>
+        <!-- <div class="timeline">
+          <i class="fas fa-clock"></i>
+          <span class="days-left">{{ getDaysRemaining(goal.deadLine) }} days left</span>
+          <span class="deadline">Due by {{ goal.deadLine | date:'mediumDate' }}</span>
+        </div> -->
+        
 
         <!-- Milestones -->
         <!-- <div class="milestones">
@@ -79,12 +85,17 @@
         <div class="actions">
           <button class="update-btn">
             <i class="fas fa-plus-circle"></i>
-            Update Progress
+            Update Goal
           </button>
-          <button class="details-btn" (click)="viewGoalDetails(goal)">
+          <!-- <button class="details-btn" (click)="viewGoalDetails(goal)">
             <i class="fas fa-chart-line"></i>
             View Details
+          </button> -->
+          <button class="delete-btn" (click)="deleteGoal(goal.id)">
+            <i class="fas fa-trash-alt"></i>
+            Delete Goal
           </button>
+          
         </div>
       </div>
     </div>

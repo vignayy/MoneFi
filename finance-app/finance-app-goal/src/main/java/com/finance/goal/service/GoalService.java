@@ -12,5 +12,5 @@ public interface GoalService {
 
     public GoalModel updateByGoalName(int userId, String goalName, GoalModel goal);
 
-    public void deleteParticularGoalByGoalName(int userId, String goalName);
+    public void deleteGoalById(int id);
 }

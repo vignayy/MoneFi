@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { AddGoalDialogComponent } from '../add-goal-dialog/add-goal-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 interface Goal {
   id: number;
   goalName: string;
   currentAmount: number;
   targetAmount: number;
-  deadLine: string;
+  deadLine: Date;
   category: string;
   icon: string;
   color: string
@@ -18,7 +20,7 @@ interface inputGoal {
   goalName: string;
   currentAmount: number;
   targetAmount: number;
-  deadLine: string;
+  deadLine: Date;
   category: string;
 }
 
@@ -32,65 +34,28 @@ interface inputGoal {
 export class GoalsComponent {
   goals: Goal[] = [];
   loading: boolean = false;
-  selectedGoal: Goal | null = null;
 
   ngOnInit() {
     this.loadGoals();
   }
 
-  constructor(private httpClient:HttpClient){};
+  constructor(private httpClient:HttpClient, private dialog: MatDialog){};
   baseUrl = "http://localhost:8765";
-
-  // loadGoals() {
-  //   this.loading = true;
-  //   // Simulated data - replace with actual API call
-  //   this.goals = [
-  //     {
-  //       id: 1,
-  //       goalName: 'Dream Vacation',
-  //       currentAmount: 3000,
-  //       targetAmount: 5000,
-  //       deadline: '2024-12-31',
-  //       category: 'Travel',
-  //       icon: 'fa-plane',
-  //       color: '#2196F3'
-  //     },
-  //     {
-  //       id: 2,
-  //       goalName: 'Emergency Fund',
-  //       currentAmount: 8000,
-  //       targetAmount: 10000,
-  //       deadline: '2026-09-30',
-  //       category: 'Savings',
-  //       icon: 'fa-shield-alt',
-  //       color: '#4CAF50'
-  //     },
-  //     {
-  //       id: 3,
-  //       goalName: 'New Car',
-  //       currentAmount: 15000,
-  //       targetAmount: 30000,
-  //       deadline: '2025-06-30',
-  //       category: 'Vehicle',
-  //       icon: 'fa-car',
-  //       color: '#FF9800'
-  //     }
-  //   ];
-  //   this.loading = false;
-  // }
 
   loadGoals() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
-    console.log(token);
+    // console.log(token);
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        console.log(userId);
+        // console.log(userId);
   
         this.httpClient.get<inputGoal[]>(`${this.baseUrl}/api/user/${userId}/goals`).subscribe({
           next: (data) => {
+            // console.log(data);
             this.goals = data.map(goal => this.modelConverterFunction(goal));
+            // console.log(this.goals);
             this.loading = false;
           },
           error: (error) => {
@@ -108,74 +73,113 @@ export class GoalsComponent {
     });
   }
 
+  addGoal() {
+    const dialogRef = this.dialog.open(AddGoalDialogComponent, {
+      width: '500px',
+      panelClass: 'income-dialog',
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const token = sessionStorage.getItem('finance.auth');
+        // console.log(token);
+  
+        this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+          next: (userId) => {
+            // console.log(userId);
+            
+            // Send POST request with the income data
+            const goalData = {
+              ...result, // This should contain fields like source, amount, date, category, recurring, etc.
+              // userId: userId, // Add userId if your backend requires it
+            };
+            this.httpClient.post<inputGoal>(`${this.baseUrl}/api/user/${userId}/goal`, goalData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }).subscribe({
+              next: (newGoal) => {
+                // console.log(newGoal);
+                // this.goals = newGoal.map(goal => this.modelConverterFunction(goal));
+                const newGoalConverted = this.modelConverterFunction(newGoal); // Convert single goal
+                this.goals.push(newGoalConverted); // Add to existing goals array
+                // console.log(this.goals);
+                this.loadGoals();
+              },
+              error: (error) => {
+                console.error('Failed to add goal data:', error);
+              },
+              complete: () => {
+                this.loading = false;
+              },
+            });
+          },
+          error: (error) => {
+            console.error('Failed to fetch userId:', error);
+            this.loading = false;
+          },
+        });
+      }
+    });
+  }
+
+
+ 
   modelConverterFunction(data: inputGoal): Goal {
     let icon = '';
     let color = '';
-  console.log(data);
+    
     if (data.category === 'Travel') {
       icon = 'fa-plane';
       color = '#2196F3';
+    } else if (data.category === 'Savings') {
+      icon = 'fa-shield-alt';
+      color = '#4CAF50';
+    } else if (data.category === 'Vehicle') {
+      icon = 'fa-car';
+      color = '#FF9800';
+    } else if (data.category === 'Health') {
+      icon = 'fa-heartbeat';
+      color = '#E91E63';
+    } else if (data.category === 'Education') {
+      icon = 'fa-graduation-cap';
+      color = '#673AB7';
+    } else if (data.category === 'Home') {
+      icon = 'fa-home';
+      color = '#009688';
+    } else if (data.category === 'Investments') { 
+      icon = 'fa-chart-line'; // Investment-related icon
+      color = '#3F51B5';      // Investment-related color
     } else {
-      if (data.category === 'Savings') {
-        icon = 'fa-shield-alt';
-        color = '#4CAF50';
-      } else {
-        if (data.category === 'Vehicle') {
-          icon = 'fa-car';
-          color = '#FF9800';
-        } else {
-          if (data.category === 'Health') {
-            icon = 'fa-heartbeat';
-            color = '#E91E63';
-          } else {
-            if (data.category === 'Education') {
-              icon = 'fa-graduation-cap';
-              color = '#673AB7';
-            } else {
-              if (data.category === 'Home') {
-                icon = 'fa-home';
-                color = '#009688';
-              } else {
-                icon = 'fa-question-circle'; // Default icon
-                color = '#9E9E9E'; // Default color
-              }
-            }
-          }
-        }
-      }
+      icon = 'fa-question-circle'; // Default icon
+      color = '#9E9E9E';           // Default color
     }
-  console.log(color); console.log(icon);
+  
     return {
       id: data.id,
       goalName: data.goalName,
       currentAmount: data.currentAmount,
       targetAmount: data.targetAmount,
-      deadLine: data.deadLine,
+      deadLine: new Date(data.deadLine),
       category: data.category,
       icon: icon,
       color: color
     };
   }
   
+  
 
   getProgressPercentage(currentAmount: number, targetAmount: number): number {
     return (currentAmount / targetAmount) * 100;
   }
 
-  // getDaysRemaining(deadline: string): number {
-  //   const today = new Date();
-  //   const deadlineDate = new Date(deadline);
-  //   const diffTime = deadlineDate.getTime() - today.getTime();
-  //   console.log(diffTime);
-  //   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  // }
-  getDaysRemaining(deadline: string): number {
+  getDaysRemaining(deadline: Date): number {
     if (!deadline) {
       console.error('Deadline is undefined or null');
       return NaN;
     }
   
-    const deadlineDate = new Date(deadline);
+    const deadlineDate = deadline;
     if (isNaN(deadlineDate.getTime())) {
       console.error('Invalid deadline date:', deadline);
       return NaN;
@@ -194,13 +198,22 @@ export class GoalsComponent {
     return '#ff9800';
   }
 
-  addGoal() {
-    // Implement add goal logic
-    console.log('Add goal clicked');
-  }
-
+  
   viewGoalDetails(goal: Goal) {
-    this.selectedGoal = goal;
+    
+  }
+  deleteGoal(goalId : number){
+    console.log(goalId);
+    this.httpClient.delete<void>(`${this.baseUrl}/api/user/${goalId}/goal`)
+      .subscribe({
+        next: () => {
+          console.log(`Expense with ID ${goalId} deleted successfully.`);
+          this.loadGoals(); // Reload the data after successful deletion
+        },
+        error: (err) => {
+          console.error('Error deleting expense:', err);
+        }
+      });
   }
 
   formatCurrency(amount: number): string {
@@ -210,12 +223,4 @@ export class GoalsComponent {
     }).format(amount);
   }
 
-  // calculateMonthlyTarget(goal: Goal): number {
-  //   const today = new Date();
-  //   const deadline = new Date(goal.deadline);
-  //   const monthsRemaining = (deadline.getFullYear() - today.getFullYear()) * 12 + 
-  //                         (deadline.getMonth() - today.getMonth());
-  //   const remainingAmount = goal.targetAmount - goal.currentAmount;
-  //   return remainingAmount / monthsRemaining;
-  // }
 }

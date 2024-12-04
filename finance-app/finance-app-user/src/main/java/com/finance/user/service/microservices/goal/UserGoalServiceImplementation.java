@@ -36,10 +36,10 @@ public class UserGoalServiceImplementation implements UserGoalService {
     }
 
     @Override
-    public boolean deleteGoalByGoalName(int userId, String goalName) {
+    public boolean deleteGoalById(int id) {
 
         try {
-            goalFeignClient.deleteByGoalName(userId, goalName);
+            goalFeignClient.deleteGoalById(id);
             return true;
         } catch (HttpClientErrorException.NotFound e) {
             return false;

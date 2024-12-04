@@ -34,15 +34,32 @@ export class AddGoalDialogComponent {
     goalName:'',
     currentAmount: 0,
     targetAmount:'',
-    date: new Date(),
+    deadLine: new Date(),
     category: '',
   };
 
   constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
 
   onSave() {
+    // console.log(this.goalSource);
     this.dialogRef.close(this.goalSource);
   }
+  // onSave() {
+  //   const formattedGoalSource = {
+  //     ...this.goalSource,
+  //     date: this.formatDate(this.goalSource.date) // Convert date to string
+  //   };
+  
+  //   this.dialogRef.close(formattedGoalSource);
+  // }
+  
+  // formatDate(date: Date): string {
+  //   const yyyy = date.getFullYear();
+  //   const mm = String(date.getMonth() + 1).padStart(2, '0');
+  //   const dd = String(date.getDate()).padStart(2, '0');
+  //   return `${yyyy}-${mm}-${dd}`; // Returns date in 'YYYY-MM-DD' format
+  // }
+  
 
   onCancel() {
     this.dialogRef.close();

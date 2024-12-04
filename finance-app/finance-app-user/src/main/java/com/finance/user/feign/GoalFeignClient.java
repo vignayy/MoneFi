@@ -24,7 +24,7 @@ public interface GoalFeignClient {
     public ResponseEntity<GoalModel> updateGoal(@PathVariable("userId") int userId, @RequestParam("name") String goalName, @RequestBody GoalModel goal);
 
 
-    @DeleteMapping("/api/goal/{userId}/goalName")
-    public void deleteByGoalName(@PathVariable("userId") int userId, @RequestParam("name") String goalName);
+    @DeleteMapping("/api/goal/{id}")
+    public void deleteGoalById(@PathVariable("id") int id);
 
 }
