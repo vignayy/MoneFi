@@ -5,6 +5,7 @@ import { ExpensesComponent } from '../expenses/expenses.component';
 import { BudgetsComponent } from '../budgets/budgets.component';
 import { GoalsComponent } from '../goals/goals.component';
 import { Router } from '@angular/router';
+import { OverviewComponent } from '../overview/overview.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,8 @@ import { Router } from '@angular/router';
     IncomeComponent,
     ExpensesComponent,
     BudgetsComponent,
-    GoalsComponent
+    GoalsComponent,
+    OverviewComponent
   ]
 })
 export class DashboardComponent {
