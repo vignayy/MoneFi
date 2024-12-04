@@ -53,9 +53,9 @@ public class ExpenseApiController {
         }
     }
 
-    @DeleteMapping("/{userId}/category")
-    public void deleteExpenseByCategory(@PathVariable("userId") int userId, @RequestParam("name") String category) {
-        expenseService.deleteParticularExpenseByCategory(userId, category);
+    @DeleteMapping("/{id}")
+    public void deleteExpenseById(@PathVariable("id") int id) {
+        expenseService.deleteExpenseById(id);
     }
 
     @GetMapping("/analysis/{userId}/{startDate}/{endDate}")

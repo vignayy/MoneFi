@@ -7,6 +7,7 @@ interface Budget {
   category: string;
   moneyLimit: number;
   currentSpending: number;
+  remaining:number;
 }
 
 @Component({
@@ -30,13 +31,6 @@ export class BudgetsComponent {
     this.loadBudgetData();
   }
 
-  // loadBudgetData() {
-  //   this.loading = true;
-    
-    
-  //   this.calculateTotals();
-  //   this.loading = false;
-  // }
   loadBudgetData() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
@@ -48,6 +42,7 @@ export class BudgetsComponent {
   
         this.httpClient.get<Budget[]>(`${this.baseUrl}/api/user/${userId}/budgets`).subscribe({
           next: (data) => {
+            this.calculateBudgetRemaining(data);
             this.budgets = data;
             this.calculateTotals();
           },
@@ -70,6 +65,12 @@ export class BudgetsComponent {
     this.totalBudget = this.budgets.reduce((sum, budget) => sum + budget.moneyLimit, 0);
     this.totalSpent = this.budgets.reduce((sum, budget) => sum + budget.currentSpending, 0);
   }
+  calculateBudgetRemaining(data: Budget[]): void {
+    data.forEach(budget => {
+      budget.remaining = budget.moneyLimit - budget.currentSpending;
+    });
+  }
+  
 
   getProgressPercentage(currentSpending: number, moneyLimit: number): number {
     return (currentSpending / moneyLimit) * 100;

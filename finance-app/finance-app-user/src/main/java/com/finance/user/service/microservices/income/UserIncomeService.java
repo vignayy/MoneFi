@@ -12,5 +12,5 @@ public interface UserIncomeService {
 
     public List<IncomeModel> updateIncome(int userId, IncomeModel income);
 
-    public boolean deleteIncomeBySource(int userId, String source);
+    public boolean deleteIncomeById(int id);
 }

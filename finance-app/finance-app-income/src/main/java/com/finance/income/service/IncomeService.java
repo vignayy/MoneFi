@@ -12,6 +12,6 @@ public interface IncomeService {
 
     public IncomeModel updateBySource(int userId, String source, IncomeModel income);
 
-    public void deleteParticularIncomeBySource(int userId, String source);
+    public void deleteParticularIncomeBySource(int id);
 
 }

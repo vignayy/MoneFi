@@ -44,7 +44,7 @@ public class ExpenseServiceImplementation implements ExpenseService{
     }
 
     @Override
-    public void deleteParticularExpenseByCategory(int userId, String category) {
-        expenseRepository.deleteParticularExpenseByCategory(userId, category);
+    public void deleteExpenseById(int id) {
+        expenseRepository.deleteById(id);
     }
 }

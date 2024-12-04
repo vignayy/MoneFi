@@ -11,4 +11,5 @@ public class GoalModel {
     private double currentAmount;
     private double targetAmount;
     private LocalDate deadLine;
+    private String category;
 }

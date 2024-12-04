@@ -20,6 +20,6 @@ public interface IncomeFeignClient {
     @PutMapping("api/income/{userId}/source")
     public ResponseEntity<IncomeModel> updateIncome(@PathVariable("userId") int userId, @RequestParam("name") String source, @RequestBody IncomeModel income);
 
-    @DeleteMapping("api/income/{userId}/source")
-    public void deleteIncomeBySource(@PathVariable("userId") int userId, @RequestParam("name") String source);
+    @DeleteMapping("api/income/{id}")
+    public void deleteIncomeById(@PathVariable("id") int id);
 }

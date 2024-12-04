@@ -35,10 +35,10 @@ public class UserIncomeServiceImplementation implements UserIncomeService {
     }
 
     @Override
-    public boolean deleteIncomeBySource(int userId, String source) {
+    public boolean deleteIncomeById(int id) {
 
         try {
-            incomeFeignClient.deleteIncomeBySource(userId, source);
+            incomeFeignClient.deleteIncomeById(id);
             return true;
         } catch (HttpClientErrorException.NotFound e) {
             return false;

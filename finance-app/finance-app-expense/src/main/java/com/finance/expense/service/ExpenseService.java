@@ -13,6 +13,6 @@ public interface ExpenseService {
 
     public ExpenseModel updateBySource(int userId, String category, ExpenseModel expense);
 
-    public void deleteParticularExpenseByCategory(int userId, String category);
+    public void deleteExpenseById(int id);
 
 }

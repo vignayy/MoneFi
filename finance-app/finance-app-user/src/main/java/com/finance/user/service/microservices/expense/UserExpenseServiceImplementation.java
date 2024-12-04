@@ -48,10 +48,10 @@ public class UserExpenseServiceImplementation implements UserExpenseService {
     }
 
     @Override
-    public boolean deleteExpenseByCategory(int userId, String category) {
+    public boolean deleteExpenseById(int id) {
 
         try {
-            expenseFeignClient.deleteExpenseByCategory(userId, category);
+            expenseFeignClient.deleteExpenseById(id);
             return true;
         } catch (HttpClientErrorException.NotFound e) {
             return false;

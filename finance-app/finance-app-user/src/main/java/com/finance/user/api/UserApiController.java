@@ -1,5 +1,6 @@
 package com.finance.user.api;
 
+import com.finance.user.dto.BudgetModel;
 import com.finance.user.dto.ExpenseModel;
 import com.finance.user.dto.GoalModel;
 import com.finance.user.dto.IncomeModel;
@@ -20,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -50,6 +54,9 @@ public class UserApiController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping("/hello")
     public String hello(HttpServletRequest request)
@@ -156,9 +163,9 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }
-    @DeleteMapping("/{userId}/income/source")
-    public ResponseEntity<Void> deleteIncomeBySource(@PathVariable("userId") int userId, @RequestParam("name") String source) {
-        boolean isDeleted = incomeService.deleteIncomeBySource(userId, source);
+    @DeleteMapping("/{id}/income")
+    public ResponseEntity<Void> deleteIncomeById(@PathVariable("id") int id) {
+        boolean isDeleted = incomeService.deleteIncomeById(id);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204: No Content
         } else {
@@ -199,15 +206,34 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }
-    @DeleteMapping("/{userId}/expense/category")
-    public ResponseEntity<Void> deleteExpenseByCategory(@PathVariable("userId") int userId, @RequestParam("name") String category) {
-        boolean isDeleted = expenseService.deleteExpenseByCategory(userId, category);
+    @DeleteMapping("/{id}/expense")
+    public ResponseEntity<Void> deleteExpenseById(@PathVariable("id") int id) {
+        boolean isDeleted = expenseService.deleteExpenseById(id);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204: No Content
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404: Not Found
         }
     }
+
+
+
+
+    // Budget calls
+    @GetMapping("/{userId}/budgets")
+    public ResponseEntity<List<BudgetModel>> getAllBudgets(@PathVariable("userId") int userId) {
+//        List<GoalModel> goalsList = goalService.getAllGoals(userId);
+
+        BudgetModel[] list = restTemplate.getForObject("http://FINANCE-APP-BUDGET/api/budget/" + userId, BudgetModel[].class);
+        List<BudgetModel> budgetList = new ArrayList<>(Arrays.asList(list));
+
+        if (!budgetList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(budgetList);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 
 
 

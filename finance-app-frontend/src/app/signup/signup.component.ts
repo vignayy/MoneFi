@@ -46,25 +46,8 @@ export class SignupComponent {
     this.router.navigate(['/login']);
   }
 
-  baseUrl = "http://localhost:8765/auth";
+  baseUrl = "http://localhost:8765";
 
-  // onSubmit(signupCredentials:SignupCredentials) {
-  //     console.log('Signup form submitted:', signupCredentials);
-  //     this.authApiService.signupApiFunction(signupCredentials)
-  //     .subscribe (
-  //       response=>{
-  //         console.log(response);
-  //         sessionStorage.setItem('finance.auth', response.jwtToken);
-  //         const userId = this.authClient.get<number>(this.baseUrl+"/getUserId/"+signupCredentials.username);
-  //         console.log(userId);
-  //         // alert("Registered Successfully! Please login now");
-  //         // this.router.navigate(['/login']);
-  //       },
-  //       error=>{
-  //         console.error('Signup Failed', error);
-  //       }
-  //     )
-  // }
 
   onSubmit(signupCredentials: SignupCredentials) {
     console.log('Signup form submitted:', signupCredentials);
@@ -75,13 +58,13 @@ export class SignupComponent {
           sessionStorage.setItem('finance.auth', response.jwtToken);
   
           // Get the userId from the API
-          this.authClient.get<number>(`${this.authApiService.baseUrl}/getUserId/${signupCredentials.username}`)
+          this.authClient.get<number>(`${this.baseUrl}/auth/getUserId/${signupCredentials.username}`)
             .subscribe(
               userId => {
                 console.log('User ID:', userId);
   
                 // Use userId in the next API call
-                this.authClient.post<UserProfile>(`${this.authApiService.baseUrl}/api/user/setDetails/${userId}/${signupCredentials.name}/${signupCredentials.username}`, null)
+                this.authClient.post<UserProfile>(`${this.baseUrl}/api/user/setDetails/${userId}/${signupCredentials.name}/${signupCredentials.username}`, null)
                   .subscribe(
                     userProfile => {
                       console.log('Profile details:', userProfile);

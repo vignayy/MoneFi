@@ -112,4 +112,19 @@ export class ExpensesComponent {
       }
     });
   }
+
+
+  deleteExpense(expenseId: number): void {
+    console.log(expenseId);
+    this.httpClient.delete<void>(`${this.baseUrl}/api/user/${expenseId}/expense`)
+      .subscribe({
+        next: () => {
+          console.log(`Expense with ID ${expenseId} deleted successfully.`);
+          this.loadExpensesData(); // Reload the data after successful deletion
+        },
+        error: (err) => {
+          console.error('Error deleting expense:', err);
+        }
+      });
+  }
 }

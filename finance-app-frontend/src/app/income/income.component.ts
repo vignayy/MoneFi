@@ -126,5 +126,21 @@ export class IncomeComponent {
       }
     });
   }
+
+
+  deleteIncome(incomeId: number): void {
+    console.log(incomeId);
+    this.httpClient.delete<void>(`${this.baseUrl}/api/user/${incomeId}/income`)
+      .subscribe({
+        next: () => {
+          console.log(`Income with ID ${incomeId} deleted successfully.`);
+          this.loadIncomeData(); // Reload the data after successful deletion
+        },
+        error: (err) => {
+          console.error('Error deleting income:', err);
+        }
+      });
+  }
   
+
 }

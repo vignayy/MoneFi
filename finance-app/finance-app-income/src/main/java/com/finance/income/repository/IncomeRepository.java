@@ -16,9 +16,5 @@ public interface IncomeRepository extends JpaRepository<IncomeModel, Integer> {
     @Query("select i from IncomeModel i where i.userId=:userId and i.source=:source")
     public IncomeModel findByUserIdAndSource(int userId, String source);
 
-    @Transactional
-    @Modifying
-    @Query("Delete from IncomeModel i where i.userId=:userId and i.source=:source")
-    public void deleteParticularIncomeBySource(int userId, String source);
 
 }

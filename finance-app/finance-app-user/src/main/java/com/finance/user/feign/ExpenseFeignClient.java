@@ -23,8 +23,8 @@ public interface ExpenseFeignClient {
     @PutMapping("/api/expense/{userId}/category")
     public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("userId") int userId, @RequestParam("name") String category, @RequestBody ExpenseModel expense);
 
-    @DeleteMapping("/api/expense/{userId}/category")
-    public void deleteExpenseByCategory(@PathVariable("userId") int userId, @RequestParam("name") String category);
+    @DeleteMapping("/api/expense/{id}")
+    public void deleteExpenseById(@PathVariable("id") int id);
 
     @GetMapping("/api/expense/analysis/{userId}/{startDate}/{endDate}")
     ResponseEntity<List<ExpenseDto>> getExpensesByCategoryAndPeriod(

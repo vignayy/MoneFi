@@ -43,7 +43,7 @@ public class IncomeServiceImplementation implements IncomeService {
     }
 
     @Override
-    public void deleteParticularIncomeBySource(int userId, String source) {
-        incomeRepository.deleteParticularIncomeBySource(userId, source);
+    public void deleteParticularIncomeBySource(int id) {
+        incomeRepository.deleteById(id);
     }
 }

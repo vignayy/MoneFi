@@ -48,9 +48,9 @@ public class IncomeApiController {
         }
     }
 
-    @DeleteMapping("/{userId}/source")
-    public void deleteIncomeBySource(@PathVariable("userId") int userId, @RequestParam("name") String source) {
-        incomeService.deleteParticularIncomeBySource(userId, source);
+    @DeleteMapping("/{id}")
+    public void deleteIncomeBySource(@PathVariable("id") int id) {
+        incomeService.deleteParticularIncomeBySource(id);
     }
 
 

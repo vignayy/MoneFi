@@ -11,5 +11,5 @@ public interface UserExpenseService {
 
     public List<ExpenseModel> updateExpense(int userId, ExpenseModel expense);
 
-    public boolean deleteExpenseByCategory(int userId, String category);
+    public boolean deleteExpenseById(int id);
 }
