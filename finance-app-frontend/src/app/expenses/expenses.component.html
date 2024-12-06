@@ -16,7 +16,7 @@
       <div class="card total-expenses">
         <div class="card-content">
           <h3>Total Expenses</h3>
-          <p class="amount">${{ totalExpenses.toLocaleString() }}</p>
+          <p class="amount">₹{{ totalExpenses.toLocaleString() }}</p>
           <p class="period">This Month</p>
         </div>
         <i class="fas fa-wallet icon"></i>
@@ -52,7 +52,7 @@
             <td>
               <span class="category-badge">{{ expense.category }}</span>
             </td>
-            <td>${{ expense.amount.toLocaleString() }}</td>
+            <td>₹{{ expense.amount.toLocaleString() }}</td>
             <td>{{ expense.date | date:'mediumDate' }}</td>
             <td>
               <span class="type-badge" [class.recurring]="expense.recurring">

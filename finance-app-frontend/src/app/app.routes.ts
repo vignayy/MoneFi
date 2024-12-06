@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './auth.guard';
+import { IncomeComponent } from './income/income.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },

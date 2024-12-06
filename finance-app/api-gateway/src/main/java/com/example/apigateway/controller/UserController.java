@@ -7,6 +7,8 @@ import com.example.apigateway.model.User;
 import com.example.apigateway.service.JwtService;
 import com.example.apigateway.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,25 +37,47 @@ public class UserController {
         User user = userRepo.findByUsername(email);
         return user.getId();
     }
+
     @PostMapping("/register")
-    public JwtToken register(@RequestBody UserProfile userProfile) {
+    public ResponseEntity<?> register(@RequestBody UserProfile userProfile) {
         User user = new User();
         user.setUsername(userProfile.getUsername());
         user.setPassword(userProfile.getPassword());
 
-        User savedUser = userService.saveUser(user);
-        return jwtService.generateToken(user.getUsername());
-//        return savedUser.getId();
+        User getUser = userRepo.findByUsername(user.getUsername());
+        if (getUser != null) {
+            // Return a conflict status code with a custom message when user already exists
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+        }
 
+        // If user doesn't exist, proceed with saving the user
+        User savedUser = userService.saveUser(user);
+        return ResponseEntity.ok(jwtService.generateToken(user.getUsername()));
     }
 
     @PostMapping("/login")
-    public JwtToken login(@RequestBody User user) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+    public ResponseEntity<?> login(@RequestBody User user) {
+        try {
+            // Validate user input (username and password should not be empty)
+            if (user.getUsername() == null || user.getUsername().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty()) {
+                return ResponseEntity.badRequest().body("Username and password are required");
+            }
 
-        if (authentication.isAuthenticated()) return jwtService.generateToken(user.getUsername());
-        else return null;
+            // Authenticate the user
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+            // Check if authentication is successful
+            if (authentication.isAuthenticated()) {
+                JwtToken token = jwtService.generateToken(user.getUsername());
+                return ResponseEntity.ok(token);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            }
+        } catch (Exception e) {
+            // Catch and handle any other exceptions (e.g., wrong username/password format)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login");
+        }
     }
 
     @GetMapping("/token/{token}")

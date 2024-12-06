@@ -1,0 +1,34 @@
+<div class="dialog-container">
+    <h2 class="dialog-title">Add New Budget</h2>
+    
+    <form class="income-form">
+
+  
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Category</mat-label>
+        <mat-select [(ngModel)]="budgetSource.category" name="category">
+          <mat-option value="Food">Food</mat-option>
+          <mat-option value="Travelling">Travelling</mat-option>
+          <mat-option value="Entertainment">Entertainment</mat-option>
+          <mat-option value="Groceries">Groceries</mat-option>
+          <mat-option value="Shopping">Shopping</mat-option>
+          <mat-option value="Fuel">Fuel</mat-option>
+          <mat-option value="Bills & utilities">Bills & utilities</mat-option>
+          <mat-option value="Personal Care">Personal Care</mat-option>
+          <mat-option value="Other">Other</mat-option>
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Target Amount</mat-label>
+        <input matInput type="number" [(ngModel)]="budgetSource.targetAmount" name="targetAmount" placeholder="0.00">
+        <mat-icon matPrefix>attach_money</mat-icon>
+      </mat-form-field>
+  
+      <div class="dialog-actions">
+        <button mat-stroked-button (click)="onCancel()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="onSave()">Save Expense</button>
+      </div>
+    </form>
+  </div>

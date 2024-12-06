@@ -1,4 +1,4 @@
-<app-header></app-header>
+<!-- <app-header></app-header> -->
 <div class="login-container">
   <div class="login-card">
     <h2>Welcome Back</h2>
@@ -15,6 +15,9 @@
         >
         <div class="error-message" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.errors?.['required']">
           Username is required
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.errors?.['email']">
+          Please enter valid email
         </div>
       </div>
 

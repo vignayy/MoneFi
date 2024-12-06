@@ -40,17 +40,17 @@
           </div>
         </div>
 
-        <!-- Amount Details -->
         <div class="amount-details">
           <div class="current">
             <span class="label">Current</span>
-            <span class="value">{{ formatCurrency(goal.currentAmount) }}</span>
+            <span class="value">{{ goal.currentAmount | currency:'INR' }}</span>
           </div>
           <div class="target">
             <span class="label">Target</span>
-            <span class="value">{{ formatCurrency(goal.targetAmount) }}</span>
+            <span class="value">{{ goal.targetAmount | currency:'INR' }}</span>
           </div>
         </div>
+        
 
         <!-- Timeline -->
         <div class="timeline">
@@ -58,11 +58,6 @@
           <span class="days-left">{{ getDaysRemaining(goal.deadLine) }} days left</span>
           <span class="deadline">Due by {{ goal.deadLine | date }}</span>
         </div>
-        <!-- <div class="timeline">
-          <i class="fas fa-clock"></i>
-          <span class="days-left">{{ getDaysRemaining(goal.deadLine) }} days left</span>
-          <span class="deadline">Due by {{ goal.deadLine | date:'mediumDate' }}</span>
-        </div> -->
         
 
         <!-- Milestones -->

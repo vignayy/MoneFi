@@ -32,7 +32,7 @@ interface FinancialSummary {
   styleUrl: './overview.component.css'
 })
 export class OverviewComponent implements OnInit {
-  financialQuote = "Wealth is not about having a lot of money, it's about having a lot of options. – Chris Rock";
+  // financialQuote = "Wealth is not about having a lot of money, it's about having a lot of options. – Chris Rock";
   
   summary: FinancialSummary = {
     income: 0,
@@ -53,11 +53,11 @@ export class OverviewComponent implements OnInit {
 
   private loadFinancialData() {
     const token = sessionStorage.getItem('finance.auth');
-    console.log(token);
+    // console.log(token);
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next : (userId) => {
-        console.log(userId);
+        // console.log(userId);
 
         this.httpClient.get(`${this.baseUrl}/api/user/getName/${userId}`, {responseType : 'text'}).subscribe({
           next : (userName) => {
@@ -115,6 +115,9 @@ export class OverviewComponent implements OnInit {
       },
       error : (error) => {
         console.log('Failed to get the user Id', error);
+        alert("Session timed out! Please login again");
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
       }
     })
 

@@ -3,6 +3,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AddExpenseDialogComponent } from '../add-expense-dialog/add-expense-dialog.component';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 interface Expense {
   id: number;
@@ -25,7 +27,7 @@ export class ExpensesComponent {
   expenses: Expense[] = [];
   loading: boolean = false;
 
-  constructor(private httpClient: HttpClient, private dialog: MatDialog) {}
+  constructor(private httpClient: HttpClient, private dialog: MatDialog, private router:Router, private toastr:ToastrService) {}
 
   baseUrl = "http://localhost:8765";
 
@@ -36,16 +38,24 @@ export class ExpensesComponent {
   loadExpensesData() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
-    console.log(token);
+    // console.log(token);
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        console.log(userId);
+        // console.log(userId);
   
         this.httpClient.get<Expense[]>(`${this.baseUrl}/api/user/${userId}/expenses`).subscribe({
           next: (data) => {
-            this.expenses = data;
-            this.calculateTotalExpenses();
+            // this.expenses = data;
+            // this.calculateTotalExpenses();
+            if (data && data.length > 0) {
+              this.expenses = data; 
+              this.calculateTotalExpenses();
+            } else {
+              this.expenses = [];
+              this.toastr.warning('No Expense data available for this user.', 'No Data');
+              this.loading = false;
+            }
           },
           error: (error) => {
             console.error('Failed to load Expense data:', error);
@@ -57,6 +67,9 @@ export class ExpensesComponent {
       },
       error: (error) => {
         console.error('Failed to fetch userId:', error);
+        alert("Session timed out! Please login again");
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
         this.loading = false;
       }
     });

@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 interface IncomeSource {
   id: number;
@@ -35,7 +37,7 @@ export class IncomeComponent {
   incomeSources: IncomeSource[] = [];
   loading: boolean = false;
 
-  constructor(public httpClient: HttpClient,private dialog: MatDialog) {};
+  constructor(public httpClient: HttpClient,private dialog: MatDialog, private router:Router, private toastr:ToastrService) {};
 
   baseUrl = "http://localhost:8765";
   
@@ -46,16 +48,23 @@ export class IncomeComponent {
   loadIncomeData() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
-    console.log(token);
+    // console.log(token);
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        console.log(userId);
+        // console.log(userId);
   
         this.httpClient.get<IncomeSource[]>(`${this.baseUrl}/api/user/${userId}/incomes`).subscribe({
           next: (data) => {
-            this.incomeSources = data;
-            this.calculateTotalIncome();
+
+            if (data && data.length > 0) {
+              this.incomeSources = data; 
+              this.calculateTotalIncome();
+            } else {
+              this.incomeSources = [];
+              this.toastr.warning('No income data available for this user.', 'No Data');
+              this.loading = false;
+            }
           },
           error: (error) => {
             console.error('Failed to load income data:', error);
@@ -67,6 +76,9 @@ export class IncomeComponent {
       },
       error: (error) => {
         console.error('Failed to fetch userId:', error);
+        alert("Session timed out! Please login again");
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
         this.loading = false;
       }
     });

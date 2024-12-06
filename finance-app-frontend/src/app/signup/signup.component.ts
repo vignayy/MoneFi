@@ -7,11 +7,12 @@ import { AuthApiService } from '../auth-api.service';
 import { HttpClient } from '@angular/common/http';
 import { UserProfile } from '../model/UserProfile';
 import { HeaderComponent } from '../header/header.component';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule,HeaderComponent ],
+  imports: [ReactiveFormsModule, CommonModule,HeaderComponent, ToastrModule],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
@@ -20,10 +21,10 @@ export class SignupComponent {
   showPassword = false;
   showConfirmPassword = false;
 
-  constructor(private fb: FormBuilder, private router: Router, private authApiService:AuthApiService, private authClient:HttpClient) {
+  constructor(private fb: FormBuilder, private router: Router, private authApiService:AuthApiService, private authClient:HttpClient, private toastr: ToastrService) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required]],
-      username: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, { validator: this.passwordMatchValidator });
@@ -48,15 +49,14 @@ export class SignupComponent {
 
   baseUrl = "http://localhost:8765";
 
-
   onSubmit(signupCredentials: SignupCredentials) {
-    console.log('Signup form submitted:', signupCredentials);
+    // console.log('Signup form submitted:', signupCredentials);
     this.authApiService.signupApiFunction(signupCredentials)
       .subscribe(
         response => {
-          console.log(response);
+          // console.log(response);
           sessionStorage.setItem('finance.auth', response.jwtToken);
-  
+
           // Get the userId from the API
           this.authClient.get<number>(`${this.baseUrl}/auth/getUserId/${signupCredentials.username}`)
             .subscribe(
@@ -68,13 +68,15 @@ export class SignupComponent {
                   .subscribe(
                     userProfile => {
                       console.log('Profile details:', userProfile);
-                      alert("Registered Successfully! Please login now");
+                      // alert("Registered Successfully! Please login now");
+                      this.toastr.success('successfull login', 'Signup success');
                       this.router.navigate(['/login']);
                     },
                     error => {
                       console.error('Failed to save profile details', error);
                     }
                   );
+                  sessionStorage.removeItem('finance.auth');
               },
               error => {
                 console.error('Failed to fetch User ID', error);
@@ -83,9 +85,16 @@ export class SignupComponent {
         },
         error => {
           console.error('Signup Failed', error);
+          
+          // Check if the error response indicates user already exists
+          if (error.status === 409) {
+            // Show a toast message for existing user
+            this.toastr.error('User already exists!', 'Signup Error');
+          }
         }
       );
-  }
+}
+
   
   
 }

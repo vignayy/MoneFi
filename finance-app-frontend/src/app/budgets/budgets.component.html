@@ -16,7 +16,7 @@
       <div class="card total-budget">
         <div class="card-content">
           <h3>Total Budget</h3>
-          <p class="amount">${{ totalBudget.toLocaleString() }}</p>
+          <p class="amount">₹{{ totalBudget.toLocaleString() }}</p>
           <p class="period">Monthly Budget</p>
         </div>
         <i class="fas fa-wallet icon"></i>
@@ -25,7 +25,7 @@
       <div class="card spent">
         <div class="card-content">
           <h3>Total Spent</h3>
-          <p class="amount">${{ totalSpent.toLocaleString() }}</p>
+          <p class="amount">₹{{ totalSpent.toLocaleString() }}</p>
           <p class="period">This Month</p>
         </div>
         <i class="fas fa-credit-card icon"></i>
@@ -34,7 +34,7 @@
       <div class="card remaining">
         <div class="card-content">
           <h3>Remaining</h3>
-          <p class="amount">${{ (totalBudget - totalSpent).toLocaleString() }}</p>
+          <p class="amount">₹{{ (totalBudget - totalSpent).toLocaleString() }}</p>
           <p class="period">Available</p>
         </div>
         <i class="fas fa-piggy-bank icon"></i>
@@ -53,7 +53,7 @@
             </div>
             <div class="category-info">
               <h3>{{ budget.category }}</h3>
-              <p class="allocated">${{ budget.moneyLimit.toLocaleString() }} Budget</p>
+              <p class="allocated">₹{{ budget.moneyLimit.toLocaleString() }} Budget</p>
             </div>
           </div>
   
@@ -73,11 +73,11 @@
             <div class="amounts">
               <div class="spent">
                 <p class="label">Spent</p>
-                <p class="value">${{ budget.currentSpending.toLocaleString() }}</p>
+                <p class="value">₹{{ budget.currentSpending.toLocaleString() }}</p>
               </div>
               <div class="remaining">
                 <p class="label">Remaining</p>
-                <p class="value">${{ budget.remaining.toLocaleString() }}</p>
+                <p class="value">₹{{ budget.remaining.toLocaleString() }}</p>
               </div>
             </div>
             <!-- budget.remaining.toLocaleString() -->

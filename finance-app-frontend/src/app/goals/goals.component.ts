@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AddGoalDialogComponent } from '../add-goal-dialog/add-goal-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 interface Goal {
   id: number;
@@ -39,7 +41,7 @@ export class GoalsComponent {
     this.loadGoals();
   }
 
-  constructor(private httpClient:HttpClient, private dialog: MatDialog){};
+  constructor(private httpClient:HttpClient, private dialog: MatDialog, private router:Router, private toastr:ToastrService){};
   baseUrl = "http://localhost:8765";
 
   loadGoals() {
@@ -49,14 +51,18 @@ export class GoalsComponent {
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        console.log(userId);
+        // console.log(userId);
   
         this.httpClient.get<inputGoal[]>(`${this.baseUrl}/api/user/${userId}/goals`).subscribe({
           next: (data) => {
-            console.log(data);
-            this.goals = data.map(goal => this.modelConverterFunction(goal));
-            // console.log(this.goals);
-            this.loading = false;
+            // console.log(data);
+            if (data && data.length > 0) {
+              this.goals = data.map(goal => this.modelConverterFunction(goal));
+            } else {
+              this.goals = [];
+              this.toastr.warning('No goal data available for this user.', 'No Data');
+              this.loading = false;
+            }
           },
           error: (error) => {
             console.error('Failed to load Goal data:', error);
@@ -116,6 +122,9 @@ export class GoalsComponent {
           },
           error: (error) => {
             console.error('Failed to fetch userId:', error);
+            alert("Session timed out! Please login again");
+            sessionStorage.removeItem('finance.auth');
+            this.router.navigate(['login']);
             this.loading = false;
           },
         });

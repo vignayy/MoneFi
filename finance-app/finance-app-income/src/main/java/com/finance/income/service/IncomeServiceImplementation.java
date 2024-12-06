@@ -22,7 +22,7 @@ public class IncomeServiceImplementation implements IncomeService {
 
     @Override
     public List<IncomeModel> getAllIncomes(int userId) {
-        return incomeRepository.findIncomesOfUser(userId).stream().toList();
+        return incomeRepository.findIncomesOfUser(userId);
     }
 
     @Override

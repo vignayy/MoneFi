@@ -16,11 +16,14 @@ import com.finance.user.service.microservices.features.MonthlyAndYearlySummary;
 import com.finance.user.service.microservices.features.SpendingAnalysisService;
 import com.finance.user.service.microservices.goal.UserGoalService;
 import com.finance.user.service.microservices.income.UserIncomeService;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -64,6 +67,7 @@ public class UserApiController {
         return "Hello World Page " + request.getSession().getId();
     }
 
+    //call from api gateway to save the user details
     @PostMapping("/setDetails/{userId}/{name}/{email}")
     public UserModel setUserDetails(@PathVariable("userId") int userId, @PathVariable("name") String name, @PathVariable("email") String email){
         UserModel userModel = new UserModel();
@@ -150,12 +154,24 @@ public class UserApiController {
     }
     @GetMapping("/{userId}/incomes")
     public ResponseEntity<List<IncomeModel>> getAllIncomes(@PathVariable("userId") int userId) {
+
         List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
-        if (!incomesList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(incomesList);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return ResponseEntity.ok(incomesList);
+
+        //        try {
+//            List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
+//            if (!incomesList.isEmpty()) {
+//                return ResponseEntity.status(HttpStatus.OK).body(incomesList); // 200 OK
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404 Not Found
+//            }
+//        } catch (FeignException.NotFound e) {
+//            // Handle 404 from the Feign client
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        } catch (FeignException e) {
+//            // Handle other Feign client exceptions
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
     }
 
     @GetMapping("/{userId}/totalIncome")
@@ -201,11 +217,12 @@ public class UserApiController {
     @GetMapping("/{userId}/expenses")
     public ResponseEntity<List<ExpenseModel>> getAllExpenses(@PathVariable("userId") int userId) {
         List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
-        if (!expensesList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(expensesList);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return ResponseEntity.ok(expensesList);
+//        if (!expensesList.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(expensesList);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
     }
     @GetMapping("/{userId}/totalExpense")
     public Integer getTotalExpense(@PathVariable("userId") int userId){
@@ -268,11 +285,12 @@ public class UserApiController {
     @GetMapping("/{userId}/goals")
     public ResponseEntity<List<GoalModel>> getAllGoals(@PathVariable("userId") int userId) {
         List<GoalModel> goalsList = goalService.getAllGoals(userId);
-        if (!goalsList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(goalsList);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return ResponseEntity.ok(goalsList);
+//        if (!goalsList.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(goalsList);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
     }
     @GetMapping("/{userId}/totalCurrentGoalIncome")
     public Integer getCurrentTotalGoalIncome(@PathVariable("userId") int userId){

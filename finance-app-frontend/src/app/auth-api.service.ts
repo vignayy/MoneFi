@@ -4,7 +4,7 @@ import { map, Observable, switchMap } from 'rxjs';
 import { JwtToken } from './model/JwtToken';
 import { LoginCredentials } from './model/LoginCredentials';
 import { SignupCredentials } from './model/SignupCredentials';
-import { UserProfile } from './model/UserProfile';
+
 
 @Injectable({
   providedIn: 'root'

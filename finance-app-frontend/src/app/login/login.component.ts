@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthApiService } from '../auth-api.service';
 import { LoginCredentials } from '../model/LoginCredentials';
 import { HeaderComponent } from '../header/header.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,9 +18,9 @@ export class LoginComponent {
   loginForm: FormGroup;
   showPassword = false;
 
-  constructor(private fb: FormBuilder, private router: Router, private authApiService:AuthApiService) {
+  constructor(private fb: FormBuilder, private router: Router, private authApiService:AuthApiService, private toastr:ToastrService) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -43,11 +44,13 @@ export class LoginComponent {
       .subscribe (
         response=>{
           // console.log(response);
-          sessionStorage.setItem('finance.auth',response.jwtToken)
-          this.router.navigate(['dashboard'])
+          sessionStorage.setItem('finance.auth',response.jwtToken);
+          this.toastr.success('Login successful', 'Success');
+          this.router.navigate(['dashboard']);
         },
         error=>{
           console.error('Login Failed', error);
+          this.toastr.error('Invalid username or password', 'Login failed');
         }
       )
   }

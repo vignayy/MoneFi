@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
+import { AddBudgetDialogComponent } from '../add-budget-dialog/add-budget-dialog.component';
 
 interface Budget {
   id: number;
@@ -19,7 +23,7 @@ interface Budget {
 })
 export class BudgetsComponent {
 
-  constructor(private httpClient:HttpClient){};
+  constructor(private httpClient:HttpClient, private router:Router, private dialog: MatDialog){};
   baseUrl = "http://localhost:8765";
 
   totalBudget: number = 0;
@@ -56,6 +60,9 @@ export class BudgetsComponent {
       },
       error: (error) => {
         console.error('Failed to fetch userId:', error);
+        alert("Session timed out! Please login again");
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
         this.loading = false;
       }
     });
@@ -83,8 +90,61 @@ export class BudgetsComponent {
     return '#4caf50';  // Green
   }
 
+  // addBudget() {
+  //   // Implement add budget logic
+  //   console.log('Add budget clicked');
+  // }
   addBudget() {
-    // Implement add budget logic
-    console.log('Add budget clicked');
+    const dialogRef = this.dialog.open(AddBudgetDialogComponent, {
+      width: '500px',
+      panelClass: 'income-dialog',
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log(result);
+        const token = sessionStorage.getItem('finance.auth');
+        // console.log(token);
+  
+        // this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+        //   next: (userId) => {
+        //     // console.log(userId);
+            
+        //     // Send POST request with the income data
+        //     const goalData = {
+        //       ...result, // This should contain fields like source, amount, date, category, recurring, etc.
+        //       // userId: userId, // Add userId if your backend requires it
+        //     };
+        //     this.httpClient.post<inputGoal>(`${this.baseUrl}/api/user/${userId}/goal`, goalData, {
+        //       headers: {
+        //         Authorization: `Bearer ${token}`,
+        //       },
+        //     }).subscribe({
+        //       next: (newGoal) => {
+        //         // console.log(newGoal);
+        //         // this.goals = newGoal.map(goal => this.modelConverterFunction(goal));
+        //         const newGoalConverted = this.modelConverterFunction(newGoal); // Convert single goal
+        //         this.goals.push(newGoalConverted); // Add to existing goals array
+        //         // console.log(this.goals);
+        //         this.loadGoals();
+        //       },
+        //       error: (error) => {
+        //         console.error('Failed to add goal data:', error);
+        //       },
+        //       complete: () => {
+        //         this.loading = false;
+        //       },
+        //     });
+        //   },
+        //   error: (error) => {
+        //     console.error('Failed to fetch userId:', error);
+        //     alert("Session timed out! Please login again");
+        //     sessionStorage.removeItem('finance.auth');
+        //     this.router.navigate(['login']);
+        //     this.loading = false;
+        //   },
+        // });
+      }
+    });
   }
 }

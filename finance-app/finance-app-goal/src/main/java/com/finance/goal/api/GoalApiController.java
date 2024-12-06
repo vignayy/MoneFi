@@ -29,11 +29,11 @@ public class GoalApiController {
     @GetMapping("/{userId}")
     public ResponseEntity<List<GoalModel>> getAllGoals(@PathVariable("userId") int userId) {
         List<GoalModel> list = goalService.getAllGoals(userId);
-        if (!list.isEmpty()) {
+//        if (!list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(list); // 200
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404
-        }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404
+//        }
     }
 
     @PutMapping("/{userId}/goalName")

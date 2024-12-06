@@ -16,10 +16,10 @@
     <div class="card total-income">
       <div class="card-content">
         <h3>Total Income</h3>
-        <p class="amount">${{ totalIncome.toLocaleString() }}</p>
+        <p class="amount">₹{{ totalIncome.toLocaleString() }}</p>
         <p class="period">This Month</p>
       </div>
-      <i class="fas fa-dollar-sign icon"></i>
+      <i class="fas fa-rupee-sign icon"></i>
     </div>
 
     <div class="card sources">
@@ -52,7 +52,7 @@
           <td>
             <span class="category-badge">{{ income.category }}</span>
           </td>
-          <td>${{ income.amount.toLocaleString() }}</td>
+          <td>₹{{ income.amount.toLocaleString() }}</td>
           <td>{{ income.date | date:'mediumDate' }}</td>
           <td>
             <span class="type-badge" [class.recurring]="income.recurring">

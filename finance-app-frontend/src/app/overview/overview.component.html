@@ -3,7 +3,7 @@
   <header class="header-section">
     <div class="greeting-container">
       <h1 class="welcome-text">Welcome back, {{summary.username}}!</h1>
-      <p class="financial-quote">{{financialQuote}}</p>
+      <!-- <p class="financial-quote">{{financialQuote}}</p> -->
     </div>
   </header>
 
@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount">${{summary.income | number:'1.0-0'}}</p>
+          <p class="tile-amount">₹{{summary.income | number:'1.0-0'}}</p>
           <span class="tile-subtext">This Month</span>
         </div>
       </div>
@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount">${{summary.expenses | number:'1.0-0'}}</p>
+          <p class="tile-amount">₹{{summary.expenses | number:'1.0-0'}}</p>
           <span class="tile-subtext">This Month</span>
         </div>
       </div>
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount">${{summary.savings | number:'1.0-0'}}</p>
+          <p class="tile-amount">₹{{summary.savings | number:'1.0-0'}}</p>
           <span class="tile-subtext">Current Balance</span>
         </div>
       </div>
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount">${{summary.netWorth | number:'1.0-0'}}</p>
+          <p class="tile-amount">₹{{summary.netWorth | number:'1.0-0'}}</p>
           <span class="tile-subtext">Total Assets</span>
         </div>
       </div>

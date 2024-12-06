@@ -31,11 +31,11 @@ public class IncomeApiController {
     @GetMapping("/{userId}")
     public ResponseEntity<List<IncomeModel>> getAllIncomes(@PathVariable("userId") int userId) {
         List<IncomeModel> list = incomeService.getAllIncomes(userId);
-        if (!list.isEmpty()) {
+//        if (!list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(list); // 200
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404
-        }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404
+//        }
     }
 
     @PutMapping("/{userId}/source")

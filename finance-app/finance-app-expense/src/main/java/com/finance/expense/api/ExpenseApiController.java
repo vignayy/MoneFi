@@ -36,11 +36,11 @@ public class ExpenseApiController {
     @GetMapping("/{userId}")
     public ResponseEntity<List<ExpenseModel>> getAllExpenses(@PathVariable("userId") int userId) {
         List<ExpenseModel> list = expenseService.getAllexpenses(userId);
-        if (!list.isEmpty()) {
+//        if (!list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(list); // 200
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404
-        }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404
+//        }
     }
 
     @PutMapping("/{userId}/category")
