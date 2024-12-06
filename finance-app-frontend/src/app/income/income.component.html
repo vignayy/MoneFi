@@ -17,18 +17,37 @@
       <div class="card-content">
         <h3>Total Income</h3>
         <p class="amount">₹{{ totalIncome.toLocaleString() }}</p>
-        <p class="period">This Month</p>
+        <div class="income-ratio">
+          <div class="ratio-header">
+            <span class="ratio-label">Recurring vs One-Time</span>
+            <span class="ratio-percentage">{{recurringPercentage}}%</span>
+          </div>
+          <div class="ratio-bar">
+            <div class="ratio-fill" [style.width]="recurringPercentage + '%'"></div>
+          </div>
+          <div class="ratio-legend">
+            <span class="recurring">Recurring</span>
+            <span class="one-time">One-Time</span>
+          </div>
+        </div>
       </div>
       <i class="fas fa-rupee-sign icon"></i>
     </div>
 
-    <div class="card sources">
+    <div class="card income-overview">
       <div class="card-content">
-        <h3>Income Sources</h3>
-        <p class="amount">{{ incomeSources.length }}</p>
-        <p class="period">Active Sources</p>
+        <h3>Income Overview</h3>
+        <div class="chart-container" *ngIf="incomeSources.length > 0">
+          <canvas baseChart
+            [data]="pieChartData"
+            [options]="pieChartOptions"
+            [type]="'pie'">
+          </canvas>
+        </div>
+        <div class="empty-chart" *ngIf="incomeSources.length === 0">
+          <p>No data available</p>
+        </div>
       </div>
-      <i class="fas fa-stream icon"></i>
     </div>
   </div>
 
