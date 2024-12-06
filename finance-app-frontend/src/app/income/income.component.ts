@@ -8,6 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ChartConfiguration, ChartData } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
+
 
 interface IncomeSource {
   id: number;
@@ -29,13 +32,40 @@ interface IncomeSource {
     MatButtonModule,
     FormsModule,
     MatInputModule,
-    AddIncomeDialogComponent
+    AddIncomeDialogComponent,
+    NgChartsModule
   ]
 })
 export class IncomeComponent {
   totalIncome: number = 0;
   incomeSources: IncomeSource[] = [];
   loading: boolean = false;
+  recurringPercentage: number = 0;
+
+  public pieChartData: ChartData<'pie', number[], string> = {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [
+        '#FF6384',
+        '#36A2EB',
+        '#FFCE56',
+        '#4BC0C0',
+        '#9966FF',
+        '#FF9F40'
+      ]
+    }]
+  };
+
+  public pieChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right',
+      }
+    }
+  };
 
   constructor(public httpClient: HttpClient,private dialog: MatDialog, private router:Router, private toastr:ToastrService) {};
 
@@ -48,23 +78,20 @@ export class IncomeComponent {
   loadIncomeData() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
-    // console.log(token);
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        // console.log(userId);
-  
         this.httpClient.get<IncomeSource[]>(`${this.baseUrl}/api/user/${userId}/incomes`).subscribe({
           next: (data) => {
-
             if (data && data.length > 0) {
-              this.incomeSources = data; 
+              this.incomeSources = data;
               this.calculateTotalIncome();
+              this.updateChartData();
             } else {
               this.incomeSources = [];
               this.toastr.warning('No income data available for this user.', 'No Data');
-              this.loading = false;
             }
+            this.loading = false;
           },
           error: (error) => {
             console.error('Failed to load income data:', error);
@@ -113,6 +140,7 @@ export class IncomeComponent {
               next: (newIncome) => {
                 this.incomeSources.push(newIncome);
                 this.calculateTotalIncome();
+                this.updateChartData();
               },
               error: (error) => {
                 console.error('Failed to add income data:', error);
@@ -193,5 +221,40 @@ export class IncomeComponent {
       });
   }
   
+
+  private updateChartData() {
+    // Group income sources by category and sum their amounts
+    const categoryMap = new Map<string, number>();
+    
+    this.incomeSources.forEach(income => {
+      const currentAmount = categoryMap.get(income.category) || 0;
+      categoryMap.set(income.category, currentAmount + income.amount);
+    });
+
+    // Update chart data
+    this.pieChartData = {
+      labels: Array.from(categoryMap.keys()),
+      datasets: [{
+        data: Array.from(categoryMap.values()),
+        backgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#4BC0C0',
+          '#9966FF',
+          '#FF9F40'
+        ]
+      }]
+    };
+
+    // Calculate recurring vs one-time ratio
+    const recurringTotal = this.incomeSources
+      .filter(income => income.recurring)
+      .reduce((sum, income) => sum + income.amount, 0);
+    
+    this.recurringPercentage = this.totalIncome > 0 
+      ? Math.round((recurringTotal / this.totalIncome) * 100)
+      : 0;
+  }
 
 }

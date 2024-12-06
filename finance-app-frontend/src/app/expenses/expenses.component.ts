@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddExpenseDialogComponent } from '../add-expense-dialog/add-expense-dialog.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ChartConfiguration, ChartData } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 interface Expense {
   id: number;
@@ -20,12 +25,50 @@ interface Expense {
   templateUrl: './expenses.component.html',
   styleUrls: ['./expenses.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    FormsModule,
+    MatInputModule,
+    AddExpenseDialogComponent,
+    NgChartsModule
+  ]
 })
 export class ExpensesComponent {
   totalExpenses: number = 0;
   expenses: Expense[] = [];
   loading: boolean = false;
+  recurringPercentage: number = 0;
+
+  public pieChartData: ChartData<'pie', number[], string> = {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [
+        '#FF6384',
+        '#36A2EB',
+        '#FFCE56',
+        '#4BC0C0',
+        '#9966FF',
+        '#FF9F40'
+      ]
+    }]
+  };
+
+  public pieChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right',
+      }
+    },
+    animation: {
+      duration: 500
+    }
+  };
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog, private router:Router, private toastr:ToastrService) {}
 
@@ -51,6 +94,7 @@ export class ExpensesComponent {
             if (data && data.length > 0) {
               this.expenses = data; 
               this.calculateTotalExpenses();
+              this.updateChartData();
             } else {
               this.expenses = [];
               this.toastr.warning('No Expense data available for this user.', 'No Data');
@@ -108,6 +152,7 @@ export class ExpensesComponent {
               next: (newExpense) => {
                 this.expenses.push(newExpense);
                 this.calculateTotalExpenses();
+                this.updateChartData();
               },
               error: (error) => {
                 console.error('Failed to add expense data:', error);
@@ -181,5 +226,39 @@ export class ExpensesComponent {
           console.error('Error deleting expense:', err);
         }
       });
+  }
+
+  private updateChartData() {
+    const categoryMap = new Map<string, number>();
+    
+    this.expenses.forEach(expense => {
+      const currentAmount = categoryMap.get(expense.category) || 0;
+      categoryMap.set(expense.category, currentAmount + expense.amount);
+    });
+
+    // Update chart data
+    this.pieChartData = {
+      labels: Array.from(categoryMap.keys()),
+      datasets: [{
+        data: Array.from(categoryMap.values()),
+        backgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#4BC0C0',
+          '#9966FF',
+          '#FF9F40'
+        ]
+      }]
+    };
+
+    // Calculate recurring vs one-time ratio
+    const recurringTotal = this.expenses
+      .filter(expense => expense.recurring)
+      .reduce((sum, expense) => sum + expense.amount, 0);
+    
+    this.recurringPercentage = this.totalExpenses > 0 
+      ? Math.round((recurringTotal / this.totalExpenses) * 100)
+      : 0;
   }
 }
