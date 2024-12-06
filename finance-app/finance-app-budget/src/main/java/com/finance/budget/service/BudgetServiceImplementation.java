@@ -23,6 +23,13 @@ public class BudgetServiceImplementation implements BudgetService{
     }
 
     @Override
+    public BudgetModel addToBudget(BudgetModel budget) {
+        BudgetModel getBudget = budgetRepository.findByCategory(budget.getCategory());
+        getBudget.setCurrentSpending(budget.getCurrentSpending());
+        return save(getBudget);
+    }
+
+    @Override
     public List<BudgetModel> getAllBudgets(int userId) {
 
         return budgetRepository.getBudgetsByUserId(userId);

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -38,7 +38,13 @@ export class AddIncomeDialogComponent {
     recurring: false
   };
 
-  constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
+  // constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
+  constructor(
+    public dialogRef: MatDialogRef<AddIncomeDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any // Inject incoming data
+  ) {
+    this.incomeSource = { ...data }; // Initialize form with pre-populated data
+  }
 
   onSave() {
     this.dialogRef.close(this.incomeSource);

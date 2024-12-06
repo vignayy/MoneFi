@@ -8,6 +8,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { OverviewComponent } from '../overview/overview.component';
 import { ConfirmLogoutDialogComponent } from '../confirm-logout-dialog/confirm-logout-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ProfileComponent } from '../profile/profile.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +22,8 @@ import { MatDialog } from '@angular/material/dialog';
     BudgetsComponent,
     GoalsComponent,
     OverviewComponent,
-    ConfirmLogoutDialogComponent
+    ConfirmLogoutDialogComponent,
+    ProfileComponent
   ]
 })
 export class DashboardComponent {

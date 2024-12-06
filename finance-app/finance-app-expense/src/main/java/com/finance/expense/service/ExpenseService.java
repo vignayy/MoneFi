@@ -11,7 +11,7 @@ public interface ExpenseService {
 
     public List<ExpenseModel> getAllexpenses(int userId);
 
-    public ExpenseModel updateBySource(int userId, String category, ExpenseModel expense);
+    public ExpenseModel updateBySource(int id, ExpenseModel expense);
 
     public void deleteExpenseById(int id);
 

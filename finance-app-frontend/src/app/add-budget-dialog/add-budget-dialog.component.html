@@ -14,7 +14,10 @@
           <mat-option value="Shopping">Shopping</mat-option>
           <mat-option value="Fuel">Fuel</mat-option>
           <mat-option value="Bills & utilities">Bills & utilities</mat-option>
+          <mat-option value="House Rent">House Rent</mat-option>
+          <mat-option value="Emi and loans">Emi and loans</mat-option>
           <mat-option value="Personal Care">Personal Care</mat-option>
+          <mat-option value="Miscellaneous">Miscellaneous</mat-option>
           <mat-option value="Other">Other</mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
@@ -22,7 +25,7 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Target Amount</mat-label>
-        <input matInput type="number" [(ngModel)]="budgetSource.targetAmount" name="targetAmount" placeholder="0.00">
+        <input matInput type="number" [(ngModel)]="budgetSource.moneyLimit" name="targetAmount" placeholder="0.00">
         <mat-icon matPrefix>attach_money</mat-icon>
       </mat-form-field>
   

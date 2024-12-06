@@ -83,11 +83,6 @@ export class IncomeComponent {
       }
     });
   }
-  
-
-  calculateTotalIncome() {
-    this.totalIncome = this.incomeSources.reduce((sum, source) => sum + source.amount, 0);
-  }
 
   addIncome() {
     const dialogRef = this.dialog.open(AddIncomeDialogComponent, {
@@ -136,6 +131,53 @@ export class IncomeComponent {
     });
   }
 
+  calculateTotalIncome() {
+    this.totalIncome = this.incomeSources.reduce((sum, source) => sum + source.amount, 0);
+  }
+
+  updateIncome(income: IncomeSource) {
+    const dialogRef = this.dialog.open(AddIncomeDialogComponent, {
+      width: '500px',
+      panelClass: 'income-dialog',
+      data: { ...income }, // Pass the income data to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const token = sessionStorage.getItem('finance.auth');
+
+        this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+          next : (userId) => {
+
+            const updatedIncomeData = {
+              ...result, // Updated fields from the dialog form
+              userId: userId,
+            };
+            console.log(updatedIncomeData);
+
+            this.httpClient.put<IncomeSource>(`${this.baseUrl}/api/user/${income.id}/income`, updatedIncomeData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ).subscribe({
+              next: (updatedIncome) => {
+                console.log('Income updated successfully:', updatedIncome);
+                this.loadIncomeData(); 
+              },
+              error: (error) => {
+                console.error('Failed to update income:', error);
+              },
+            });
+          }
+        })
+  
+        
+      }
+    });
+  }
+  
 
   deleteIncome(incomeId: number): void {
     console.log(incomeId);

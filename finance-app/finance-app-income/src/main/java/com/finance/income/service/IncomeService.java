@@ -10,7 +10,7 @@ public interface IncomeService {
 
     List<IncomeModel> getAllIncomes(int userId);
 
-    public IncomeModel updateBySource(int userId, String source, IncomeModel income);
+    public IncomeModel updateBySource(int id, IncomeModel income);
 
     public void deleteParticularIncomeBySource(int id);
 

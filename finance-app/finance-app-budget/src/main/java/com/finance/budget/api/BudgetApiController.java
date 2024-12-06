@@ -25,6 +25,15 @@ public class BudgetApiController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // 409
         }
     }
+    @PostMapping("/addBudget")
+    public ResponseEntity<BudgetModel> addBudget(@RequestBody BudgetModel budget) {
+        BudgetModel createdBudget = budgetService.addToBudget(budget);
+        if (createdBudget != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdBudget); // 201
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // 409
+        }
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<BudgetModel>> getAllBudgets(@PathVariable("userId") int userId) {

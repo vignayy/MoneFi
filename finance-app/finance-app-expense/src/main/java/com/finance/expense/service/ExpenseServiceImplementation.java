@@ -25,10 +25,8 @@ public class ExpenseServiceImplementation implements ExpenseService{
     }
 
     @Override
-    public ExpenseModel updateBySource(int userId, String category, ExpenseModel expense) {
-        ExpenseModel expenseModel = expenseRepository.findByUserIdAndCatergory(userId, category);
-
-        expense.setUserId(userId);
+    public ExpenseModel updateBySource(int id, ExpenseModel expense) {
+        ExpenseModel expenseModel = expenseRepository.findById(id).orElse(null);
 
         if(expense.getCategory() != null){
             expenseModel.setCategory(expense.getCategory());
@@ -38,6 +36,12 @@ public class ExpenseServiceImplementation implements ExpenseService{
         }
         if(expense.getDate() != null){
             expenseModel.setDate(expense.getDate());
+        }
+        if(expense.getDescription() != null){
+            expenseModel.setDescription(expense.getDescription());
+        }
+        if(expense.isRecurring()){
+            expenseModel.setRecurring(expense.isRecurring());
         }
 
         return save(expenseModel);

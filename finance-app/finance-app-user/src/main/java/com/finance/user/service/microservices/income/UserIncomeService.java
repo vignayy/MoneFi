@@ -10,7 +10,7 @@ public interface UserIncomeService {
 
     public List<IncomeModel> getAllIncomes(int userId);
 
-    public List<IncomeModel> updateIncome(int userId, IncomeModel income);
+    public IncomeModel updateIncome(int id, IncomeModel income);
 
     public boolean deleteIncomeById(int id);
 }

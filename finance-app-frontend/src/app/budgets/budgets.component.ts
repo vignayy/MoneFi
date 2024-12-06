@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
 import { AddBudgetDialogComponent } from '../add-budget-dialog/add-budget-dialog.component';
+import { AddGoalDialogComponent } from '../add-goal-dialog/add-goal-dialog.component';
 
 interface Budget {
   id: number;
@@ -102,48 +103,43 @@ export class BudgetsComponent {
   
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log(result);
         const token = sessionStorage.getItem('finance.auth');
-        // console.log(token);
+        console.log(token);
   
-        // this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
-        //   next: (userId) => {
-        //     // console.log(userId);
+        this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+          next: (userId) => {
+            console.log(userId);
             
-        //     // Send POST request with the income data
-        //     const goalData = {
-        //       ...result, // This should contain fields like source, amount, date, category, recurring, etc.
-        //       // userId: userId, // Add userId if your backend requires it
-        //     };
-        //     this.httpClient.post<inputGoal>(`${this.baseUrl}/api/user/${userId}/goal`, goalData, {
-        //       headers: {
-        //         Authorization: `Bearer ${token}`,
-        //       },
-        //     }).subscribe({
-        //       next: (newGoal) => {
-        //         // console.log(newGoal);
-        //         // this.goals = newGoal.map(goal => this.modelConverterFunction(goal));
-        //         const newGoalConverted = this.modelConverterFunction(newGoal); // Convert single goal
-        //         this.goals.push(newGoalConverted); // Add to existing goals array
-        //         // console.log(this.goals);
-        //         this.loadGoals();
-        //       },
-        //       error: (error) => {
-        //         console.error('Failed to add goal data:', error);
-        //       },
-        //       complete: () => {
-        //         this.loading = false;
-        //       },
-        //     });
-        //   },
-        //   error: (error) => {
-        //     console.error('Failed to fetch userId:', error);
-        //     alert("Session timed out! Please login again");
-        //     sessionStorage.removeItem('finance.auth');
-        //     this.router.navigate(['login']);
-        //     this.loading = false;
-        //   },
-        // });
+            // Send POST request with the income data
+            const budgetData = {
+              ...result, // This should contain fields like source, amount, date, category, recurring, etc.
+              userId: userId, // Add userId if your backend requires it
+            };
+            console.log(budgetData);
+            this.httpClient.post<Budget>(`${this.baseUrl}/api/user/${userId}/budget`, budgetData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }).subscribe({
+              next: (newBudget) => {
+                newBudget.remaining = newBudget.moneyLimit - newBudget.currentSpending;
+                this.budgets.push(newBudget);
+                this.calculateTotals();
+                // this.calculateTotalExpenses();
+              },
+              error: (error) => {
+                console.error('Failed to add budget data:', error);
+              },
+              complete: () => {
+                this.loading = false;
+              },
+            });
+          },
+          error: (error) => {
+            console.error('Failed to fetch userId:', error);
+            this.loading = false;
+          },
+        });
       }
     });
   }

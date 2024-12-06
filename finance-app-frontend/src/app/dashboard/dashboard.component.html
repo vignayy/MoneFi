@@ -43,7 +43,7 @@
       </div>
   
       <div class="user-section">
-        <button class="profile-btn">
+        <button class="profile-btn" [class.active]="activeSection === 'profile'" (click)="setActiveSection('profile')">
           <i class="fas fa-user-circle"></i>
           <span>Profile</span>
         </button>
@@ -62,6 +62,7 @@
          <app-expenses *ngSwitchCase="'expenses'"></app-expenses>
        <app-budgets *ngSwitchCase="'budgets'"></app-budgets>
          <app-goals *ngSwitchCase="'goals'"></app-goals>
+         <app-profile *ngSwitchCase="'profile'"></app-profile>
        <!-- <app-analysis *ngSwitchCase="'analysis'"></app-analysis> -->
       </div>
     </main>

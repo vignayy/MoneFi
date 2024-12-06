@@ -60,7 +60,7 @@
               </span>
             </td>
             <td class="actions">
-              <button class="action-btn edit">
+              <button class="action-btn edit" (click)="updateExpense(expense)">
                 <i class="fas fa-edit"></i>
               </button>
               <button class="action-btn delete" (click)="deleteExpense(expense.id)">

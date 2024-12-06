@@ -13,8 +13,8 @@ import java.util.List;
 @FeignClient("FINANCE-APP-BUDGET")
 public interface BudgetFeignClient {
 
-    @PostMapping("/api/budget")
-    public ResponseEntity<BudgetModel> saveBudget(@RequestBody BudgetModel budget);
+    @PostMapping("/api/budget/addBudget")
+    public ResponseEntity<BudgetModel> addToBudget(@RequestBody BudgetModel budget);
 
     @GetMapping("/api/budget/{userId}")
     public ResponseEntity<List<BudgetModel>> getAllBudgets(@PathVariable("userId") int userId);

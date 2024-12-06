@@ -26,8 +26,9 @@ public class IncomeServiceImplementation implements IncomeService {
     }
 
     @Override
-    public IncomeModel updateBySource(int userId, String source, IncomeModel income) {
-        IncomeModel incomeModel = incomeRepository.findByUserIdAndSource(userId, source);
+    public IncomeModel updateBySource(int id, IncomeModel income) {
+
+        IncomeModel incomeModel = incomeRepository.findById(id).orElse(null);
 
         if(income.getAmount() > 0){
             incomeModel.setAmount(income.getAmount());
@@ -35,9 +36,13 @@ public class IncomeServiceImplementation implements IncomeService {
         if(income.getSource() != null){
             incomeModel.setSource(income.getSource());
         }
+        if(income.getCategory() != null){
+            incomeModel.setCategory(income.getCategory());
+        }
         if(income.getDate() != null){
             incomeModel.setDate(income.getDate());
         }
+        incomeModel.setRecurring(income.isRecurring());
 
         return save(incomeModel);
     }

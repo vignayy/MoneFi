@@ -126,6 +126,48 @@ export class ExpensesComponent {
     });
   }
 
+  updateExpense(expense: Expense) {
+    const dialogRef = this.dialog.open(AddExpenseDialogComponent, {
+      width: '500px',
+      panelClass: 'income-dialog',
+      data: { ...expense }, // Pass the income data to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const token = sessionStorage.getItem('finance.auth');
+
+        this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+          next : (userId) => {
+
+            const updatedExpenseData = {
+              ...result, // Updated fields from the dialog form
+              userId: userId,
+            };
+            console.log(updatedExpenseData);
+
+            this.httpClient.put<Expense>(`${this.baseUrl}/api/user/${expense.id}/expense`, updatedExpenseData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ).subscribe({
+              next: (updatedExpense) => {
+                console.log('Expense updated successfully:', updatedExpense);
+                this.loadExpensesData(); 
+              },
+              error: (error) => {
+                console.error('Failed to update Expense:', error);
+              },
+            });
+          }
+        })
+  
+        
+      }
+    });
+  }
 
   deleteExpense(expenseId: number): void {
     console.log(expenseId);

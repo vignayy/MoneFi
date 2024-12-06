@@ -43,9 +43,9 @@ public class ExpenseApiController {
 //        }
     }
 
-    @PutMapping("/{userId}/category")
-    public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("userId") int userId, @RequestParam("name") String category, @RequestBody ExpenseModel expense) {
-        ExpenseModel updatedIncome = expenseService.updateBySource(userId, category, expense);
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense) {
+        ExpenseModel updatedIncome = expenseService.updateBySource(id, expense);
         if (updatedIncome != null) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedIncome); // 202
         } else {

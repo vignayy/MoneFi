@@ -38,9 +38,9 @@ public class IncomeApiController {
 //        }
     }
 
-    @PutMapping("/{userId}/source")
-    public ResponseEntity<IncomeModel> updateIncome(@PathVariable("userId") int userId, @RequestParam("name") String source, @RequestBody IncomeModel income) {
-        IncomeModel updatedIncome = incomeService.updateBySource(userId, source, income);
+    @PutMapping("/{id}")
+    public ResponseEntity<IncomeModel> updateIncome(@PathVariable("id") int userId, @RequestBody IncomeModel income) {
+        IncomeModel updatedIncome = incomeService.updateBySource(userId, income);
         if (updatedIncome != null) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedIncome); // 202
         } else {

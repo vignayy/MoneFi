@@ -9,7 +9,7 @@ public interface UserExpenseService {
 
     public List<ExpenseModel> getAllExpenses(int userId);
 
-    public List<ExpenseModel> updateExpense(int userId, ExpenseModel expense);
+    public ExpenseModel updateExpense(int id, ExpenseModel expense);
 
     public boolean deleteExpenseById(int id);
 }

@@ -8,6 +8,8 @@ public interface BudgetService {
 
     public BudgetModel save(BudgetModel budget);
 
+    public BudgetModel addToBudget(BudgetModel budget);
+
     public List<BudgetModel> getAllBudgets(int userId);
 
     public BudgetModel updateByCategory(int userId, String category, BudgetModel budget);

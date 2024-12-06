@@ -20,8 +20,8 @@ public interface ExpenseFeignClient {
     @GetMapping("/api/expense/{userId}")
     public ResponseEntity<List<ExpenseModel>> getAllExpenses(@PathVariable("userId") int userId);
 
-    @PutMapping("/api/expense/{userId}/category")
-    public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("userId") int userId, @RequestParam("name") String category, @RequestBody ExpenseModel expense);
+    @PutMapping("/api/expense/{id}")
+    public ExpenseModel updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense);
 
     @DeleteMapping("/api/expense/{id}")
     public void deleteExpenseById(@PathVariable("id") int id);

@@ -180,11 +180,11 @@ public class UserApiController {
         return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
 
-    @PutMapping("/{userId}/income")
-    public ResponseEntity<List<IncomeModel>> updateIncome(@PathVariable("userId") int userId, @RequestBody IncomeModel income){
-        List<IncomeModel> updatedIncomeList = incomeService.updateIncome(userId, income);
-        if(updatedIncomeList!=null){
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedIncomeList);
+    @PutMapping("/{id}/income")
+    public ResponseEntity<IncomeModel> updateIncome(@PathVariable("id") int id, @RequestBody IncomeModel income){
+        IncomeModel updatedIncome = incomeService.updateIncome(id, income);
+        if(updatedIncome!=null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(updatedIncome);
         }
         else{
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
@@ -229,11 +229,11 @@ public class UserApiController {
         List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
         return (int) expensesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
-    @PutMapping("/{userId}/expense")
-    public ResponseEntity<List<ExpenseModel>> updateExpense(@PathVariable("userId") int userId, @RequestBody ExpenseModel expense){
-        List<ExpenseModel> updatedExpenseList = expenseService.updateExpense(userId, expense);
-        if(updatedExpenseList!=null){
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedExpenseList);
+    @PutMapping("/{id}/expense")
+    public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense){
+        ExpenseModel updatedExpense = expenseService.updateExpense(id, expense);
+        if(updatedExpense!=null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(updatedExpense);
         }
         else{
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
@@ -381,4 +381,18 @@ public class UserApiController {
         return currentSpending/moneyLimit;
     }
 
+    // budget api
+    @PostMapping("/{userId}/budget")
+    public ResponseEntity<BudgetModel> addBudget(@PathVariable int userId, @RequestBody BudgetModel budget) {
+//        GoalModel createdGoal = goalService.addGoal(userId, goal);
+        budget.setUserId(userId);
+        BudgetModel createdBudget = restTemplate.postForObject("http://FINANCE-APP-BUDGET/api/budget", budget, BudgetModel.class);
+
+        if(createdBudget!=null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdBudget);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+    }
 }

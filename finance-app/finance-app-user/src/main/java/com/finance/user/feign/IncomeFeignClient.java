@@ -17,8 +17,8 @@ public interface IncomeFeignClient {
     @GetMapping("api/income/{userId}")
     public ResponseEntity<List<IncomeModel>> getAllIncomes(@PathVariable("userId") int userId);
 
-    @PutMapping("api/income/{userId}/source")
-    public ResponseEntity<IncomeModel> updateIncome(@PathVariable("userId") int userId, @RequestParam("name") String source, @RequestBody IncomeModel income);
+    @PutMapping("api/income/{id}")
+    public IncomeModel updateIncome(@PathVariable("id") int id, @RequestBody IncomeModel income);
 
     @DeleteMapping("api/income/{id}")
     public void deleteIncomeById(@PathVariable("id") int id);

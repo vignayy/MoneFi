@@ -30,7 +30,7 @@ public class UserExpenseServiceImplementation implements UserExpenseService {
         budget.setUserId(userId);
         budget.setCategory(expense.getCategory());
         budget.setCurrentSpending(expense.getAmount());
-        BudgetModel budgetResponse = budgetFeignClient.saveBudget(budget).getBody();
+        BudgetModel budgetResponse = budgetFeignClient.addToBudget(budget).getBody();
         System.out.println(budgetResponse);
         return expenseResponse;
     }
@@ -41,10 +41,10 @@ public class UserExpenseServiceImplementation implements UserExpenseService {
     }
 
     @Override
-    public List<ExpenseModel> updateExpense(int userId, ExpenseModel expense) {
-        expense.setUserId(userId);
-        expenseFeignClient.updateExpense(userId, expense.getCategory(), expense);
-        return expenseFeignClient.getAllExpenses(userId).getBody();
+    public ExpenseModel updateExpense(int id, ExpenseModel expense) {
+//        expense.setUserId(userId);
+        return expenseFeignClient.updateExpense(id, expense);
+//        return expenseFeignClient.getAllExpenses(expense.getUserId()).getBody();
     }
 
     @Override

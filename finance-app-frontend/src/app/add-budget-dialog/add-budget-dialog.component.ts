@@ -30,8 +30,8 @@ import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog
 export class AddBudgetDialogComponent {
   budgetSource = {
     category: '',
-    currentAmount:0,
-    targetAmount:0
+    currentSpending:0,
+    moneyLimit:0
   };
   constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
   onSave() {
