@@ -18,4 +18,6 @@ public interface UserService {
 
     public Integer getUserIdFromEmail(String email);
 
+    public String getNameFromUserId(int userId);
+
 }

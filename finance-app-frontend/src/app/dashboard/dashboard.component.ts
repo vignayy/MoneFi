@@ -4,8 +4,10 @@ import { IncomeComponent } from '../income/income.component';
 import { ExpensesComponent } from '../expenses/expenses.component';
 import { BudgetsComponent } from '../budgets/budgets.component';
 import { GoalsComponent } from '../goals/goals.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OverviewComponent } from '../overview/overview.component';
+import { ConfirmLogoutDialogComponent } from '../confirm-logout-dialog/confirm-logout-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,12 +20,13 @@ import { OverviewComponent } from '../overview/overview.component';
     ExpensesComponent,
     BudgetsComponent,
     GoalsComponent,
-    OverviewComponent
+    OverviewComponent,
+    ConfirmLogoutDialogComponent
   ]
 })
 export class DashboardComponent {
 
-  constructor(private router:Router){};
+  constructor(private router:Router, private dialog: MatDialog, private route: ActivatedRoute){};
 
   activeSection: string = 'overview';
 
@@ -31,8 +34,32 @@ export class DashboardComponent {
     this.activeSection = section;
   }
 
-  logoutUser(){
-    sessionStorage.removeItem('finance.auth');
-    this.router.navigate(['']);
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['section']) {
+        this.activeSection = params['section'];
+      }
+    });
   }
+
+  logoutUser(): void {
+    const dialogRef = this.dialog.open(ConfirmLogoutDialogComponent, {
+      width: '450px',
+      panelClass: 'custom-dialog-container',
+      disableClose: true, // Prevents closing by clicking outside
+      position: { top: '100px' }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        setTimeout(() => {
+          sessionStorage.removeItem('finance.auth');
+          this.router.navigate(['']);
+        }, 300);
+      }
+    });
+  }
+
+  
 }
+

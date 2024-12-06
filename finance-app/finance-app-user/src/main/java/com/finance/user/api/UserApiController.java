@@ -79,6 +79,10 @@ public class UserApiController {
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserIdFromEmail(email));
     }
+    @GetMapping("/getName/{userId}")
+    public String getNameFromUserId(@PathVariable("userId") int userId){
+        return userService.getNameFromUserId(userId);
+    }
 
     @PostMapping
     public ResponseEntity<UserModel> save(@RequestBody UserModel user) {
@@ -153,6 +157,13 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    @GetMapping("/{userId}/totalIncome")
+    public Integer getTotalIncome(@PathVariable("userId") int userId){
+        List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
+        return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
+    }
+
     @PutMapping("/{userId}/income")
     public ResponseEntity<List<IncomeModel>> updateIncome(@PathVariable("userId") int userId, @RequestBody IncomeModel income){
         List<IncomeModel> updatedIncomeList = incomeService.updateIncome(userId, income);
@@ -195,6 +206,11 @@ public class UserApiController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+    @GetMapping("/{userId}/totalExpense")
+    public Integer getTotalExpense(@PathVariable("userId") int userId){
+        List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
+        return (int) expensesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
     @PutMapping("/{userId}/expense")
     public ResponseEntity<List<ExpenseModel>> updateExpense(@PathVariable("userId") int userId, @RequestBody ExpenseModel expense){
@@ -258,6 +274,17 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+    @GetMapping("/{userId}/totalCurrentGoalIncome")
+    public Integer getCurrentTotalGoalIncome(@PathVariable("userId") int userId){
+        List<GoalModel> goalsList = goalService.getAllGoals(userId);
+        return (int) goalsList.stream().mapToDouble(i->i.getCurrentAmount()).sum();
+    }
+    @GetMapping("/{userId}/totalTargetGoalIncome")
+    public Integer getTargetTotalGoalIncome(@PathVariable("userId") int userId){
+        List<GoalModel> goalsList = goalService.getAllGoals(userId);
+        return (int) goalsList.stream().mapToDouble(i->i.getTargetAmount()).sum();
+    }
+
     @PutMapping("/{userId}/goal")
     public ResponseEntity<List<GoalModel>> updateGoal(@PathVariable("userId") int userId, @RequestBody GoalModel goal){
         List<GoalModel> updatedGoalList = goalService.updateGoal(userId, goal);
@@ -323,6 +350,17 @@ public class UserApiController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+
+
+    @GetMapping("/{userId}/budgetProgres")
+    public Double budgetProgress(@PathVariable("userId") int userId){
+        BudgetModel[] list = restTemplate.getForObject("http://FINANCE-APP-BUDGET/api/budget/"+userId, BudgetModel[].class);
+        List<BudgetModel> budgetsList = new ArrayList<>(Arrays.asList(list));
+        double currentSpending = budgetsList.stream().mapToDouble(i->i.getCurrentSpending()).sum();
+        double moneyLimit = budgetsList.stream().mapToDouble(i->i.getMoneyLimit()).sum();
+        return currentSpending/moneyLimit;
     }
 
 }

@@ -15,6 +15,9 @@ public interface UserRepository extends JpaRepository<UserModel, Integer> {
       @Query("SELECT u.userId FROM UserModel u WHERE u.email = :email")
       Integer getUserIdFromEmail(@Param("email") String email);
 
+      @Query("select u.name from UserModel u where u.userId = :userId")
+      public String getNameFromUserId(int userId);
+
 
 
 }

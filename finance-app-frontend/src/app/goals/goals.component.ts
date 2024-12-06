@@ -49,11 +49,11 @@ export class GoalsComponent {
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        // console.log(userId);
+        console.log(userId);
   
         this.httpClient.get<inputGoal[]>(`${this.baseUrl}/api/user/${userId}/goals`).subscribe({
           next: (data) => {
-            // console.log(data);
+            console.log(data);
             this.goals = data.map(goal => this.modelConverterFunction(goal));
             // console.log(this.goals);
             this.loading = false;

@@ -48,4 +48,9 @@ public class UserServiceImplementation implements UserService {
     public Integer getUserIdFromEmail(String email) {
         return userRepository.getUserIdFromEmail(email);
     }
+
+    @Override
+    public String getNameFromUserId(int userId) {
+        return userRepository.getNameFromUserId(userId);
+    }
 }
