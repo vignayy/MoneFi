@@ -42,7 +42,11 @@ public class ExpenseApiController {
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404
 //        }
     }
-
+    @GetMapping("/{userId}/{month}/{year}")
+    public ResponseEntity<List<ExpenseModel>> getAllExpensesByDate(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year){
+        return ResponseEntity.status(HttpStatus.OK).body(expenseService.getAllexpensesByDate(userId, month, year));
+    }
+    
     @PutMapping("/{id}")
     public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense) {
         ExpenseModel updatedIncome = expenseService.updateBySource(id, expense);

@@ -24,6 +24,10 @@ public interface ExpenseRepository extends JpaRepository<ExpenseModel, Integer> 
     @Query("select e from ExpenseModel e where e.userId=:userId and e.category=:category")
     public ExpenseModel findByUserIdAndCatergory(int userId, String category);
 
+    @Query("SELECT e FROM ExpenseModel e WHERE e.userId = :userId " +
+            "AND EXTRACT(MONTH FROM e.date) = :month " +
+            "AND EXTRACT(YEAR FROM e.date) = :year")
+    public List<ExpenseModel> getAllexpensesByDate(int userId, int month, int year);
 
     @Query("SELECT new com.finance.expense.dto.ExpenseDto(e.category, SUM(e.amount)) " +
             "FROM ExpenseModel e " +

@@ -41,6 +41,11 @@ public class UserExpenseServiceImplementation implements UserExpenseService {
     }
 
     @Override
+    public List<ExpenseModel> getAllExpensesByDate(int userId, int month, int year) {
+        return expenseFeignClient.getAllExpensesByDate(userId, month,year).getBody();
+    }
+
+    @Override
     public ExpenseModel updateExpense(int id, ExpenseModel expense) {
 //        expense.setUserId(userId);
         return expenseFeignClient.updateExpense(id, expense);

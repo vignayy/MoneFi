@@ -20,6 +20,9 @@ public interface ExpenseFeignClient {
     @GetMapping("/api/expense/{userId}")
     public ResponseEntity<List<ExpenseModel>> getAllExpenses(@PathVariable("userId") int userId);
 
+    @GetMapping("api/expense/{userId}/{month}/{year}")
+    public ResponseEntity<List<ExpenseModel>> getAllExpensesByDate(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year);
+
     @PutMapping("/api/expense/{id}")
     public ExpenseModel updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense);
 

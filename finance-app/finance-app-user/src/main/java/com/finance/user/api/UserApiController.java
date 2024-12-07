@@ -28,6 +28,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -230,6 +231,23 @@ public class UserApiController {
     public ResponseEntity<List<ExpenseModel>> getAllExpenses(@PathVariable("userId") int userId) {
         List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
         return ResponseEntity.ok(expensesList);
+//        if (!expensesList.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(expensesList);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
+    }
+    @GetMapping("/expenses/{userId}/{month}/{year}")
+    public ResponseEntity<List<ExpenseModel>> getAllExpensesByDate(@PathVariable("userId") int userId,
+                                                                   @PathVariable("month") int month,
+                                                                   @PathVariable("year") int year) {
+        List<ExpenseModel> expensesList = expenseService.getAllExpensesByDate(userId, month, year);
+        return ResponseEntity.ok(expensesList);
+//        return ResponseEntity.ok(expensesList.stream()
+//                .filter(i -> {
+//                    LocalDate respectiveDate = i.getDate();
+//                    return respectiveDate.getMonthValue() == month && respectiveDate.getYear() == year;
+//                }).toList());
 //        if (!expensesList.isEmpty()) {
 //            return ResponseEntity.status(HttpStatus.OK).body(expensesList);
 //        } else {

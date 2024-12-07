@@ -9,6 +9,8 @@ public interface UserExpenseService {
 
     public List<ExpenseModel> getAllExpenses(int userId);
 
+    public List<ExpenseModel> getAllExpensesByDate(int userId, int month, int year);
+
     public ExpenseModel updateExpense(int id, ExpenseModel expense);
 
     public boolean deleteExpenseById(int id);

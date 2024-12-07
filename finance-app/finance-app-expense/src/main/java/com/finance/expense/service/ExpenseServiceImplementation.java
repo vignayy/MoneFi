@@ -25,6 +25,11 @@ public class ExpenseServiceImplementation implements ExpenseService{
     }
 
     @Override
+    public List<ExpenseModel> getAllexpensesByDate(int userId, int month, int year) {
+        return expenseRepository.getAllexpensesByDate(userId, month, year);
+    }
+
+    @Override
     public ExpenseModel updateBySource(int id, ExpenseModel expense) {
         ExpenseModel expenseModel = expenseRepository.findById(id).orElse(null);
 
