@@ -7,7 +7,9 @@ import com.finance.user.dto.IncomeModel;
 import com.finance.user.dto.features.BudgetAlertDto;
 import com.finance.user.dto.features.MonthlyAndYearlySummaryDto;
 import com.finance.user.dto.features.SpendingPatternDto;
+import com.finance.user.model.ProfileModel;
 import com.finance.user.model.UserModel;
+import com.finance.user.repository.ProfileRepository;
 import com.finance.user.repository.UserRepository;
 import com.finance.user.service.UserService;
 import com.finance.user.service.microservices.expense.UserExpenseService;
@@ -61,6 +63,9 @@ public class UserApiController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
     @GetMapping("/hello")
     public String hello(HttpServletRequest request)
     {
@@ -75,6 +80,13 @@ public class UserApiController {
         userModel.setUserId(userId);
         userModel.setName(name);
         userModel.setEmail(email);
+
+        ProfileModel profile = new ProfileModel();
+        profile.setUserId(userId);
+        profile.setName(name);
+        profile.setEmail(email);
+        ProfileModel addedProfile = profileRepository.save(profile);
+
         return userRepository.save(userModel);
     }
 
@@ -395,4 +407,25 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }
+
+    @PostMapping("/profile/{userId}")
+    public ProfileModel saveProfile(@PathVariable("userId") int userId, @RequestBody ProfileModel profile){
+        profile.setUserId(userId);
+        ProfileModel fetchProfile = profileRepository.findByUserId(userId);
+        fetchProfile.setName(profile.getName());
+        fetchProfile.setEmail(profile.getEmail());
+        fetchProfile.setPhone(profile.getPhone());
+        fetchProfile.setAddress(profile.getAddress());
+
+        return profileRepository.save(profile);
+    }
+    @GetMapping("/profile/{userId}")
+    public ProfileModel getProfile(@PathVariable("userId") int userId){
+        return profileRepository.findByUserId(userId);
+    }
+
 }
+
+
+
+

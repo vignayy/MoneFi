@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface UserProfile {
   name: string;
@@ -19,26 +20,69 @@ interface UserProfile {
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile = {
-    name: 'Kodi Bharadwaj',
-    email: 'Bharadwaj.Kodi@ust.com',
-    phone: '9381153612',
-    address: 'Trivandrum, Kerala',
-    profileImage: 'assets/default-profile.jpg'
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    profileImage: ''
   };
-
+  
   isEditing = false;
+  // userId = 1; // Assuming the user ID is 1, you can get it dynamically if needed
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  ngOnInit(): void { }
+  baseUrl = "http://localhost:8765";
+  ngOnInit(): void {
+    this.getProfile();
+  }
+
+  // Fetch profile data from backend
+  getProfile(): void {
+    const token = sessionStorage.getItem('finance.auth');
+    console.log(token);
+
+    this.http.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next : (userId) => {
+        this.http.get<UserProfile>(`${this.baseUrl}/api/user/profile/${userId}`).subscribe(
+          (data) => {
+            this.userProfile = data;
+          },
+          (error) => {
+            console.error('Error fetching profile:', error);
+          }
+        );
+      }
+    })
+  }
+
+  // Save the profile to the backend
+  saveProfile(): void {
+    const token = sessionStorage.getItem('finance.auth');
+    console.log(token);
+
+    this.http.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next : (userId) => {
+        this.http.post<UserProfile>(`${this.baseUrl}/api/user/profile/${userId}`, this.userProfile).subscribe(
+          (data) => {
+            this.userProfile = data;
+            this.isEditing = false;
+          },
+          (error) => {
+            console.error('Error saving profile:', error);
+          }
+        );
+      }
+    })
+
+  }
 
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
   }
 
   onSaveProfile(): void {
-    // Implement save logic here
-    this.isEditing = false;
+    this.saveProfile();
   }
 
   onImageUpload(event: any): void {
