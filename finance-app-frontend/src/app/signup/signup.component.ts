@@ -91,51 +91,57 @@ export class SignupComponent {
 
   baseUrl = "http://localhost:8765";
 
-  onSubmit(signupCredentials: SignupCredentials) {
-    // console.log('Signup form submitted:', signupCredentials);
-    this.authApiService.signupApiFunction(signupCredentials)
-      .subscribe(
-        response => {
-          // console.log(response);
-          sessionStorage.setItem('finance.auth', response.jwtToken);
 
-          // Get the userId from the API
-          this.authClient.get<number>(`${this.baseUrl}/auth/getUserId/${signupCredentials.username}`)
-            .subscribe(
-              userId => {
-                console.log('User ID:', userId);
-  
-                // Use userId in the next API call
-                this.authClient.post<UserProfile>(`${this.baseUrl}/api/user/setDetails/${userId}/${signupCredentials.name}/${signupCredentials.username}`, null)
-                  .subscribe(
-                    userProfile => {
-                      console.log('Profile details:', userProfile);
-                      // alert("Registered Successfully! Please login now");
-                      this.toastr.success('User registered successfully!', 'Signup success');
-                      this.router.navigate(['/login']);
-                    },
-                    error => {
-                      console.error('Failed to save profile details', error);
-                    }
-                  );
-                  sessionStorage.removeItem('finance.auth');
-              },
-              error => {
-                console.error('Failed to fetch User ID', error);
-              }
-            );
-        },
-        error => {
-          console.error('Signup Failed', error);
-          
-          // Check if the error response indicates user already exists
-          if (error.status === 409) {
-            // Show a toast message for existing user
-            this.toastr.error('User already exists!', 'Signup Error');
-          }
+isLoading: boolean = false; // Controls the loading spinner
+
+onSubmit(signupCredentials: SignupCredentials) {
+  this.isLoading = true; // Start loading
+  this.authApiService.signupApiFunction(signupCredentials)
+    .subscribe(
+      response => {
+        sessionStorage.setItem('finance.auth', response.jwtToken);
+
+        // Get the userId from the API
+        this.authClient.get<number>(`${this.baseUrl}/auth/getUserId/${signupCredentials.username}`)
+          .subscribe(
+            userId => {
+              console.log('User ID:', userId);
+
+              // Use userId in the next API call
+              this.authClient.post<UserProfile>(`${this.baseUrl}/api/user/setDetails/${userId}/${signupCredentials.name}/${signupCredentials.username}`, null)
+                .subscribe(
+                  userProfile => {
+                    console.log('Profile details:', userProfile);
+                    this.toastr.success('User registered successfully!', 'Signup success');
+                    this.router.navigate(['/login']);
+                  },
+                  error => {
+                    console.error('Failed to save profile details', error);
+                  }
+                ).add(() => {
+                  this.isLoading = false; // Stop loading after this request
+                });
+
+              sessionStorage.removeItem('finance.auth');
+            },
+            error => {
+              console.error('Failed to fetch User ID', error);
+              this.isLoading = false; // Stop loading
+            }
+          );
+      },
+      error => {
+        console.error('Signup Failed', error);
+        this.isLoading = false; // Stop loading
+
+        // Check if the error response indicates user already exists
+        if (error.status === 409) {
+          this.toastr.error('User already exists!', 'Signup Error');
         }
-      );
+      }
+    );
 }
+
 
   navigateTo(route: string): void {
     this.router.navigate([route]);

@@ -5,6 +5,7 @@ import com.example.apigateway.dto.JwtToken;
 import com.example.apigateway.dto.UserProfile;
 import com.example.apigateway.model.User;
 import com.example.apigateway.service.JwtService;
+import com.example.apigateway.service.ResetPasswordService;
 import com.example.apigateway.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,5 +101,37 @@ public ResponseEntity<?> login(@RequestBody User user) {
     public Integer getUserIdFromToken(@PathVariable("token") String token){
         String username = jwtService.extractUserName(token);
         return userRepo.findByUsername(username).getId();
+    }
+
+
+
+    @Autowired
+    private ResetPasswordService passwordResetService;
+
+//    @GetMapping("hello")
+//    public String hello(){
+//        return "Hello";
+//    }
+
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@RequestParam String email) {
+        return passwordResetService.forgotPassword(email);
+    }
+
+
+    @PostMapping("/verify-code")
+    public String verifyCode(@RequestParam String email, @RequestParam String code) {
+        boolean isValid = passwordResetService.verifyCode(email, code);
+        if (isValid) {
+            return "Verification successful!";
+        } else {
+            throw new RuntimeException("Invalid verification code");
+//            return "Invalid or expired verification code!";
+        }
+    }
+    @PutMapping("/update-password")
+    public String updatePassword(@RequestParam String email,@RequestParam String password)
+    {
+        return passwordResetService.UpdatePassword(email,password);
     }
 }

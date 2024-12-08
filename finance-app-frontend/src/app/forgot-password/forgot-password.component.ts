@@ -104,12 +104,12 @@ export class ForgotPasswordComponent {
       responseType: 'text'
     }).subscribe({
       next: (response) => {
-        // this.successMessage = response;
-        // this.stage = 'verification';
+        this.successMessage = response;
+        this.stage = 'verification';
       },
       error: (error: HttpErrorResponse) => {
-        this.successMessage='Successfully sent';
-        this.stage='verification';
+        // this.successMessage='Successfully sent';
+        // this.stage='verification';
         alert('cant send email');
       }
     });
