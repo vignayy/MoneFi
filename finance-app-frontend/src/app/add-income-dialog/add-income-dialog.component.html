@@ -8,11 +8,18 @@
         <mat-icon matPrefix>account_balance</mat-icon>
       </mat-form-field>
   
-      <mat-form-field appearance="outline" class="form-field">
+      <!-- <mat-form-field appearance="outline" class="form-field">
         <mat-label>Amount</mat-label>
         <input matInput type="number" [(ngModel)]="incomeSource.amount" name="amount" placeholder="0.00">
         <mat-icon matPrefix>attach_money</mat-icon>
+      </mat-form-field> -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Amount</mat-label>
+        <span matPrefix class="currency-prefix">₹</span>
+        <input matInput type="number" [(ngModel)]="incomeSource.amount" name="amount" placeholder="0.00">
       </mat-form-field>
+      
+      
   
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Date</mat-label>

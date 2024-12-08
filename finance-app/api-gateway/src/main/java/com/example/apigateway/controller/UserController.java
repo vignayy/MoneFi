@@ -14,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/auth")
@@ -61,6 +63,12 @@ public class UserController {
             // Validate user input (username and password should not be empty)
             if (user.getUsername() == null || user.getUsername().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty()) {
                 return ResponseEntity.badRequest().body("Username and password are required");
+            }
+
+            // Check if user exists in the database
+            User existingUser = userRepo.findByUsername(user.getUsername());
+            if (existingUser == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found. Please sign up.");
             }
 
             // Authenticate the user

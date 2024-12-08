@@ -38,6 +38,16 @@ public class IncomeApiController {
 //        }
     }
 
+    @GetMapping("/{userId}/{month}/{year}")
+    public ResponseEntity<List<IncomeModel>> getAllIncomesByDate(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year){
+        return ResponseEntity.status(HttpStatus.OK).body(incomeService.getAllIncomesByDate(userId, month, year));
+    }
+    @GetMapping("/{userId}/{year}")
+    public ResponseEntity<List<IncomeModel>> getAllIncomesByYear(@PathVariable("userId") int userId, @PathVariable("year") int year){
+        return ResponseEntity.status(HttpStatus.OK).body(incomeService.getAllIncomesByYear(userId, year));
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<IncomeModel> updateIncome(@PathVariable("id") int userId, @RequestBody IncomeModel income) {
         IncomeModel updatedIncome = incomeService.updateBySource(userId, income);

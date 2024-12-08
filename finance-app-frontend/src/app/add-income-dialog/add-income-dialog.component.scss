@@ -53,3 +53,15 @@
       background-color: #1976d2;
     }
   }
+
+
+
+  .currency-prefix {
+    font-size: 1.2rem; /* Adjust size to match the input text */
+    margin-right: 0.5rem; /* Adds some spacing between the symbol and the input text */
+    display: flex;
+    margin-top:2px;
+    margin-left: 10px;
+    align-items: center; /* Centers the rupee symbol vertically */
+  }
+  

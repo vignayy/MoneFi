@@ -29,6 +29,10 @@ public interface ExpenseRepository extends JpaRepository<ExpenseModel, Integer> 
             "AND EXTRACT(YEAR FROM e.date) = :year")
     public List<ExpenseModel> getAllexpensesByDate(int userId, int month, int year);
 
+    @Query("SELECT e FROM ExpenseModel e WHERE e.userId = :userId " +
+            "AND EXTRACT(YEAR FROM e.date) = :year")
+    public List<ExpenseModel> getAllexpensesByYear(int userId, int year);
+
     @Query("SELECT new com.finance.expense.dto.ExpenseDto(e.category, SUM(e.amount)) " +
             "FROM ExpenseModel e " +
             "WHERE e.userId = :userId AND e.date BETWEEN :startDate AND :endDate " +

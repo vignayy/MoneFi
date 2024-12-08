@@ -10,6 +10,10 @@ public interface IncomeService {
 
     List<IncomeModel> getAllIncomes(int userId);
 
+    public List<IncomeModel> getAllIncomesByDate(int userId, int month, int year);
+
+    public List<IncomeModel> getAllIncomesByYear(int userId, int year);
+
     public IncomeModel updateBySource(int id, IncomeModel income);
 
     public void deleteParticularIncomeBySource(int id);

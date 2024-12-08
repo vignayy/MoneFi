@@ -1,3 +1,4 @@
+
 .expenses-container {
   padding: 1rem;
 
@@ -276,13 +277,39 @@
     text-align: center;
     padding: 3rem 1rem;
     color: #666;
-
+  
     i {
       font-size: 3rem;
       margin-bottom: 1rem;
       opacity: 1;
     }
+  
+    .add-expense-btn {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;  // Increased padding for better balance
+      border-radius: 12px;  // Rounded corners for a soft look
+      font-size: 1rem;  // Font size adjusted for better readability
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  
+      &:hover {
+        background: #c62828;
+        transform: translateY(-2px);  // Slight lift effect on hover
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  // Subtle shadow for depth
+      }
+  
+      &:active {
+        transform: translateY(0);  // Reset the hover effect when clicked
+        box-shadow: none;  // Remove shadow on click
+      }
+    }
   }
+  
 
   .loading {
     text-align: center;
@@ -292,6 +319,40 @@
     i {
       font-size: 2rem;
       margin-bottom: 1rem;
+    }
+  }
+
+  .filters-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+
+      .filter-item {
+        flex: 1;
+        min-width: 200px;
+        max-width: 250px;
+
+        mat-form-field {
+          width: 100%;
+        }
+      }
+    }
+
+    .reset-btn {
+      height: 56px;
+      white-space: nowrap;
+      
+      i {
+        margin-right: 8px;
+      }
     }
   }
 }
@@ -312,5 +373,26 @@
         min-width: 800px;
       }
     }
+
+    .filters-section {
+      .filter-group {
+        flex-direction: column;
+        
+        .filter-item {
+          width: 100%;
+          max-width: none;
+        }
+        
+        .reset-btn {
+          width: 100%;
+        }
+      }
+    }
   }
 }
+
+
+
+
+
+

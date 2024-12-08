@@ -28,6 +28,16 @@ public class UserIncomeServiceImplementation implements UserIncomeService {
     }
 
     @Override
+    public List<IncomeModel> getAllIncomesByDate(int userId, int month, int year) {
+        return incomeFeignClient.getAllIncomesByDate(userId, month, year).getBody();
+    }
+
+    @Override
+    public List<IncomeModel> getAllIncomesByYear(int userId, int year) {
+        return incomeFeignClient.getAllIncomesByYear(userId, year).getBody();
+    }
+
+    @Override
     public IncomeModel updateIncome(int id, IncomeModel income) {
 //        income.setUserId(income.getUserId());
         return incomeFeignClient.updateIncome(id, income);

@@ -16,5 +16,14 @@ public interface IncomeRepository extends JpaRepository<IncomeModel, Integer> {
     @Query("select i from IncomeModel i where i.userId=:userId and i.source=:source")
     public IncomeModel findByUserIdAndSource(int userId, String source);
 
+    @Query("SELECT i FROM IncomeModel i WHERE i.userId = :userId " +
+            "AND EXTRACT(MONTH FROM i.date) = :month " +
+            "AND EXTRACT(YEAR FROM i.date) = :year")
+    public  List<IncomeModel> getAllIncomesByDate(int userId, int month, int year);
+
+    @Query("SELECT i FROM IncomeModel i WHERE i.userId = :userId " +
+            "AND EXTRACT(YEAR FROM i.date) = :year")
+    public List<IncomeModel> getAllIncomesByYear(int userId, int year);
+
 
 }

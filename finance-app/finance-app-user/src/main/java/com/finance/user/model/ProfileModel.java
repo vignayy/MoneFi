@@ -22,5 +22,6 @@ public class ProfileModel {
     private String email;
     private String phone;
     private String address;
+    private double incomeRange;
     private String profileImage;
 }

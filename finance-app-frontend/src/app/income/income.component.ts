@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
+import { MatSelectModule } from '@angular/material/select';
 
 
 interface IncomeSource {
@@ -33,7 +34,8 @@ interface IncomeSource {
     FormsModule,
     MatInputModule,
     AddIncomeDialogComponent,
-    NgChartsModule
+    NgChartsModule,
+    MatSelectModule
   ]
 })
 export class IncomeComponent {
@@ -41,6 +43,17 @@ export class IncomeComponent {
   incomeSources: IncomeSource[] = [];
   loading: boolean = false;
   recurringPercentage: number = 0;
+  selectedYear: number = new Date().getFullYear();
+  selectedMonth: number = 0; // 0 means all months
+  selectedCategory: string = '';
+  months: string[] = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+
+  availableYears: number[] = [];
+  uniqueCategories: string[] = [];
 
   public pieChartData: ChartData<'pie', number[], string> = {
     labels: [],
@@ -71,22 +84,50 @@ export class IncomeComponent {
 
   baseUrl = "http://localhost:8765";
   
+  // ngOnInit() {
+  //   this.loadIncomeData();
+  // }
   ngOnInit() {
+    this.initializeFilters();
+    
+    // Set the default month to the current month (1-based index)
+    this.selectedMonth = new Date().getMonth() + 1; // Current month in 1-based index
+    this.selectedYear = new Date().getFullYear(); // Current year
+  
     this.loadIncomeData();
+  }
+
+  initializeFilters() {
+    // Generate last 5 years
+    const currentYear = new Date().getFullYear();
+    this.availableYears = Array.from({length: 5}, (_, i) => currentYear - i);
   }
 
   loadIncomeData() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
   
+    
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        this.httpClient.get<IncomeSource[]>(`${this.baseUrl}/api/user/${userId}/incomes`).subscribe({
+
+        let url: string;
+        if (this.selectedMonth === 0) {
+          // Fetch all expenses for the selected year
+          url = `${this.baseUrl}/api/user/incomes/${userId}/${this.selectedYear}`;
+        } else {
+          // Fetch expenses for the specific month and year
+          url = `${this.baseUrl}/api/user/incomes/${userId}/${this.selectedMonth}/${this.selectedYear}`;
+        }
+
+        this.httpClient.get<IncomeSource[]>(url).subscribe({
           next: (data) => {
             if (data && data.length > 0) {
               this.incomeSources = data;
+              this.applyFilters();
               this.calculateTotalIncome();
               this.updateChartData();
+              this.updateUniqueCategories();
             } else {
               this.incomeSources = [];
               this.toastr.warning('No income data available for this user.', 'No Data');
@@ -257,4 +298,27 @@ export class IncomeComponent {
       : 0;
   }
 
+  applyFilters() {
+    // Filter by category if a category is selected
+    if (this.selectedCategory) {
+      this.incomeSources = this.incomeSources.filter(income => income.category === this.selectedCategory);
+    }
+  }
+
+  updateUniqueCategories() {
+    // Ensure "All Categories" is an option
+    this.uniqueCategories = ['', ...new Set(this.incomeSources.map(income => income.category))];
+  }
+
+  filterIncome() {
+    this.loadIncomeData();
+  }
+
+  resetFilters() {
+    const today = new Date();
+    this.selectedYear = today.getFullYear(); // Reset to the current year
+    this.selectedMonth = today.getMonth() + 1; // Reset to the current month (1-based index)
+    this.selectedCategory = ''; // Reset to all categories
+    this.filterIncome();
+  }
 }

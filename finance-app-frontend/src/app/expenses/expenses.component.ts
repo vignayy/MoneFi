@@ -10,6 +10,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 interface Expense {
   id: number;
@@ -32,7 +33,8 @@ interface Expense {
     FormsModule,
     MatInputModule,
     AddExpenseDialogComponent,
-    NgChartsModule
+    NgChartsModule,
+    MatSelectModule
   ]
 })
 export class ExpensesComponent {
@@ -40,8 +42,18 @@ export class ExpensesComponent {
   expenses: Expense[] = [];
   loading: boolean = false;
   recurringPercentage: number = 0;
+  selectedYear: number = new Date().getFullYear();
+  selectedMonth: number = 0; // 0 means all months
+  selectedCategory: string = '';
+  months: string[] = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  availableYears: number[] = [];
+  uniqueCategories: string[] = [];
 
-  public pieChartData: ChartData<'pie', number[], string> = {
+  public pieChartData: ChartData<'pie' | 'doughnut', number[], string> = {
     labels: [],
     datasets: [{
       data: [],
@@ -65,44 +77,67 @@ export class ExpensesComponent {
         position: 'right',
       }
     },
-    animation: {
-      duration: 500
-    }
+    // animation: {
+    //   duration: 500
+    // }
   };
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog, private router:Router, private toastr:ToastrService) {}
 
   baseUrl = "http://localhost:8765";
 
+  // ngOnInit() {
+  //   this.initializeFilters();
+  //   this.loadExpensesData();
+  // }
   ngOnInit() {
+    this.initializeFilters();
+    
+    // Set the default month to the current month (1-based index)
+    this.selectedMonth = new Date().getMonth() + 1; // Current month in 1-based index
+    this.selectedYear = new Date().getFullYear(); // Current year
+  
     this.loadExpensesData();
+  }
+  
+
+  initializeFilters() {
+    // Generate last 5 years
+    const currentYear = new Date().getFullYear();
+    this.availableYears = Array.from({length: 5}, (_, i) => currentYear - i);
   }
 
   loadExpensesData() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');
-    // console.log(token);
   
     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next: (userId) => {
-        // console.log(userId);
+        let url: string;
+        if (this.selectedMonth === 0) {
+          // Fetch all expenses for the selected year
+          url = `${this.baseUrl}/api/user/expenses/${userId}/${this.selectedYear}`;
+        } else {
+          // Fetch expenses for the specific month and year
+          url = `${this.baseUrl}/api/user/expenses/${userId}/${this.selectedMonth}/${this.selectedYear}`;
+        }
   
-        this.httpClient.get<Expense[]>(`${this.baseUrl}/api/user/${userId}/expenses`).subscribe({
+        this.httpClient.get<Expense[]>(url).subscribe({
           next: (data) => {
-            // this.expenses = data;
-            // this.calculateTotalExpenses();
             if (data && data.length > 0) {
-              this.expenses = data; 
+              this.expenses = data;
+              this.applyFilters(); // Apply all filters after fetching data
               this.calculateTotalExpenses();
               this.updateChartData();
+              this.updateUniqueCategories();
             } else {
               this.expenses = [];
-              this.toastr.warning('No Expense data available for this user.', 'No Data');
-              this.loading = false;
+              this.toastr.warning('No expenses found for the selected filters.', 'No Data');
             }
           },
           error: (error) => {
             console.error('Failed to load Expense data:', error);
+            this.toastr.error('Failed to load expenses', 'Error');
           },
           complete: () => {
             this.loading = false;
@@ -111,13 +146,19 @@ export class ExpensesComponent {
       },
       error: (error) => {
         console.error('Failed to fetch userId:', error);
-        alert("Session timed out! Please login again");
-        sessionStorage.removeItem('finance.auth');
-        this.router.navigate(['login']);
         this.loading = false;
       }
     });
   }
+
+
+  applyFilters() {
+    // Filter by category if a category is selected
+    if (this.selectedCategory) {
+      this.expenses = this.expenses.filter(expense => expense.category === this.selectedCategory);
+    }
+  }
+  
 
   calculateTotalExpenses() {
     this.totalExpenses = this.expenses.reduce((sum, expense) => sum + expense.amount, 0);
@@ -261,4 +302,23 @@ export class ExpensesComponent {
       ? Math.round((recurringTotal / this.totalExpenses) * 100)
       : 0;
   }
+
+  updateUniqueCategories() {
+    // Ensure "All Categories" is an option
+    this.uniqueCategories = ['', ...new Set(this.expenses.map(expense => expense.category))];
+  }
+
+  filterExpenses() {
+    this.loadExpensesData();
+  }
+
+  resetFilters() {
+    const today = new Date();
+    this.selectedYear = today.getFullYear(); // Reset to the current year
+    this.selectedMonth = today.getMonth() + 1; // Reset to the current month (1-based index)
+    this.selectedCategory = ''; // Reset to all categories
+    this.filterExpenses();
+  }
+  
 }
+

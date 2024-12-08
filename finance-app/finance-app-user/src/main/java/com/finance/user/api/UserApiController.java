@@ -67,6 +67,7 @@ public class UserApiController {
     @Autowired
     private ProfileRepository profileRepository;
 
+    //api call to check api gateway
     @GetMapping("/hello")
     public String hello(HttpServletRequest request)
     {
@@ -90,17 +91,14 @@ public class UserApiController {
 
         return userRepository.save(userModel);
     }
-
-    @GetMapping("/getUserId/{email}")
-    public ResponseEntity<Integer> getUserIdByEmail(@PathVariable("email") String email){
-
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserIdFromEmail(email));
-    }
+//    @GetMapping("/getUserId/{email}")
+//    public ResponseEntity<Integer> getUserIdByEmail(@PathVariable("email") String email){
+//        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserIdFromEmail(email));
+//    }
     @GetMapping("/getName/{userId}")
     public String getNameFromUserId(@PathVariable("userId") int userId){
         return userService.getNameFromUserId(userId);
     }
-
     @PostMapping
     public ResponseEntity<UserModel> save(@RequestBody UserModel user) {
         UserModel user2 = userService.save(user);
@@ -167,32 +165,28 @@ public class UserApiController {
     }
     @GetMapping("/{userId}/incomes")
     public ResponseEntity<List<IncomeModel>> getAllIncomes(@PathVariable("userId") int userId) {
-
         List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
         return ResponseEntity.ok(incomesList);
-
-        //        try {
-//            List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
-//            if (!incomesList.isEmpty()) {
-//                return ResponseEntity.status(HttpStatus.OK).body(incomesList); // 200 OK
-//            } else {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 404 Not Found
-//            }
-//        } catch (FeignException.NotFound e) {
-//            // Handle 404 from the Feign client
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        } catch (FeignException e) {
-//            // Handle other Feign client exceptions
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
     }
-
     @GetMapping("/{userId}/totalIncome")
     public Integer getTotalIncome(@PathVariable("userId") int userId){
         List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
         return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
+    @GetMapping("/incomes/{userId}/{month}/{year}")
+    public ResponseEntity<List<IncomeModel>> getAllIncomesByDate(@PathVariable("userId") int userId,
+                                                                   @PathVariable("month") int month,
+                                                                   @PathVariable("year") int year) {
+        List<IncomeModel> incomesList = incomeService.getAllIncomesByDate(userId, month, year);
+        return ResponseEntity.ok(incomesList);
+    }
+    @GetMapping("/incomes/{userId}/{year}")
+    public ResponseEntity<List<IncomeModel>> getAllIncomesByYear(@PathVariable("userId") int userId,
+                                                                   @PathVariable("year") int year) {
+        List<IncomeModel> incomesList = incomeService.getAllIncomesByYear(userId, year);
+        return ResponseEntity.ok(incomesList);
 
+    }
     @PutMapping("/{id}/income")
     public ResponseEntity<IncomeModel> updateIncome(@PathVariable("id") int id, @RequestBody IncomeModel income){
         IncomeModel updatedIncome = incomeService.updateIncome(id, income);
@@ -231,11 +225,6 @@ public class UserApiController {
     public ResponseEntity<List<ExpenseModel>> getAllExpenses(@PathVariable("userId") int userId) {
         List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
         return ResponseEntity.ok(expensesList);
-//        if (!expensesList.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.OK).body(expensesList);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }
     }
     @GetMapping("/expenses/{userId}/{month}/{year}")
     public ResponseEntity<List<ExpenseModel>> getAllExpensesByDate(@PathVariable("userId") int userId,
@@ -243,16 +232,12 @@ public class UserApiController {
                                                                    @PathVariable("year") int year) {
         List<ExpenseModel> expensesList = expenseService.getAllExpensesByDate(userId, month, year);
         return ResponseEntity.ok(expensesList);
-//        return ResponseEntity.ok(expensesList.stream()
-//                .filter(i -> {
-//                    LocalDate respectiveDate = i.getDate();
-//                    return respectiveDate.getMonthValue() == month && respectiveDate.getYear() == year;
-//                }).toList());
-//        if (!expensesList.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.OK).body(expensesList);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }
+    }
+    @GetMapping("/expenses/{userId}/{year}")
+    public ResponseEntity<List<ExpenseModel>> getAllExpensesByYear(@PathVariable("userId") int userId,
+                                                                   @PathVariable("year") int year) {
+        List<ExpenseModel> expensesList = expenseService.getAllExpensesByYear(userId, year);
+        return ResponseEntity.ok(expensesList);
     }
     @GetMapping("/{userId}/totalExpense")
     public Integer getTotalExpense(@PathVariable("userId") int userId){
@@ -283,13 +268,21 @@ public class UserApiController {
 
 
     // Budget calls
+    @PostMapping("/{userId}/budget")
+    public ResponseEntity<BudgetModel> addBudget(@PathVariable int userId, @RequestBody BudgetModel budget) {
+        budget.setUserId(userId);
+        BudgetModel createdBudget = restTemplate.postForObject("http://FINANCE-APP-BUDGET/api/budget", budget, BudgetModel.class);
+        if(createdBudget!=null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdBudget);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+    }
     @GetMapping("/{userId}/budgets")
     public ResponseEntity<List<BudgetModel>> getAllBudgets(@PathVariable("userId") int userId) {
-//        List<GoalModel> goalsList = goalService.getAllGoals(userId);
-
         BudgetModel[] list = restTemplate.getForObject("http://FINANCE-APP-BUDGET/api/budget/" + userId, BudgetModel[].class);
         List<BudgetModel> budgetList = new ArrayList<>(Arrays.asList(list));
-
         if (!budgetList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(budgetList);
         } else {
@@ -316,11 +309,6 @@ public class UserApiController {
     public ResponseEntity<List<GoalModel>> getAllGoals(@PathVariable("userId") int userId) {
         List<GoalModel> goalsList = goalService.getAllGoals(userId);
         return ResponseEntity.ok(goalsList);
-//        if (!goalsList.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.OK).body(goalsList);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }
     }
     @GetMapping("/{userId}/totalCurrentGoalIncome")
     public Integer getCurrentTotalGoalIncome(@PathVariable("userId") int userId){
@@ -332,10 +320,9 @@ public class UserApiController {
         List<GoalModel> goalsList = goalService.getAllGoals(userId);
         return (int) goalsList.stream().mapToDouble(i->i.getTargetAmount()).sum();
     }
-
-    @PutMapping("/{userId}/goal")
-    public ResponseEntity<List<GoalModel>> updateGoal(@PathVariable("userId") int userId, @RequestBody GoalModel goal){
-        List<GoalModel> updatedGoalList = goalService.updateGoal(userId, goal);
+    @PutMapping("/{id}/goal")
+    public ResponseEntity<GoalModel> updateGoal(@PathVariable("id") int id, @RequestBody GoalModel goal){
+        GoalModel updatedGoalList = goalService.updateGoal(id, goal);
         if(updatedGoalList!=null){
             return ResponseEntity.status(HttpStatus.CREATED).body(updatedGoalList);
         }
@@ -365,7 +352,6 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
     @GetMapping("/summary/yearly/{id}/{year}")
     public ResponseEntity<MonthlyAndYearlySummaryDto> getYearlyInsights(@PathVariable("id") int id, @PathVariable("year") int year) {
         MonthlyAndYearlySummaryDto yearlySummaryDto = monthlyAndYearlySummary.getYearlySummary(id, year);
@@ -375,9 +361,6 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
-
-
     // budget alert api
     @GetMapping("/alert/{userId}")
     public ResponseEntity<List<BudgetAlertDto>> getBudgetAlerts(@PathVariable("userId") int userId) {
@@ -388,7 +371,6 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
     // Spending Analysis
     @GetMapping("/analysis/{userId}")
     public ResponseEntity<List<SpendingPatternDto>> getSpendingPattern(@PathVariable int userId) {
@@ -402,6 +384,7 @@ public class UserApiController {
 
 
 
+    // frontend overview component calls
     @GetMapping("/{userId}/budgetProgres")
     public Double budgetProgress(@PathVariable("userId") int userId){
         BudgetModel[] list = restTemplate.getForObject("http://FINANCE-APP-BUDGET/api/budget/"+userId, BudgetModel[].class);
@@ -411,21 +394,8 @@ public class UserApiController {
         return currentSpending/moneyLimit;
     }
 
-    // budget api
-    @PostMapping("/{userId}/budget")
-    public ResponseEntity<BudgetModel> addBudget(@PathVariable int userId, @RequestBody BudgetModel budget) {
-//        GoalModel createdGoal = goalService.addGoal(userId, goal);
-        budget.setUserId(userId);
-        BudgetModel createdBudget = restTemplate.postForObject("http://FINANCE-APP-BUDGET/api/budget", budget, BudgetModel.class);
 
-        if(createdBudget!=null){
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdBudget);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        }
-    }
-
+    // profile component api call
     @PostMapping("/profile/{userId}")
     public ProfileModel saveProfile(@PathVariable("userId") int userId, @RequestBody ProfileModel profile){
         profile.setUserId(userId);
@@ -434,8 +404,10 @@ public class UserApiController {
         fetchProfile.setEmail(profile.getEmail());
         fetchProfile.setPhone(profile.getPhone());
         fetchProfile.setAddress(profile.getAddress());
+        fetchProfile.setIncomeRange(profile.getIncomeRange());
+        fetchProfile.setProfileImage(profile.getProfileImage());
 
-        return profileRepository.save(profile);
+        return profileRepository.save(fetchProfile);
     }
     @GetMapping("/profile/{userId}")
     public ProfileModel getProfile(@PathVariable("userId") int userId){

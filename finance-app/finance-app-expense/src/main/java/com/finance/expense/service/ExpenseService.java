@@ -13,6 +13,8 @@ public interface ExpenseService {
 
     public List<ExpenseModel> getAllexpensesByDate(int userId, int month, int year);
 
+    public List<ExpenseModel> getAllexpensesByYear(int userId, int year);
+
     public ExpenseModel updateBySource(int id, ExpenseModel expense);
 
     public void deleteExpenseById(int id);

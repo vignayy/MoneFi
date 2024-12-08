@@ -11,39 +11,39 @@
       </div>
       
       <div class="nav-links">
-        <button [class.active]="activeSection === 'overview'" (click)="setActiveSection('overview')">
+        <button routerLink="overview">
           <i class="fas fa-home"></i>
           <span>Overview</span>
         </button>
   
-        <button [class.active]="activeSection === 'income'" (click)="setActiveSection('income')">
+        <button routerLink="income">
           <i class="fas fa-money-bill-wave"></i>
           <span>Income</span>
         </button>
   
-        <button [class.active]="activeSection === 'expenses'" (click)="setActiveSection('expenses')">
+        <button routerLink="expenses">
           <i class="fas fa-receipt"></i>
           <span>Expenses</span>
         </button>
   
-        <button [class.active]="activeSection === 'budgets'" (click)="setActiveSection('budgets')">
+        <button routerLink="budgets">
           <i class="fas fa-wallet"></i>
           <span>Budgets</span>
         </button>
   
-        <button [class.active]="activeSection === 'goals'" (click)="setActiveSection('goals')">
+        <button routerLink="goals">
           <i class="fas fa-bullseye"></i>
           <span>Goals</span>
         </button>
   
-        <button [class.active]="activeSection === 'analysis'" (click)="setActiveSection('analysis')">
+        <button routerLink="spending">
           <i class="fas fa-chart-line"></i>
           <span>Spending Analysis</span>
         </button>
       </div>
   
       <div class="user-section">
-        <button class="profile-btn" [class.active]="activeSection === 'profile'" (click)="setActiveSection('profile')">
+        <button routerLink="profile">
           <i class="fas fa-user-circle"></i>
           <span>Profile</span>
         </button>
@@ -53,17 +53,25 @@
         </button>
       </div>
     </nav>
-  
-    <!-- Main Content -->
     <main class="main-content">
-      <div class="content-container" [ngSwitch]="activeSection">
-        <app-overview *ngSwitchCase="'overview'"></app-overview>
-        <app-income *ngSwitchCase="'income'"></app-income>
-         <app-expenses *ngSwitchCase="'expenses'"></app-expenses>
-       <app-budgets *ngSwitchCase="'budgets'"></app-budgets>
-         <app-goals *ngSwitchCase="'goals'"></app-goals>
-         <app-profile *ngSwitchCase="'profile'"></app-profile>
-       <!-- <app-analysis *ngSwitchCase="'analysis'"></app-analysis> -->
+      <div class="content-container">
+        <router-outlet></router-outlet>
       </div>
     </main>
+  
+    <!-- Main Content -->
+    <!-- <main class="main-content"> -->
+      <!-- <div class="content-container" [ngSwitch]="activeSection"> -->
+        <!-- <router-outlet></router-outlet> -->
+        <!-- <app-overview *ngSwitchCase="'overview'"></app-overview> -->
+        <!-- <app-income *ngSwitchCase="'income'"></app-income> -->
+         <!-- <app-expenses *ngSwitchCase="'expenses'"></app-expenses>
+       <app-budgets *ngSwitchCase="'budgets'"></app-budgets>
+         <app-goals *ngSwitchCase="'goals'"></app-goals>
+         <app-profile *ngSwitchCase="'profile'"></app-profile> -->
+       <!-- <app-analysis *ngSwitchCase="'analysis'"></app-analysis> -->
+      <!-- </div> -->
+    <!-- </main> -->
   </div>
+
+  <!-- <router-outlet></router-outlet> -->

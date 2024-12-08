@@ -49,8 +49,16 @@ export class LoginComponent {
           this.router.navigate(['dashboard']);
         },
         error=>{
-          console.error('Login Failed', error);
-          this.toastr.error('Invalid username or password', 'Login failed');
+          // console.error('Login Failed', error);
+          // this.toastr.error('Invalid username or password', 'Login failed');
+          if (error.status === 404) {
+            this.toastr.error('User not found. Please sign up.', 'Login Failed');
+          } else if (error.status === 401) {
+            this.toastr.error('Invalid username or password', 'Login Failed');
+          } else {
+            console.error('Login Failed', error);
+            this.toastr.error('An error occurred. Please try again.', 'Login Failed');
+          }
         }
       )
   }

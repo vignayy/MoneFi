@@ -20,8 +20,8 @@ public interface GoalFeignClient {
     public ResponseEntity<List<GoalModel>> getAllGoals(@PathVariable("userId") int userId);
 
 
-    @PutMapping("/api/goal/{userId}/goalName")
-    public ResponseEntity<GoalModel> updateGoal(@PathVariable("userId") int userId, @RequestParam("name") String goalName, @RequestBody GoalModel goal);
+    @PutMapping("/api/goal/{id}")
+    public ResponseEntity<GoalModel> updateGoal(@PathVariable("id") int id, @RequestBody GoalModel goal);
 
 
     @DeleteMapping("/api/goal/{id}")

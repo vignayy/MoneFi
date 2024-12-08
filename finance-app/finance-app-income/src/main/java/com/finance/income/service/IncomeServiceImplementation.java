@@ -26,6 +26,16 @@ public class IncomeServiceImplementation implements IncomeService {
     }
 
     @Override
+    public List<IncomeModel> getAllIncomesByDate(int userId, int month, int year) {
+        return incomeRepository.getAllIncomesByDate(userId, month, year);
+    }
+
+    @Override
+    public List<IncomeModel> getAllIncomesByYear(int userId, int year) {
+        return incomeRepository.getAllIncomesByYear(userId, year);
+    }
+
+    @Override
     public IncomeModel updateBySource(int id, IncomeModel income) {
 
         IncomeModel incomeModel = incomeRepository.findById(id).orElse(null);

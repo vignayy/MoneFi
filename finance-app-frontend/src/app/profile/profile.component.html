@@ -34,13 +34,20 @@
 
           <div class="info-item">
             <label>Email Address</label>
-            <input type="email" [(ngModel)]="userProfile.email" [readonly]="!isEditing" [class.editable]="isEditing">
+            <input type="email" [(ngModel)]="userProfile.email" [readonly]="true" [class.editable]="isEditing">
           </div>
 
           <div class="info-item">
             <label>Phone Number</label>
             <input type="tel" [(ngModel)]="userProfile.phone" [readonly]="!isEditing" [class.editable]="isEditing">
+          </div>         
+          
+
+          <div class="info-item">
+            <label>Income Range</label>
+            <input type="tel" [(ngModel)]="userProfile.incomeRange" [readonly]="!isEditing" [class.editable]="isEditing">
           </div>
+
         </div>
       </div>
 

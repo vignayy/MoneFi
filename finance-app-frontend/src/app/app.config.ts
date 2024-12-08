@@ -6,10 +6,12 @@ import { routes } from './app.routes';
 import { authInterceptor } from './auth.interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ToastrModule } from 'ngx-toastr';
+import { DateAdapter, MatNativeDateModule, MAT_DATE_LOCALE, NativeDateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])), provideAnimationsAsync(), importProvidersFrom(ToastrModule.forRoot())
+    provideHttpClient(withInterceptors([authInterceptor])), provideAnimationsAsync(), importProvidersFrom(ToastrModule.forRoot()),
+    provideNativeDateAdapter(),
   ],
 };

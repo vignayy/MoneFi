@@ -26,12 +26,12 @@ public class UserExpenseServiceImplementation implements UserExpenseService {
         expense.setUserId(userId);
         ExpenseModel expenseResponse = expenseFeignClient.saveExpense(expense).getBody();
 
-        BudgetModel budget = new BudgetModel();
-        budget.setUserId(userId);
-        budget.setCategory(expense.getCategory());
-        budget.setCurrentSpending(expense.getAmount());
-        BudgetModel budgetResponse = budgetFeignClient.addToBudget(budget).getBody();
-        System.out.println(budgetResponse);
+//        BudgetModel budget = new BudgetModel();
+//        budget.setUserId(userId);
+//        budget.setCategory(expense.getCategory());
+//        budget.setCurrentSpending(expense.getAmount());
+//        BudgetModel budgetResponse = budgetFeignClient.addToBudget(budget).getBody();
+//        System.out.println(budgetResponse);
         return expenseResponse;
     }
 
@@ -43,6 +43,11 @@ public class UserExpenseServiceImplementation implements UserExpenseService {
     @Override
     public List<ExpenseModel> getAllExpensesByDate(int userId, int month, int year) {
         return expenseFeignClient.getAllExpensesByDate(userId, month,year).getBody();
+    }
+
+    @Override
+    public List<ExpenseModel> getAllExpensesByYear(int userId, int year) {
+        return expenseFeignClient.getAllExpensesByYear(userId, year).getBody();
     }
 
     @Override

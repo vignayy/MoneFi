@@ -9,7 +9,7 @@ public interface UserGoalService {
 
     public List<GoalModel> getAllGoals(int userId);
 
-    public List<GoalModel> updateGoal(int userId, GoalModel goal);
+    public GoalModel updateGoal(int id, GoalModel goal);
 
     public boolean deleteGoalById(int id);
 }

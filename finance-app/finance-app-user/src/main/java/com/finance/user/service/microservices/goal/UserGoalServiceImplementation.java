@@ -29,10 +29,8 @@ public class UserGoalServiceImplementation implements UserGoalService {
     }
 
     @Override
-    public List<GoalModel> updateGoal(int userId, GoalModel goal) {
-        goal.setUserId(userId);
-        goalFeignClient.updateGoal(userId, goal.getGoalName(), goal);
-        return goalFeignClient.getAllGoals(userId).getBody();
+    public GoalModel updateGoal(int id, GoalModel goal) {
+        return goalFeignClient.updateGoal(id, goal).getBody();
     }
 
     @Override

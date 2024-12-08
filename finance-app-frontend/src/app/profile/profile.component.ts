@@ -2,12 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { ToastrService } from 'ngx-toastr';
 
 interface UserProfile {
   name: string;
   email: string;
   phone: string;
   address: string;
+  incomeRange:number;
   profileImage: string;
 }
 
@@ -16,7 +23,13 @@ interface UserProfile {
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule,
+    CommonModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatIconModule],
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile = {
@@ -24,13 +37,14 @@ export class ProfileComponent implements OnInit {
     email: '',
     phone: '',
     address: '',
+    incomeRange:0,
     profileImage: ''
   };
   
   isEditing = false;
   // userId = 1; // Assuming the user ID is 1, you can get it dynamically if needed
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr:ToastrService) { }
 
   baseUrl = "http://localhost:8765";
   ngOnInit(): void {
@@ -67,6 +81,7 @@ export class ProfileComponent implements OnInit {
           (data) => {
             this.userProfile = data;
             this.isEditing = false;
+            this.toastr.success('Profle updated successfully!');
           },
           (error) => {
             console.error('Error saving profile:', error);

@@ -133,6 +133,60 @@ export class GoalsComponent {
   }
 
 
+  updateGoal(goal: inputGoal) {
+    const dialogRef = this.dialog.open(AddGoalDialogComponent, {
+      width: '500px',
+      panelClass: 'income-dialog',
+      data: { ...goal }, // Pass the income data to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const token = sessionStorage.getItem('finance.auth');
+        this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+          next: (userId) => {
+            // console.log(userId);
+            
+            // Send POST request with the income data
+            const goalData = {
+              ...result, // This should contain fields like source, amount, date, category, recurring, etc.
+              // userId: userId, // Add userId if your backend requires it
+              userId:userId
+            };
+            this.httpClient.put<inputGoal>(`${this.baseUrl}/api/user/${goal.id}/goal`, goalData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }).subscribe({
+              next: (updatedGoal) => {
+                const newGoalConverted = this.modelConverterFunction(updatedGoal); // Convert single goal
+                this.goals.push(newGoalConverted); // Add to existing goals array
+                // console.log(this.goals);
+                this.loadGoals();
+              },
+              error: (error) => {
+                console.error('Failed to update goal data:', error);
+              },
+              complete: () => {
+                this.loading = false;
+              },
+            });
+          },
+          error: (error) => {
+            console.error('Failed to fetch userId:', error);
+            alert("Session timed out! Please login again");
+            sessionStorage.removeItem('finance.auth');
+            this.router.navigate(['login']);
+            this.loading = false;
+          },
+        });
+        
+      }
+    });
+  }
+
+
+
  
   modelConverterFunction(data: inputGoal): Goal {
     let icon = '';
@@ -211,6 +265,9 @@ export class GoalsComponent {
   viewGoalDetails(goal: Goal) {
     
   }
+
+
+  
   deleteGoal(goalId : number){
     console.log(goalId);
     this.httpClient.delete<void>(`${this.baseUrl}/api/user/${goalId}/goal`)

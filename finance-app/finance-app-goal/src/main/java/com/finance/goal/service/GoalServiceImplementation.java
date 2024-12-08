@@ -24,10 +24,10 @@ public class GoalServiceImplementation implements GoalService{
     }
 
     @Override
-    public GoalModel updateByGoalName(int userId, String goalName, GoalModel goal) {
-        GoalModel goalModel = goalRepository.findByUserIdAndGoalName(userId, goalName);
+    public GoalModel updateByGoalName(int id, GoalModel goal) {
+        GoalModel goalModel = goalRepository.findById(id).orElse(null);
 
-        goal.setUserId(userId);
+        goal.setUserId(goal.getUserId());
 
         if(goal.getGoalName() != null){
             goalModel.setGoalName(goal.getGoalName());
@@ -40,6 +40,9 @@ public class GoalServiceImplementation implements GoalService{
         }
         if(goal.getDeadLine() != null){
             goalModel.setDeadLine(goal.getDeadLine());
+        }
+        if(goal.getCategory() != null){
+            goalModel.setCategory(goal.getCategory());
         }
 
         return save(goalModel);

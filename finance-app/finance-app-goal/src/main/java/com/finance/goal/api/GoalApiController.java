@@ -36,9 +36,9 @@ public class GoalApiController {
 //        }
     }
 
-    @PutMapping("/{userId}/goalName")
-    public ResponseEntity<GoalModel> updateGoal(@PathVariable("userId") int userId, @RequestParam("name") String goalName, @RequestBody GoalModel goal) {
-        GoalModel updatedGoal = goalService.updateByGoalName(userId, goalName, goal);
+    @PutMapping("/{id}")
+    public ResponseEntity<GoalModel> updateGoal(@PathVariable("id") int id, @RequestBody GoalModel goal) {
+        GoalModel updatedGoal = goalService.updateByGoalName(id, goal);
         if (updatedGoal != null) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedGoal); // 202
         } else {
