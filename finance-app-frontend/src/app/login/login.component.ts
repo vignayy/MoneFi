@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthApiService } from '../auth-api.service';
 import { LoginCredentials } from '../model/LoginCredentials';
@@ -11,7 +11,7 @@ import { ChartConfiguration, ChartData } from 'chart.js';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgChartsModule],
+  imports: [ReactiveFormsModule, CommonModule, NgChartsModule,RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
