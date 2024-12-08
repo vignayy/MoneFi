@@ -6,13 +6,15 @@ import { SignupCredentials } from '../model/SignupCredentials';
 import { AuthApiService } from '../auth-api.service';
 import { HttpClient } from '@angular/common/http';
 import { UserProfile } from '../model/UserProfile';
-import { HeaderComponent } from '../header/header.component';
+
 import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { NgChartsModule } from 'ng2-charts';
+import { ChartConfiguration, ChartData } from 'chart.js';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule,HeaderComponent, ToastrModule],
+  imports: [ReactiveFormsModule, CommonModule, NgChartsModule, ToastrModule],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
@@ -21,6 +23,46 @@ export class SignupComponent {
   showPassword = false;
   showConfirmPassword = false;
 
+  public mixedChartData: ChartData<'bar' | 'line'> = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Expenses',
+        data: [50, 45, 60, 40, 35, 60, 50, 55, 70, 75, 80, 75],
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      },
+      {
+        type: 'line',
+        label: 'Savings',
+        data: [60, 55, 65, 50, 45, 70, 63, 67, 90, 95, 90, 85],
+        fill: false,
+        borderColor: 'rgb(54, 162, 235)',
+      },
+    ],
+  };
+
+  public mixedChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Monthly Finance Overview',
+        font: {
+          size: 18,
+          family: 'Roboto',
+        },
+        color: '#1e3c72',
+      }
+    }
+  };
+
+  
   constructor(private fb: FormBuilder, private router: Router, private authApiService:AuthApiService, private authClient:HttpClient, private toastr: ToastrService) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -94,6 +136,10 @@ export class SignupComponent {
         }
       );
 }
+
+  navigateTo(route: string): void {
+    this.router.navigate([route]);
+  }
 
   
   

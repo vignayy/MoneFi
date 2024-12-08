@@ -1,5 +1,12 @@
-<!-- <app-header></app-header> -->
+<nav class="navbar">
+  <span class="brand-name" (click)="navigateTo('')" role="button" tabindex="0">
+    <i class="fas fa-chart-pie"></i>
+    MoneFi
+  </span>
+</nav>
+
 <div class="signup-container">
+  <div class="signup-content">
     <div class="signup-card">
       <h2>Create Account</h2>
       <form [formGroup]="signupForm" (submit)="onSubmit(signupForm.value)">
@@ -85,4 +92,12 @@
         </div>
       </form>
     </div>
+    <div class="chart-card">
+      <canvas baseChart 
+        [data]="mixedChartData"
+        [options]="mixedChartOptions"
+        [type]="'bar'">
+      </canvas>
+    </div>
   </div>
+</div>
