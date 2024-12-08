@@ -111,7 +111,7 @@ export class SignupComponent {
                     userProfile => {
                       console.log('Profile details:', userProfile);
                       // alert("Registered Successfully! Please login now");
-                      this.toastr.success('successfull login', 'Signup success');
+                      this.toastr.success('User registered successfully!', 'Signup success');
                       this.router.navigate(['/login']);
                     },
                     error => {

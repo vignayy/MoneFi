@@ -180,8 +180,10 @@ export class ExpensesComponent {
             console.log(userId);
             
             // Send POST request with the income data
+            const formattedDate = this.formatDate(result.date);
             const expenseData = {
               ...result, // This should contain fields like source, amount, date, category, recurring, etc.
+              date:formattedDate,
               userId: userId, // Add userId if your backend requires it
             };
             console.log(expenseData);
@@ -213,10 +215,11 @@ export class ExpensesComponent {
   }
 
   updateExpense(expense: Expense) {
+    console.log(expense);
     const dialogRef = this.dialog.open(AddExpenseDialogComponent, {
       width: '500px',
       panelClass: 'income-dialog',
-      data: { ...expense }, // Pass the income data to the dialog
+      data: { ...expense, isUpdate:true }, // Pass the income data to the dialog
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -226,8 +229,10 @@ export class ExpensesComponent {
         this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
           next : (userId) => {
 
+            const formattedDate = this.formatDate(result.date);
             const updatedExpenseData = {
               ...result, // Updated fields from the dialog form
+              date: formattedDate,
               userId: userId,
             };
             console.log(updatedExpenseData);
@@ -253,6 +258,14 @@ export class ExpensesComponent {
         
       }
     });
+  }
+  
+  formatDate(date: string): string {
+    const d = new Date(date);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   }
 
   deleteExpense(expenseId: number): void {

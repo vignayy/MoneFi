@@ -60,7 +60,7 @@ export class GoalsComponent {
               this.goals = data.map(goal => this.modelConverterFunction(goal));
             } else {
               this.goals = [];
-              this.toastr.warning('No goal data available for this user.', 'No Data');
+              this.toastr.warning('No goal data is available.', 'No Data');
               this.loading = false;
             }
           },
@@ -95,9 +95,11 @@ export class GoalsComponent {
             // console.log(userId);
             
             // Send POST request with the income data
+            const formattedDate = this.formatDate(result.deadLine);
             const goalData = {
               ...result, // This should contain fields like source, amount, date, category, recurring, etc.
               // userId: userId, // Add userId if your backend requires it
+              deadLine:formattedDate,
             };
             this.httpClient.post<inputGoal>(`${this.baseUrl}/api/user/${userId}/goal`, goalData, {
               headers: {
@@ -137,9 +139,9 @@ export class GoalsComponent {
     const dialogRef = this.dialog.open(AddGoalDialogComponent, {
       width: '500px',
       panelClass: 'income-dialog',
-      data: { ...goal }, // Pass the income data to the dialog
+      data: { ...goal, isUpdate: true }, // Pass the income data to the dialog
     });
-
+    console.log(goal);
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const token = sessionStorage.getItem('finance.auth');
@@ -148,11 +150,15 @@ export class GoalsComponent {
             // console.log(userId);
             
             // Send POST request with the income data
+            console.log(result);
+            const formattedDate = this.formatDate(result.deadLine);
             const goalData = {
               ...result, // This should contain fields like source, amount, date, category, recurring, etc.
               // userId: userId, // Add userId if your backend requires it
-              userId:userId
+              userId:userId,
+              deadLine:formattedDate,
             };
+            console.log(goalData);
             this.httpClient.put<inputGoal>(`${this.baseUrl}/api/user/${goal.id}/goal`, goalData, {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -186,6 +192,13 @@ export class GoalsComponent {
   }
 
 
+  formatDate(date: string): string {
+    const d = new Date(date);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
 
  
   modelConverterFunction(data: inputGoal): Goal {

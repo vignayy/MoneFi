@@ -38,12 +38,32 @@ export class AddIncomeDialogComponent {
     recurring: false
   };
 
-  // constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
+  // // constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
+  // constructor(
+  //   public dialogRef: MatDialogRef<AddIncomeDialogComponent>,
+  //   @Inject(MAT_DIALOG_DATA) public data: any // Inject incoming data
+  // ) {
+  //   this.incomeSource = { ...data }; // Initialize form with pre-populated data
+  // }
+  dialogTitle: string;
+  
   constructor(
     public dialogRef: MatDialogRef<AddIncomeDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any // Inject incoming data
+    @Inject(MAT_DIALOG_DATA) public data: any 
   ) {
-    this.incomeSource = { ...data }; // Initialize form with pre-populated data
+    const dialogData = data || {}; 
+
+    if (dialogData.isUpdate) {
+      this.dialogTitle = 'Update Income'; 
+      this.incomeSource = { ...dialogData }; 
+    } else {
+      this.dialogTitle = 'Add New Income'; 
+      this.incomeSource =  { source: '',
+      amount: 0,
+      date: new Date(),
+      category: '',
+      recurring: false}
+    }
   }
 
   onSave() {

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -57,36 +58,43 @@ public class UserController {
         return ResponseEntity.ok(jwtService.generateToken(user.getUsername()));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+@PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody User user) {
+    try {
+        // Validate user input (username and password should not be empty)
+        if (user.getUsername() == null || user.getUsername().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty()) {
+            return ResponseEntity.badRequest().body("Username and password are required");
+        }
+
+        // Check if the user exists in the database
+        User existingUser = userRepo.findByUsername(user.getUsername());
+        if (existingUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found. Please sign up.");
+        }
+
         try {
-            // Validate user input (username and password should not be empty)
-            if (user.getUsername() == null || user.getUsername().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty()) {
-                return ResponseEntity.badRequest().body("Username and password are required");
-            }
-
-            // Check if user exists in the database
-            User existingUser = userRepo.findByUsername(user.getUsername());
-            if (existingUser == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found. Please sign up.");
-            }
-
-            // Authenticate the user
+            // Authenticate the user with the provided password
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
-            // Check if authentication is successful
+            // If authentication is successful
             if (authentication.isAuthenticated()) {
                 JwtToken token = jwtService.generateToken(user.getUsername());
                 return ResponseEntity.ok(token);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
-        } catch (Exception e) {
-            // Catch and handle any other exceptions (e.g., wrong username/password format)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login");
+        } catch (BadCredentialsException ex) {
+            // If the password is incorrect
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
         }
+
+        // Default case for any other authentication failures
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+    } catch (Exception e) {
+        // Handle any unexpected errors
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login");
     }
+}
+
 
     @GetMapping("/token/{token}")
     public Integer getUserIdFromToken(@PathVariable("token") String token){

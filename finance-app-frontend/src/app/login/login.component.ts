@@ -18,6 +18,8 @@ import { ChartConfiguration, ChartData } from 'chart.js';
 export class LoginComponent {
   loginForm: FormGroup;
   showPassword = false;
+  isLoading = false;
+
 
   public radarChartData: ChartData<'radar'> = {
     labels: ['Budgeting', 'Saving', 'Investing', 'Planning', 'Tracking', 'Goals'],
@@ -91,30 +93,37 @@ export class LoginComponent {
     console.log('Forgot password clicked');
   }
 
-  onSubmit(loginCredentials:LoginCredentials) {
-      // console.log('Login form submitted:', loginCredentials);
-      this.authApiService.loginApiFunction(loginCredentials)
-      .subscribe (
-        response=>{
-          // console.log(response);
-          sessionStorage.setItem('finance.auth',response.jwtToken);
+
+  onSubmit(loginCredentials: LoginCredentials) {
+    this.isLoading = true; // Show loading spinner
+  
+    this.authApiService.loginApiFunction(loginCredentials)
+      .subscribe(
+        response => {
+          this.isLoading = false; // Hide loading spinner
+          sessionStorage.setItem('finance.auth', response.jwtToken);
           this.toastr.success('Login successful', 'Success');
           this.router.navigate(['dashboard']);
         },
-        error=>{
-          // console.error('Login Failed', error);
-          // this.toastr.error('Invalid username or password', 'Login failed');
+        error => {
+          this.isLoading = false; // Hide loading spinner
           if (error.status === 404) {
             this.toastr.error('User not found. Please sign up.', 'Login Failed');
           } else if (error.status === 401) {
-            this.toastr.error('Invalid username or password', 'Login Failed');
+            if (error.error === 'Incorrect password') {
+              this.toastr.error('Incorrect password. Please try again.', 'Login Failed');
+            } else {
+              this.toastr.error('Invalid username or password', 'Login Failed');
+            }
           } else {
             console.error('Login Failed', error);
             this.toastr.error('An error occurred. Please try again.', 'Login Failed');
           }
         }
-      )
+      );
   }
+  
+  
 
   navigateTo(route: string): void {
     this.router.navigate([route]);

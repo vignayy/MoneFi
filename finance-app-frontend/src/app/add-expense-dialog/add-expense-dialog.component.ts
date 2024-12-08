@@ -38,9 +38,25 @@ export class AddExpenseDialogComponent {
     recurring: false,
   };
 
+  dialogTitle: string;
+  
   constructor(
-    public dialogRef: MatDialogRef<AddExpenseDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.expenseSource = { ...data }; // Initialize form with pre-populated data
+    public dialogRef: MatDialogRef<AddIncomeDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any 
+  ) {
+    const dialogData = data || {}; 
+
+    if (dialogData.isUpdate) {
+      this.dialogTitle = 'Update Expense'; 
+      this.expenseSource = { ...dialogData }; 
+    } else {
+      this.dialogTitle = 'Add New Expense'; 
+      this.expenseSource =  {amount: 0,
+        date: new Date(),
+        category: '',
+        description:'',
+        recurring: false,}
+    }
   }
 
   onSave() {

@@ -31,19 +31,7 @@ export class DashboardComponent {
 
   constructor(private router:Router, private dialog: MatDialog, private route: ActivatedRoute){};
 
-  activeSection: string = 'overview';
-
-  setActiveSection(section: string) {
-    this.activeSection = section;
-  }
-
-  ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params['section']) {
-        this.activeSection = params['section'];
-      }
-    });
-  }
+  isLoading = false;
 
   logoutUser(): void {
     const dialogRef = this.dialog.open(ConfirmLogoutDialogComponent, {
@@ -54,8 +42,10 @@ export class DashboardComponent {
     });
   
     dialogRef.afterClosed().subscribe(result => {
+      this.isLoading = true;
       if (result) {
         setTimeout(() => {
+          this.isLoading = false;
           sessionStorage.removeItem('finance.auth');
           this.router.navigate(['']);
         }, 300);

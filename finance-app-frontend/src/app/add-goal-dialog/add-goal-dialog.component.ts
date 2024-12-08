@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -38,7 +38,23 @@ export class AddGoalDialogComponent {
     category: '',
   };
 
-  constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
+  dialogTitle: string;
+  
+  constructor(
+    public dialogRef: MatDialogRef<AddGoalDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any 
+  ) {
+    const dialogData = data || {}; 
+
+    if (dialogData.isUpdate) {
+      this.dialogTitle = 'Update Goal'; 
+      this.goalSource = { ...dialogData }; 
+    } else {
+      this.dialogTitle = 'Add New Goal'; 
+      this.goalSource = { goalName: '', currentAmount: 0, targetAmount: '', deadLine: new Date(), category: '' }; // Empty form for adding a new goal
+    }
+  }
+
 
   onSave() {
     // console.log(this.goalSource);

@@ -286,18 +286,36 @@
     text-align: center;
     padding: 3rem 1rem;
     color: #666;
-
+  
     i {
       font-size: 3rem;
       margin-bottom: 1rem;
-      background: linear-gradient(45deg, #2196F3, #673AB7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      opacity: 1;
     }
-
-    h3 {
-      margin: 0 0 0.5rem;
-      color: #333;
+  
+    .add-goal-btn {
+      background: linear-gradient(45deg, #2196F3, #673AB7);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;  // Increased padding for better balance
+      border-radius: 12px;  // Rounded corners for a soft look
+      font-size: 1rem;  // Font size adjusted for better readability
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  
+      &:hover {
+        background: linear-gradient(45deg, #2196F3, #673AB7);
+        transform: translateY(-2px);  // Slight lift effect on hover
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  // Subtle shadow for depth
+      }
+  
+      &:active {
+        transform: translateY(0);  // Reset the hover effect when clicked
+        box-shadow: none;  // Remove shadow on click
+      }
     }
   }
 
