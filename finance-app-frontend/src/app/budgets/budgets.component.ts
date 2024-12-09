@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { AddExpenseDialogComponent } from '../add-expense-dialog/add-expense-dialog.component';
 import { NgChartsModule } from 'ng2-charts';
+import { CountUpDirective } from '../shared/directives/count-up.directive';
 
 interface Budget {
   id: number;
@@ -41,7 +42,8 @@ interface Expense {
     MatInputModule,
     AddExpenseDialogComponent,
     NgChartsModule,
-    MatSelectModule]
+    MatSelectModule,
+    CountUpDirective]
 })
 export class BudgetsComponent {
 
