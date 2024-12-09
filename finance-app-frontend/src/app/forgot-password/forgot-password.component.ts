@@ -1,6 +1,3 @@
-
-
-
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -187,7 +184,7 @@ export class ForgotPasswordComponent {
     }
 
     // Basic password strength check
-    if (this.newPassword.length < 8) {
+    if (this.newPassword.length < 6) {
       this.errorMessage = 'Password must be at least 8 characters long';
       return false;
     }

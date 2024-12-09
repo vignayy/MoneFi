@@ -63,80 +63,6 @@ export class HomeComponent {
       backgroundColor: 'transparent'
     };
     
-  // Mixed Chart Configuration
-  // public mixedChartData: ChartData<'bar' | 'line'> = {
-  //   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  //   datasets: [
-  //     {
-  //       type: 'bar',
-  //       label: 'Expenses',
-  //       data: [50, 45, 60, 40, 35, 60, 50, 55, 70, 75, 80, 75],
-  //       borderColor: 'rgb(255, 99, 132)',
-  //       backgroundColor: 'rgba(255, 99, 132, 0.2)',
-  //     },
-  //     {
-  //       type: 'line',
-  //       label: 'Savings',
-  //       data: [60, 55, 65, 50, 45, 70, 63, 67, 90, 95, 90, 85],
-  //       fill: false,
-  //       borderColor: 'rgb(54, 162, 235)',
-  //     },
-  //   ],
-  // };
-
-  // public mixedChartOptions: ChartConfiguration['options'] = {
-  //   responsive: true,
-  //   plugins: {
-  //     legend: {
-  //       display: true,
-  //       position: 'top',
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: 'Monthly Finance Overview'
-  //     }
-  //   }
-  // };
-
-
-  // Radar Chart Configuration
-  // public radarChartData: ChartData<'radar'> = {
-  //   labels: ['Budgeting', 'Saving', 'Investing', 'Planning', 'Tracking', 'Goals'],
-  //   datasets: [
-  //     {
-  //       label: 'Current Status',
-  //       data: [65, 59, 90, 81, 56, 55],
-  //       fill: true,
-  //       backgroundColor: 'rgba(255, 99, 132, 0.2)',
-  //       borderColor: 'rgb(255, 99, 132)',
-  //       pointBackgroundColor: 'rgb(255, 99, 132)',
-  //       pointBorderColor: '#fff',
-  //     },
-  //     {
-  //       label: 'Target Status',
-  //       data: [28, 48, 40, 19, 96, 27],
-  //       fill: true,
-  //       backgroundColor: 'rgba(54, 162, 235, 0.2)',
-  //       borderColor: 'rgb(54, 162, 235)',
-  //       pointBackgroundColor: 'rgb(54, 162, 235)',
-  //       pointBorderColor: '#fff',
-  //     }
-  //   ]
-  // };
-
-  // public radarChartOptions: ChartConfiguration['options'] = {
-  //   responsive: true,
-  //   plugins: {
-  //     legend: {
-  //       position: 'top',
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: 'Financial Health Analysis'
-  //     }
-  //   }
-  // };
-
   navigateTo(route: string): void {
     this.router.navigate([route]);
   }
@@ -145,8 +71,8 @@ export class HomeComponent {
     return this.router.url === route;
   }
 
-  // logout(): void {
-  //   this.isLoggedIn = false;
-  //   this.router.navigate(['/home']);
-  // }
+  scrollToFeatures() {
+    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
 }

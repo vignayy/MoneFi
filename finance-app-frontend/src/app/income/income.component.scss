@@ -29,10 +29,11 @@
       align-items: center;
       gap: 0.5rem;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
 
       &:hover {
         background: #283593;
+        transform: translateY(-2px);
       }
     }
   }
@@ -375,10 +376,6 @@
 }
 
 
-
-
-
-
 .filters-section {
   margin: 20px 0;
   padding: 15px;
@@ -390,7 +387,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    align-items: center;
+    align-items: flex-start;
 
     .filter-item {
       flex: 1;
@@ -400,15 +397,23 @@
       mat-form-field {
         width: 100%;
       }
-    }
-  }
 
-  .reset-btn {
-    height: 56px;
-    white-space: nowrap;
-    
-    i {
-      margin-right: 8px;
+      &.button-container {
+        max-width: fit-content;
+        min-width: fit-content;
+        display: flex;
+        align-items: center;
+        height: 56px;
+      }
+    }
+
+    .reset-btn {
+      height: 36px;
+      white-space: nowrap;
+      
+      i {
+        margin-right: 8px;
+      }
     }
   }
 }

@@ -20,6 +20,7 @@
         </div>
         <div class="tile-content">
           <p class="tile-amount">₹{{summary.income | number:'1.0-0'}}</p>
+          <!-- <p class="tile-amount"><span [appCountUp]="summary.income"></span></p> -->
           <span class="tile-subtext">This Month</span>
         </div>
       </div>
@@ -34,6 +35,7 @@
         </div>
         <div class="tile-content">
           <p class="tile-amount">₹{{summary.expenses | number:'1.0-0'}}</p>
+          <!-- <p class="tile-amount"><span [appCountUp]="summary.expenses"></span></p> -->
           <span class="tile-subtext">This Month</span>
         </div>
       </div>
@@ -47,7 +49,7 @@
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount">₹{{summary.savings | number:'1.0-0'}}</p>
+          <p class="tile-amount"><span [appCountUp]="summary.savings"></span></p>
           <span class="tile-subtext">Current Balance</span>
         </div>
       </div>
@@ -61,7 +63,7 @@
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount">₹{{summary.netWorth | number:'1.0-0'}}</p>
+          <p class="tile-amount"><span [appCountUp]="summary.netWorth"></span></p>
           <span class="tile-subtext">Total Assets</span>
         </div>
       </div>
@@ -106,14 +108,14 @@
   <div class="quick-actions">
     <h3>Quick Actions</h3>
     <div class="action-buttons">
-      <button mat-raised-button color="primary" (click)="addIncome()">
-        <mat-icon>edit</mat-icon> Add Transaction
+      <button (click)="addExpenses()">
+        <i class="fas fa-plus"></i> Add Expense
       </button>
-      <button mat-raised-button color="accent" (click)="createBudget()">
-        <mat-icon>edit</mat-icon> Create Budget
+      <button (click)="createBudget()">
+        <i class="fas fa-edit"></i> Create Budget
       </button>
-      <button mat-raised-button color="warn" (click)="viewReports()">
-        <mat-icon>assignment</mat-icon> View Reports
+      <button (click)="viewReports()">
+        <i class="fas fa-chart-bar"></i> View Reports
       </button>
     </div>
   </div>

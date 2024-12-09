@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { CountUpDirective } from '../shared/directives/count-up.directive';
 
 interface FinancialSummary {
   income: number;
@@ -26,7 +27,8 @@ interface FinancialSummary {
     MatCardModule, 
     MatProgressBarModule, 
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    CountUpDirective
   ],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'
@@ -122,32 +124,18 @@ export class OverviewComponent implements OnInit {
     })
 
   }
-  
-  
-
-  // addTransaction() {
-  //   this.router.navigate(['/transactions/add']);
-  // }
-
-  // createBudget() {
-  //   this.router.navigate(['/budget/create']);
-  // }
-
-  // viewReports() {
-  //   this.router.navigate(['/reports']);
-  // }
 
 
-  addIncome() {
-    this.router.navigate(['/dashboard'], { queryParams: { section: 'income' } });
+  addExpenses() {
+    this.router.navigate(['dashboard/expenses']);
   }
 
   createBudget() {
-    this.router.navigate(['/dashboard'], { queryParams: { section: 'budgets' } });
+    this.router.navigate(['dashboard/budgets']);
   }
 
   viewReports() {
-    this.router.navigate(['/dashboard'], { queryParams: { section: 'analysis' } });
+    this.router.navigate(['dashboard/analysis']);
   }
 
 }

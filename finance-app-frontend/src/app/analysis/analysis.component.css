@@ -1,0 +1,66 @@
+.analysis-container {
+    padding: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .header-section {
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  
+  .header-section h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  .subtitle {
+    color: #666;
+    font-size: 1.1rem;
+  }
+  
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .chart-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .chart-header h2 {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  .chart-header p {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .chart-container {
+    position: relative;
+    height: 300px;
+  }
+  
+  @media (max-width: 768px) {
+    .analysis-container {
+      padding: 1rem;
+    }
+  
+    .chart-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  

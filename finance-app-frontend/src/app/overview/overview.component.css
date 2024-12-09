@@ -5,12 +5,12 @@
 }
 
 .overview-container {
+  padding: 1rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
-  background-color: #ffffff;
+  /* background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
+  border-radius: 12px; */
 }
 
 /* Header Section */
@@ -125,10 +125,11 @@
 }
 
 .progress-container {
-  background-color: #ffffff;
+  background-color: #f7fafc;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  /* border: 1px solid #e2e8f0; */
 }
 
 .progress-header {
@@ -150,8 +151,23 @@
 }
 
 mat-progress-bar {
-  height: 10px;
-  border-radius: 5px;
+  height: 8px !important;
+  border-radius: 4px;
+  --mdc-linear-progress-active-indicator-height: 6px;
+  --mdc-linear-progress-track-height: 6px;;
+}
+
+::ng-deep .mat-mdc-progress-bar {
+  --mdc-linear-progress-active-indicator-color: #4CAF50;
+  --mdc-linear-progress-track-color: rgba(0, 0, 0, 0.1);
+  --mdc-linear-progress-buffer-color: rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .warning.mat-mdc-progress-bar {
+  --mdc-linear-progress-active-indicator-color: #f44336;
+  --mdc-linear-progress-active-indicator-height: 6px;
+  --mdc-linear-progress-track-color: rgba(0, 0, 0, 0.1);
+  --mdc-linear-progress-buffer-color: rgba(0, 0, 0, 0.1);
 }
 
 .progress-description {
@@ -183,7 +199,19 @@ mat-progress-bar {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  font-weight: 500;
 }
+
+.action-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {

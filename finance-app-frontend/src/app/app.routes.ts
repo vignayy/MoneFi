@@ -11,6 +11,7 @@ import { GoalsComponent } from './goals/goals.component';
 import { ProfileComponent } from './profile/profile.component';
 import { OverviewComponent } from './overview/overview.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { AnalysisComponent } from './analysis/analysis.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -24,8 +25,7 @@ export const routes: Routes = [
     {path:'expenses',component:ExpensesComponent},
     {path:'budgets',component:BudgetsComponent},
     {path:'goals',component:GoalsComponent},
-    // {path:'spending',component:}
+    {path:'analysis',component:AnalysisComponent},
     {path:'profile',component:ProfileComponent}
   ]},
-  // {path:'income',component:IncomeComponent}
 ];

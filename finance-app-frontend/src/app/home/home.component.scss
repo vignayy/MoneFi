@@ -201,6 +201,10 @@ main {
         padding: 2rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease;
+        text-align: center;
+        p {
+          font-weight: 600;
+        }
 
         &:hover {
           transform: translateY(-5px);

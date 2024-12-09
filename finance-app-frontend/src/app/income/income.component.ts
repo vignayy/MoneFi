@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { MatSelectModule } from '@angular/material/select';
+import { CountUpDirective } from '../shared/directives/count-up.directive';
 
 
 interface IncomeSource {
@@ -35,7 +36,8 @@ interface IncomeSource {
     MatInputModule,
     AddIncomeDialogComponent,
     NgChartsModule,
-    MatSelectModule
+    MatSelectModule,
+    CountUpDirective
   ]
 })
 export class IncomeComponent {
