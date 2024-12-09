@@ -37,20 +37,14 @@ export class DashboardComponent {
 
   logoutUser(): void {
     const dialogRef = this.dialog.open(ConfirmLogoutDialogComponent, {
-      width: '450px',
+      width: '400px',
       panelClass: 'custom-dialog-container',
-      disableClose: true, // Prevents closing by clicking outside
-      position: { top: '100px' }
     });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      this.isLoading = true;
+
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        setTimeout(() => {
-          this.isLoading = false;
-          sessionStorage.removeItem('finance.auth');
-          this.router.navigate(['']);
-        }, 300);
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['']);
       }
     });
   }

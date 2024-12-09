@@ -1,87 +1,62 @@
-.logout-dialog-container {
-    padding: 24px;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
-  
-  .logout-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  
-  .logout-icon {
-    font-size: 36px;
-    color: #f44336;
-  }
-  
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  mat-dialog-content {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 20px;
-  }
-  
-  .warning-text {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #ff9800;
-  }
-  
-  .warning-icon {
-    font-size: 20px;
-  }
-  
-  mat-dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-  
-  button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: background 0.2s ease;
-  }
-  
-  .cancel-btn {
-    background: #f0f0f0;
-    color: #555;
-  }
-  
-  .cancel-btn:hover {
-    background: #e0e0e0;
-  }
-  
-  .confirm-btn {
-    background: #f44336;
-    color: white;
-  }
-  
-  .confirm-btn:hover {
-    background: #d32f2f;
-  }
-  
-  @keyframes slideIn {
-    from {
-      transform: translateY(-20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
+
+
+.dialog-container {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+p {
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.cancel-btn,
+.confirm-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn {
+  background-color: #bdc3c7;
+  color: #2c3e50;
+  border: none;
+}
+
+.cancel-btn:hover {
+  background-color: #95a5a6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(189, 195, 199, 0.3);
+}
+
+.confirm-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+}
+
+.confirm-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}

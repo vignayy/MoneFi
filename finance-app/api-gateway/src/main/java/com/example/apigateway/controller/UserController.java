@@ -105,20 +105,16 @@ public ResponseEntity<?> login(@RequestBody User user) {
 
 
 
+
+
+    // api calls for forgot password
     @Autowired
     private ResetPasswordService passwordResetService;
-
-//    @GetMapping("hello")
-//    public String hello(){
-//        return "Hello";
-//    }
 
     @PostMapping("/forgot-password")
     public String forgotPassword(@RequestParam String email) {
         return passwordResetService.forgotPassword(email);
     }
-
-
     @PostMapping("/verify-code")
     public String verifyCode(@RequestParam String email, @RequestParam String code) {
         boolean isValid = passwordResetService.verifyCode(email, code);
@@ -126,7 +122,6 @@ public ResponseEntity<?> login(@RequestBody User user) {
             return "Verification successful!";
         } else {
             throw new RuntimeException("Invalid verification code");
-//            return "Invalid or expired verification code!";
         }
     }
     @PutMapping("/update-password")
