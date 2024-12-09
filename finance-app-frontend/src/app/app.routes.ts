@@ -12,6 +12,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { OverviewComponent } from './overview/overview.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { AnalysisComponent } from './analysis/analysis.component';
+import { AiAssistantComponent } from './ai-assistant/ai-assistant.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,6 +27,7 @@ export const routes: Routes = [
     {path:'budgets',component:BudgetsComponent},
     {path:'goals',component:GoalsComponent},
     {path:'analysis',component:AnalysisComponent},
-    {path:'profile',component:ProfileComponent}
+    {path:'profile',component:ProfileComponent},
+    { path: 'ai-assistant', component: AiAssistantComponent },
   ]},
 ];
