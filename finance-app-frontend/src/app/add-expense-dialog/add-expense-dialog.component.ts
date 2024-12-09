@@ -31,7 +31,7 @@ import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog
 })
 export class AddExpenseDialogComponent {
   expenseSource = {
-    amount: 0,
+    amount: '',
     date: new Date(),
     category: '',
     description:'',
@@ -51,7 +51,7 @@ export class AddExpenseDialogComponent {
       this.expenseSource = { ...dialogData }; 
     } else {
       this.dialogTitle = 'Add New Expense'; 
-      this.expenseSource =  {amount: 0,
+      this.expenseSource =  {amount: '',
         date: new Date(),
         category: '',
         description:'',

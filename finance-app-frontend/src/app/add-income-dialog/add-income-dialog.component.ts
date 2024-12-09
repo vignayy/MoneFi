@@ -32,7 +32,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class AddIncomeDialogComponent {
   incomeSource = {
     source: '',
-    amount: 0,
+    amount: '',
     date: new Date(),
     category: '',
     recurring: false
@@ -59,7 +59,7 @@ export class AddIncomeDialogComponent {
     } else {
       this.dialogTitle = 'Add New Income'; 
       this.incomeSource =  { source: '',
-      amount: 0,
+      amount: '',
       date: new Date(),
       category: '',
       recurring: false}

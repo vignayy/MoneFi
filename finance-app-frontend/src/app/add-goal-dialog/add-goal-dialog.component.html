@@ -20,18 +20,13 @@
         <mat-icon matPrefix>attach_money</mat-icon>
       </mat-form-field> -->
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Amount</mat-label>
+        <mat-label>Current Amount</mat-label>
         <span matPrefix class="currency-prefix">₹</span>
         <input matInput type="number" [(ngModel)]="goalSource.currentAmount" name="currentAmount" placeholder="0.00">
       </mat-form-field>
 
-      <!-- <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Target Amount</mat-label>
-        <input matInput type="number" [(ngModel)]="goalSource.targetAmount" name="targetAmount" placeholder="0.00">
-        <mat-icon matPrefix>attach_money</mat-icon>
-      </mat-form-field> -->
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Amount</mat-label>
+        <mat-label>Target Amount</mat-label>
         <span matPrefix class="currency-prefix">₹</span>
         <input matInput type="number" [(ngModel)]="goalSource.targetAmount" name="targetAmount" placeholder="0.00">
       </mat-form-field>

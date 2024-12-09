@@ -32,7 +32,7 @@ import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog
 export class AddGoalDialogComponent {
   goalSource = {
     goalName:'',
-    currentAmount: 0,
+    currentAmount:'',
     targetAmount:'',
     deadLine: new Date(),
     category: '',
@@ -51,7 +51,7 @@ export class AddGoalDialogComponent {
       this.goalSource = { ...dialogData }; 
     } else {
       this.dialogTitle = 'Add New Goal'; 
-      this.goalSource = { goalName: '', currentAmount: 0, targetAmount: '', deadLine: new Date(), category: '' }; // Empty form for adding a new goal
+      this.goalSource = { goalName: '', currentAmount: '', targetAmount: '', deadLine: new Date(), category: '' }; // Empty form for adding a new goal
     }
   }
 
