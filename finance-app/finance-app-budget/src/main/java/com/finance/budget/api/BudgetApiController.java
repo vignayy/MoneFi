@@ -45,9 +45,10 @@ public class BudgetApiController {
         }
     }
 
-    @PutMapping("/{userId}/category")
-    public ResponseEntity<BudgetModel> updateBudget(@PathVariable("userId") int userId, @RequestParam("name") String category, @RequestBody BudgetModel budget) {
-        BudgetModel updatedBudget = budgetService.updateByCategory(userId, category, budget);
+    @PutMapping("/{id}")
+    public ResponseEntity<BudgetModel> updateBudget(@PathVariable("id") int id, @RequestBody BudgetModel budget) {
+        BudgetModel updatedBudget = budgetService.update(id, budget);
+        System.out.println(updatedBudget);
         if (updatedBudget != null) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedBudget); // 202
         } else {

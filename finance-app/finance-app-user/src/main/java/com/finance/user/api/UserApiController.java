@@ -22,6 +22,8 @@ import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -297,6 +299,23 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+//    @PutMapping("/{id}/budgets")
+//    public ResponseEntity<BudgetModel> updateAllBudgets(@PathVariable("id") int id, BudgetModel budgetModel){
+//         restTemplate.put("http://FINANCE-APP-BUDGET/api/budget/" + id, budgetModel, BudgetModel.class);
+//         return null;
+//    }
+@PutMapping("/{id}/budgets")
+public ResponseEntity<BudgetModel> updateAllBudgets(@PathVariable("id") int id, @RequestBody BudgetModel budgetModel) {
+    ResponseEntity<BudgetModel> response = restTemplate.exchange(
+            "http://FINANCE-APP-BUDGET/api/budget/" + id,
+            HttpMethod.PUT,
+            new HttpEntity<>(budgetModel),
+            BudgetModel.class
+    );
+
+    // Optionally handle the response body or status
+    return response;
+}
 
 
 

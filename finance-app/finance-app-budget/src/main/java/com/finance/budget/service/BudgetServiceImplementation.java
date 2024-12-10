@@ -36,10 +36,9 @@ public class BudgetServiceImplementation implements BudgetService{
     }
 
     @Override
-    public BudgetModel updateByCategory(int userId, String category, BudgetModel budget) {
-        BudgetModel budgetModel = budgetRepository.findByUserIdAndCatergory(userId, category);
-
-        budget.setUserId(userId);
+    public BudgetModel update(int id, BudgetModel budget) {
+        System.out.println(budget);
+        BudgetModel budgetModel = budgetRepository.findById(id).orElse(null);
 
         if(budget.getCategory() != null){
             budgetModel.setCategory(budget.getCategory());
