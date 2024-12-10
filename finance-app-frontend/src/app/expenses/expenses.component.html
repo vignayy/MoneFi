@@ -10,15 +10,18 @@
         </p>
         <div class="expense-ratio">
           <div class="ratio-header">
-            <span class="ratio-label">Recurring vs One-Time</span>
-            <span class="ratio-percentage">{{recurringPercentage}}%</span>
+            <span class="ratio-label">Income Spent</span>
+            <span class="ratio-percentage">{{spentPercentage}}%</span>
           </div>
           <div class="ratio-bar">
-            <div class="ratio-fill" [style.width]="recurringPercentage + '%'"></div>
+            <div class="ratio-fill" 
+                 [style.width]="spentPercentage + '%'"
+                 [style.background-color]="getProgressColor(totalExpenses, totalIncome)">
+            </div>
           </div>
           <div class="ratio-legend">
-            <span class="recurring">Recurring</span>
-            <span class="one-time">One-Time</span>
+            <span class="status-message">{{ getSpendingStatusMessage(spentPercentage) }}</span>
+            <span class="remaining">Income Left: ₹{{incomeLeft | number}}</span>
           </div>
         </div>
       </div>

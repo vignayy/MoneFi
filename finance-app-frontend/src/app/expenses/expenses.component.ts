@@ -22,6 +22,11 @@ interface Expense {
   recurring: boolean;
 }
 
+interface FinancialSummary {
+  income: number;
+  expenses: number;
+}
+
 @Component({
   selector: 'app-expenses',
   templateUrl: './expenses.component.html',
@@ -54,6 +59,9 @@ export class ExpensesComponent {
   
   availableYears: number[] = [];
   uniqueCategories: string[] = [];
+  totalIncome: number = 0;
+  spentPercentage: number = 0;
+  incomeLeft: number = 0;
 
   public pieChartData: ChartData<'pie' | 'doughnut', number[], string> = {
     labels: [],
@@ -145,6 +153,16 @@ export class ExpensesComponent {
             this.loading = false;
           }
         });
+
+        this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome`).subscribe({
+          next: (totalIncome) => {
+            this.totalIncome = totalIncome;
+            this.calculateSpentPercentage();
+          },
+          error: (error) => {
+            console.log('Failed to get income details', error);
+          }
+        });
       },
       error: (error) => {
         console.error('Failed to fetch userId:', error);
@@ -167,6 +185,7 @@ export class ExpensesComponent {
 
   calculateTotalExpenses() {
     this.totalExpenses = this.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    this.calculateSpentPercentage();
   }
 
   addExpense() {
@@ -177,21 +196,24 @@ export class ExpensesComponent {
   
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        // Check if adding this expense would exceed income
+        if (this.totalExpenses + result.amount > this.totalIncome) {
+          this.toastr.error('Cannot add expense. Amount exceeds Available Income.', 'Insufficient Income');
+          return;
+        }
+
         const token = sessionStorage.getItem('finance.auth');
-        console.log(token);
-  
+        
         this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
           next: (userId) => {
-            console.log(userId);
-            
-            // Send POST request with the income data
+            // Send POST request with the expense data
             const formattedDate = this.formatDate(result.date);
             const expenseData = {
-              ...result, // This should contain fields like source, amount, date, category, recurring, etc.
-              date:formattedDate,
-              userId: userId, // Add userId if your backend requires it
+              ...result,
+              date: formattedDate,
+              userId: userId,
             };
-            console.log(expenseData);
+
             this.httpClient.post<Expense>(`${this.baseUrl}/api/user/${userId}/expense`, expenseData, {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -201,9 +223,11 @@ export class ExpensesComponent {
                 this.expenses.push(newExpense);
                 this.calculateTotalExpenses();
                 this.updateChartData();
+                this.toastr.success('Expense added successfully');
               },
               error: (error) => {
                 console.error('Failed to add expense data:', error);
+                this.toastr.error('Failed to add expense', 'Error');
               },
               complete: () => {
                 this.loading = false;
@@ -220,29 +244,37 @@ export class ExpensesComponent {
   }
 
   updateExpense(expense: Expense) {
-    console.log(expense);
     const dialogRef = this.dialog.open(AddExpenseDialogComponent, {
       width: '500px',
       panelClass: 'income-dialog',
-      data: { ...expense, isUpdate:true }, // Pass the income data to the dialog
+      data: { ...expense, isUpdate: true },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        // Calculate what the total expenses would be after this update
+        const updatedTotalExpenses = this.totalExpenses - expense.amount + result.amount;
+        
+        // Check if the update would exceed income
+        if (updatedTotalExpenses > this.totalIncome) {
+          this.toastr.error('Cannot update expense. Amount exceeds available income.', 'Insufficient Income');
+          return;
+        }
+
         const token = sessionStorage.getItem('finance.auth');
 
         this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
-          next : (userId) => {
-
+          next: (userId) => {
             const formattedDate = this.formatDate(result.date);
             const updatedExpenseData = {
-              ...result, // Updated fields from the dialog form
+              ...result,
               date: formattedDate,
               userId: userId,
             };
-            console.log(updatedExpenseData);
 
-            this.httpClient.put<Expense>(`${this.baseUrl}/api/user/${expense.id}/expense`, updatedExpenseData,
+            this.httpClient.put<Expense>(
+              `${this.baseUrl}/api/user/${expense.id}/expense`,
+              updatedExpenseData,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -251,16 +283,16 @@ export class ExpensesComponent {
             ).subscribe({
               next: (updatedExpense) => {
                 console.log('Expense updated successfully:', updatedExpense);
-                this.loadExpensesData(); 
+                this.loadExpensesData();
+                this.toastr.success('Expense updated successfully');
               },
               error: (error) => {
                 console.error('Failed to update Expense:', error);
+                this.toastr.error('Failed to update expense', 'Error');
               },
             });
           }
-        })
-  
-        
+        });
       }
     });
   }
@@ -337,6 +369,31 @@ export class ExpensesComponent {
     this.selectedCategory = ''; // Reset to all categories
     this.filterExpenses();
   }
+
+  getProgressColor(spent: number, total: number): string {
+    const percentage = (spent / total) * 100;
+    if (percentage >= 90) return '#E53935';  // Material Red 600
+    if (percentage >= 75) return '#FB8C00';  // Material Orange 600
+    return '#43A047';  // Material Green 600
+  }
+
+  private calculateSpentPercentage() {
+    this.spentPercentage = this.totalIncome > 0 
+      ? parseFloat(((this.totalExpenses / this.totalIncome) * 100).toFixed(2))
+      : 0;
+    this.incomeLeft = this.totalIncome - this.totalExpenses;
+  }
   
+  getSpendingStatusMessage(percentage: number): string {
+    if (percentage >= 90) {
+      return 'Warning: Spending exceeds 90% of income. Consider reducing expenses.';
+    } else if (percentage >= 75) {
+      return 'Caution: Approaching income limit. Review your spending.';
+    } else if (percentage >= 50) {
+      return 'Moderate spending. You\'re maintaining good balance.';
+    } else {
+      return 'Great job! Your spending is well under control.';
+    }
+  }
 }
 
