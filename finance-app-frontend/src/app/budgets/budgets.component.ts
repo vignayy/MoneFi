@@ -12,6 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { AddExpenseDialogComponent } from '../add-expense-dialog/add-expense-dialog.component';
 import { NgChartsModule } from 'ng2-charts';
 import { CountUpDirective } from '../shared/directives/count-up.directive';
+import { UpdateBudgetDialogComponent } from '../update-budget-dialog/update-budget-dialog.component';
+
 
 interface Budget {
   id: number;
@@ -81,6 +83,7 @@ export class BudgetsComponent {
   
     this.loadBudgetData();
     this.loadExpensesData();
+    this.filterExpenses();
   }
   initializeFilters() {
     // Generate last 5 years
@@ -226,48 +229,93 @@ export class BudgetsComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const token = sessionStorage.getItem('finance.auth');
-        console.log(token);
+        if (token) {
+          this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+            next: (userId) => {
+              console.log(userId);
   
-        this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
-          next: (userId) => {
-            console.log(userId);
-            
-            // Send POST request with the income data
-            const budgetData = {
-              ...result, // This should contain fields like source, amount, date, category, recurring, etc.
-              userId: userId, // Add userId if your backend requires it
-            };
-            console.log(budgetData);
-            this.httpClient.post<Budget>(`${this.baseUrl}/api/user/${userId}/budget`, budgetData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }).subscribe({
-              next: (newBudget) => {
-                // newBudget.remaining = newBudget.moneyLimit - newBudget.currentSpending;
-                // this.budgets.push(newBudget);
-                // this.calculateTotals();
-                // this.calculateTotalExpenses();
-                this.toastr.success('New budget created');
-                this.loadBudgetData();
-              },
-              error: (error) => {
-                console.error('Failed to add budget data:', error);
-              },
-              complete: () => {
-                this.loading = false;
-              },
-            });
-          },
-          error: (error) => {
-            console.error('Failed to fetch userId:', error);
-            this.loading = false;
-          },
-        });
+              // Explicitly type the category requests
+              const categoryRequests: Promise<any>[] = result.categories.map((category: any) => {
+                const categoryData = {
+                  userId: userId,
+                  ...category, // Includes fields like name, percentage, and amount
+                };
+  
+                // Send individual POST request for each category
+                return this.httpClient.post(`${this.baseUrl}/api/user/${userId}/budget`, categoryData, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }).toPromise(); // Convert Observable to Promise
+              });
+  
+              // Execute all POST requests
+              Promise.all(categoryRequests)
+                .then(() => {
+                  this.toastr.success('All categories added successfully');
+                  this.loadBudgetData(); // Refresh data if necessary
+                })
+                .catch((error) => {
+                  console.error('Failed to add one or more categories:', error);
+                  this.toastr.error('Some categories failed to add');
+                });
+            },
+            error: (error) => {
+              console.error('Failed to fetch userId:', error);
+              this.toastr.error('Failed to retrieve user ID');
+            },
+          });
+        }
       }
     });
   }
-
+  
+  
+  
+  updateBudget() {
+    const dialogRef = this.dialog.open(UpdateBudgetDialogComponent, {
+      width: '800px',
+      data: { budgets: this.budgets }, // Pass all budgets to the dialog
+    });
+  
+    dialogRef.afterClosed().subscribe((updatedBudgets) => {
+      if (updatedBudgets) {
+        console.log(updatedBudgets);
+        this.saveUpdatedBudgets(updatedBudgets);
+      }
+    });
+  }
+  
+  // Save all updated budgets to the backend
+  private saveUpdatedBudgets(updatedBudgets: any[]) {
+    const token = sessionStorage.getItem('finance.auth');
+    let updateCount = 0;
+  
+    updatedBudgets.forEach((budget) => {
+      this.httpClient
+        .put(`${this.baseUrl}/api/user/${budget.id}/budgets`, budget, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .subscribe({
+          next: () => {
+            updateCount++;
+  
+            // Check if all budgets have been updated
+            if (updateCount === updatedBudgets.length) {
+              this.toastr.success('All budgets updated successfully');
+              this.loadBudgetData(); // Refresh budgets after update
+            }
+          },
+          error: (error) => {
+            console.error('Failed to update budget:', error);
+            this.toastr.error('Failed to update budget');
+          },
+        });
+    });
+  }
+  
+  
+  
 
   editBudget(budget : Budget){
 

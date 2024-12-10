@@ -103,3 +103,34 @@ button[mat-raised-button] {
   margin-left: 10px;
   align-items: center; /* Centers the rupee symbol vertically */
 }
+
+
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.dialog-title {
+  text-align: center;
+}
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
