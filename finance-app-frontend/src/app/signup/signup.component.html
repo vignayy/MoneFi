@@ -20,6 +20,10 @@
       </canvas>
     </div>
     <div class="signup-card">
+      <div class="card-brand-name" (click)="navigateTo('')" role="button" tabindex="0">
+        <i class="fas fa-chart-pie"></i>
+        MoneFi
+      </div>
       <h2>Create Account</h2>
       <form [formGroup]="signupForm" (submit)="onSubmit(signupForm.value)">
         <div class="form-group">
