@@ -1,21 +1,90 @@
+// import { HttpClient } from '@angular/common/http';
+// import { Component } from '@angular/core';
+// import { FormsModule } from '@angular/forms';
+// import { MatButtonModule } from '@angular/material/button';
+// import { MatCheckboxModule } from '@angular/material/checkbox';
+// import { MatNativeDateModule } from '@angular/material/core';
+// import { MatDatepickerModule } from '@angular/material/datepicker';
+// import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatIconModule } from '@angular/material/icon';
+// import { MatInputModule } from '@angular/material/input';
+// import { MatSelectModule } from '@angular/material/select';
+// import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
+
+// @Component({
+//   selector: 'app-add-budget-dialog',
+//   standalone: true,
+//   imports: [FormsModule,
+//     MatInputModule,
+//     MatCheckboxModule,
+//     MatButtonModule,
+//     MatDialogModule,
+//     MatFormFieldModule,
+//     MatSelectModule,
+//     MatDatepickerModule,
+//     MatNativeDateModule,
+//     MatIconModule],
+//   templateUrl: './add-budget-dialog.component.html',
+//   styleUrl: './add-budget-dialog.component.scss'
+// })
+// export class AddBudgetDialogComponent {
+//   constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>, private httpClient:HttpClient) {};
+//   baseUrl = "http://localhost:8765";
+
+//   budgetSource = {
+//     moneyLimit:''
+//   };
+
+//   totalIncome : number | any;
+
+//   ngOnInit() {
+//     const token = sessionStorage.getItem('finance.auth');
+//     console.log(token);
+
+//     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+//       next : (userId) => {
+//         console.log(userId);
+
+//         this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/12/2024`).subscribe({
+//           next : (totalIncome) => {
+//             console.log(totalIncome);
+//             this.totalIncome = totalIncome;
+//           }
+//         })
+//       }
+//     })
+//   }
+
+//   onSave() {
+//     this.dialogRef.close(this.budgetSource);
+//   }
+
+//   onCancel() {
+//     this.dialogRef.close();
+//   }
+// }
+
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
 
 @Component({
   selector: 'app-add-budget-dialog',
   standalone: true,
-  imports: [FormsModule,
+  templateUrl: './add-budget-dialog.component.html',
+  styleUrl: './add-budget-dialog.component.scss',
+    imports: [FormsModule,
     MatInputModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -24,39 +93,90 @@ import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatIconModule],
-  templateUrl: './add-budget-dialog.component.html',
-  styleUrl: './add-budget-dialog.component.scss'
+    MatIconModule,
+  CommonModule],
 })
 export class AddBudgetDialogComponent {
-  constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>, private httpClient:HttpClient) {};
   baseUrl = "http://localhost:8765";
 
   budgetSource = {
-    moneyLimit:''
+    moneyLimit: 0,
+    categories: [] as { category: string; percentage: number; moneyLimit: number }[],
   };
 
-  totalIncome : number | any;
+  totalIncome: number = 0;
+
+  categories = [
+    'Food',
+    'Travelling',
+    'Entertainment',
+    'Groceries',
+    'Shopping',
+    'Bills & utilities',
+    'House Rent',
+    'Emi and loans',
+    'Health & Medical',
+    'Miscellaneous',
+  ];
+
+  constructor(
+    public dialogRef: MatDialogRef<AddBudgetDialogComponent>,@Inject(MAT_DIALOG_DATA) public data: any ,
+    private httpClient: HttpClient
+  ) {}
 
   ngOnInit() {
     const token = sessionStorage.getItem('finance.auth');
-    console.log(token);
+    if (token) {
+      this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+        next: (userId) => {
+          this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/12/2024`).subscribe({
+            next: (totalIncome) => {
+              this.totalIncome = totalIncome;
+              this.initializeCategories();
+            },
+          });
+        },
+      });
+    }
+  }
 
-    this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
-      next : (userId) => {
-        console.log(userId);
+  initializeCategories() {
+    // Generate random percentages that sum up to 100
+    const randomPercentages = this.generateRandomPercentages(this.categories.length);
 
-        this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/12/2024`).subscribe({
-          next : (totalIncome) => {
-            console.log(totalIncome);
-            this.totalIncome = totalIncome;
-          }
-        })
-      }
-    })
+    // Assign percentages and calculate initial amounts
+    this.budgetSource.categories = this.categories.map((category, index) => ({
+      category,
+      percentage: randomPercentages[index],
+      moneyLimit: 0,
+    }));
+  }
+
+  generateRandomPercentages(count: number): number[] {
+    const percentages = Array.from({ length: count }, () => Math.random());
+    const sum = percentages.reduce((acc, value) => acc + value, 0);
+
+    // Normalize to make the sum 100
+    return percentages.map((value) => Math.round((value / sum) * 100));
+  }
+
+  onBudgetChange() {
+    const totalBudget = this.budgetSource.moneyLimit;
+    this.budgetSource.categories.forEach((category) => {
+      category.moneyLimit = (totalBudget * category.percentage) / 100;
+    });
   }
 
   onSave() {
+    const totalPercentage = this.budgetSource.categories.reduce(
+      (sum, category) => sum + category.percentage,
+      0
+    );
+
+    // if (totalPercentage !== 100) {
+    //   alert('An internal error occurred: Percentages do not sum to 100.');
+    //   return;
+    // }
     this.dialogRef.close(this.budgetSource);
   }
 

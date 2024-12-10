@@ -1,40 +1,37 @@
 <div class="dialog-container">
-    <h2 class="dialog-title">Add New Budget</h2>
-    
+  <h2 class="dialog-title">Add New Budget</h2>
+
+  <!-- Scrollable Content -->
+  <div class="scrollable-content">
     <form class="income-form">
+      <h2>Your Total Income: ₹{{ totalIncome }}</h2>
 
-      <!-- <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Category</mat-label>
-        <mat-select [(ngModel)]="budgetSource.category" name="category">
-          <mat-option value="Food">Food</mat-option>
-          <mat-option value="Travelling">Travelling</mat-option>
-          <mat-option value="Entertainment">Entertainment</mat-option>
-          <mat-option value="Groceries">Groceries</mat-option>
-          <mat-option value="Shopping">Shopping</mat-option>
-          <mat-option value="Bills & utilities">Bills & utilities</mat-option>
-          <mat-option value="House Rent">House Rent</mat-option>
-          <mat-option value="Emi and loans">Emi and loans</mat-option>
-          <mat-option value="Health & Medical">Health & Medical</mat-option>
-          <mat-option value="Miscellaneous">Miscellaneous</mat-option>
-        </mat-select>
-        <mat-icon matPrefix>category</mat-icon>
-      </mat-form-field> -->
-
-      <h2> Your total Income is: {{totalIncome}}</h2>
+      <!-- Input for Total Budget -->
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Target Amount</mat-label>
+        <mat-label>Total Budget</mat-label>
         <span matPrefix class="currency-prefix">₹</span>
-        <input matInput type="number" [(ngModel)]="budgetSource.moneyLimit" name="targetAmount" placeholder="0.00">
-        <!-- <mat-icon matPrefix>attach_money</mat-icon> -->
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="budgetSource.moneyLimit"
+          (input)="onBudgetChange()"
+          name="targetAmount"
+          placeholder="0.00"
+        />
       </mat-form-field>
-      <h2> Food {{food}}</h2>
-      <h2> Travelling {{travelling}} </h2>
-      <h2> Entertainment {{entertainment}} </h2>
 
-  
-      <div class="dialog-actions">
-        <button mat-stroked-button (click)="onCancel()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="onSave()">Save Expense</button>
+      <!-- Dynamic Category List -->
+      <div *ngFor="let category of budgetSource.categories" class="category-row">
+        <p>{{ category.category }}</p>
+        <p>Percentage: {{ category.percentage }}%</p>
+        <p>Amount: ₹{{ category.moneyLimit.toFixed(2) }}</p>
       </div>
     </form>
   </div>
+
+  <!-- Action Buttons -->
+  <div class="dialog-actions">
+    <button mat-stroked-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save Budget</button>
+  </div>
+</div>
