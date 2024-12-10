@@ -12,7 +12,7 @@ public interface BudgetService {
 
     public List<BudgetModel> getAllBudgets(int userId);
 
-    public BudgetModel updateByCategory(int userId, String category, BudgetModel budget);
+    public BudgetModel update(int id, BudgetModel budget);
 
     public void deleteParticularBudgetByCategory(int userId, String category);
 }
