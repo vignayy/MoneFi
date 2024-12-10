@@ -20,6 +20,7 @@ import com.finance.user.service.microservices.goal.UserGoalService;
 import com.finance.user.service.microservices.income.UserIncomeService;
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -171,6 +172,13 @@ public class UserApiController {
     @GetMapping("/{userId}/totalIncome")
     public Integer getTotalIncome(@PathVariable("userId") int userId){
         List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
+        return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
+    }
+    @GetMapping("/{userId}/totalIncome/{month}/{year}")
+    public Integer getTotalIncomeByMonthAndYear(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year){
+//        List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
+//        return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
+        List<IncomeModel> incomesList = incomeService.getAllIncomesByDate(userId, month, year);
         return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
     @GetMapping("/incomes/{userId}/{month}/{year}")

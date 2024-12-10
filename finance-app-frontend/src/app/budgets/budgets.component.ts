@@ -181,6 +181,9 @@ export class BudgetsComponent {
       },
       error: (error) => {
         console.error('Failed to fetch userId:', error);
+        alert("Session timed out! Please login again");
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
         this.loading = false;
       }
     });

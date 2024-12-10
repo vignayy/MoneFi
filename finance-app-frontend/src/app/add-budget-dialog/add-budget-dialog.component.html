@@ -3,8 +3,7 @@
     
     <form class="income-form">
 
-  
-      <mat-form-field appearance="outline" class="form-field">
+      <!-- <mat-form-field appearance="outline" class="form-field">
         <mat-label>Category</mat-label>
         <mat-select [(ngModel)]="budgetSource.category" name="category">
           <mat-option value="Food">Food</mat-option>
@@ -12,23 +11,26 @@
           <mat-option value="Entertainment">Entertainment</mat-option>
           <mat-option value="Groceries">Groceries</mat-option>
           <mat-option value="Shopping">Shopping</mat-option>
-          <mat-option value="Fuel">Fuel</mat-option>
           <mat-option value="Bills & utilities">Bills & utilities</mat-option>
           <mat-option value="House Rent">House Rent</mat-option>
           <mat-option value="Emi and loans">Emi and loans</mat-option>
-          <mat-option value="Personal Care">Personal Care</mat-option>
+          <mat-option value="Health & Medical">Health & Medical</mat-option>
           <mat-option value="Miscellaneous">Miscellaneous</mat-option>
-          <mat-option value="Other">Other</mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
-      </mat-form-field>
+      </mat-form-field> -->
 
+      <h2> Your total Income is: {{totalIncome}}</h2>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Target Amount</mat-label>
         <span matPrefix class="currency-prefix">₹</span>
         <input matInput type="number" [(ngModel)]="budgetSource.moneyLimit" name="targetAmount" placeholder="0.00">
         <!-- <mat-icon matPrefix>attach_money</mat-icon> -->
       </mat-form-field>
+      <h2> Food {{food}}</h2>
+      <h2> Travelling {{travelling}} </h2>
+      <h2> Entertainment {{entertainment}} </h2>
+
   
       <div class="dialog-actions">
         <button mat-stroked-button (click)="onCancel()">Cancel</button>

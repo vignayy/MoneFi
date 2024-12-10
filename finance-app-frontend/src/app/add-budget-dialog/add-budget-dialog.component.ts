@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,12 +29,33 @@ import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog
   styleUrl: './add-budget-dialog.component.scss'
 })
 export class AddBudgetDialogComponent {
+  constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>, private httpClient:HttpClient) {};
+  baseUrl = "http://localhost:8765";
+
   budgetSource = {
-    category: '',
-    currentSpending:0,
     moneyLimit:''
   };
-  constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
+
+  totalIncome : number | any;
+
+  ngOnInit() {
+    const token = sessionStorage.getItem('finance.auth');
+    console.log(token);
+
+    this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next : (userId) => {
+        console.log(userId);
+
+        this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/12/2024`).subscribe({
+          next : (totalIncome) => {
+            console.log(totalIncome);
+            this.totalIncome = totalIncome;
+          }
+        })
+      }
+    })
+  }
+
   onSave() {
     this.dialogRef.close(this.budgetSource);
   }
