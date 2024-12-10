@@ -114,34 +114,36 @@
 
               .ratio-fill {
                 height: 100%;
-                background: #FF9F40;
                 border-radius: 4px;
-                transition: width 0.3s ease;
+                transition: all 0.3s ease;
+                
+                // Add subtle gradient overlay for depth
+                background-image: linear-gradient(
+                  to right,
+                  rgba(255, 255, 255, 0.1),
+                  rgba(255, 255, 255, 0.2)
+                );
               }
             }
 
             .ratio-legend {
               display: flex;
-              justify-content: space-between;
+              flex-direction: column;
+              gap: 0.5rem;
               font-size: 0.85rem;
 
-              span {
+              .status-message {
+                color: rgba(255, 255, 255, 0.9);
+                line-height: 1.4;
+              }
+
+              .remaining {
                 color: rgba(255, 255, 255, 0.8);
-
-                &.recurring::before,
-                &.one-time::before {
-                  content: '•';
+                font-weight: 500;
+                
+                &::before {
+                  // content: '💰';
                   margin-right: 6px;
-                  position: relative;
-                  top: -1px;
-                }
-
-                &.recurring::before {
-                  color: #FF9F40;
-                }
-
-                &.one-time::before {
-                  color: rgba(255, 255, 255, 0.3);
                 }
               }
             }
