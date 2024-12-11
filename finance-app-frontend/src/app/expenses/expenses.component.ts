@@ -306,12 +306,16 @@ export class ExpensesComponent {
   }
 
   deleteExpense(expenseId: number): void {
-    console.log(expenseId);
+    const index = this.expenses.findIndex(i=>i.id === expenseId);
+    if (index !== -1) {
+      this.expenses.splice(index, 1); // Remove the item at the found index
+    }
+    this.calculateTotalExpenses();
     this.httpClient.delete<void>(`${this.baseUrl}/api/user/${expenseId}/expense`)
       .subscribe({
         next: () => {
           console.log(`Expense with ID ${expenseId} deleted successfully.`);
-          this.loadExpensesData(); // Reload the data after successful deletion
+          // this.loadExpensesData(); // Reload the data after successful deletion
         },
         error: (err) => {
           console.error('Error deleting expense:', err);
