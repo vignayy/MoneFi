@@ -87,9 +87,6 @@ export class ExpensesComponent {
         position: 'right',
       }
     },
-    // animation: {
-    //   duration: 500
-    // }
   };
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog, private router:Router, private toastr:ToastrService) {}

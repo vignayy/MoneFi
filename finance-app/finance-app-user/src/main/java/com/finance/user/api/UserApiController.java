@@ -293,6 +293,14 @@ public class UserApiController {
         List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
         return (int) expensesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
+    @GetMapping("/expenses/{userId}/totalExpenses/{month}/{year}")
+    public Double getTotalExpenseByMonthAndDate(@PathVariable("userId") int userId,
+                                                @PathVariable("month") int month,
+                                                @PathVariable("year") int year){
+        List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
+        return expensesList.stream().filter(i->i.getDate().getMonthValue()==month && i.getDate().getYear()==year)
+                .mapToDouble(i->i.getAmount()).sum();
+    }
     @PutMapping("/{id}/expense")
     public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense){
         ExpenseModel updatedExpense = expenseService.updateExpense(id, expense);

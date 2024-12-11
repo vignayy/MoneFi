@@ -11,7 +11,8 @@
     <div class="chart-row">
       <div class="chart-section">
         <div class="chart-card">
-          <canvas baseChart 
+          <canvas 
+                  baseChart 
                   [data]="radarChartData" 
                   [options]="radarChartOptions" 
                   [type]="'radar'">
@@ -19,16 +20,16 @@
         </div>
       </div>
       <div class="description-box">
-        <h2>Budget vs. Actual Spending Analysis</h2>
+        <h2>Category-wise Expense Analysis</h2>
         <div class="description-content">
-          <p class="description-text">This radar chart provides a comprehensive view of your financial health across key categories:</p>
+          <p class="description-text">This radar chart shows your spending distribution across different expense categories for the current month:</p>
           <ul class="description-list">
-            <li><span class="highlight">Target Status:</span> Represents your budgeted amounts</li>
-            <li><span class="highlight">Current Status:</span> Shows your actual spending</li>
+            <li><span class="highlight">Categories:</span> Different expense types</li>
+            <li><span class="highlight">Values:</span> Amount spent in each category</li>
           </ul>
           <div class="insight-box">
             <h3>Key Insights</h3>
-            <p>Compare your planned budget against actual spending patterns to identify areas for improvement and maintain financial goals.</p>
+            <p>Analyze your spending patterns across categories to identify areas where you might need to adjust your budget allocation.</p>
           </div>
         </div>
       </div>

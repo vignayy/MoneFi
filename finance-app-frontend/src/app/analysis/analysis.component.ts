@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, ChartConfiguration, ChartData } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-analysis',
@@ -11,6 +14,130 @@ import { NgChartsModule } from 'ng2-charts';
   styleUrl: './analysis.component.css'
 })
 export class AnalysisComponent {
+  baseUrl = "http://localhost:8765";
+
+  constructor(private httpClient: HttpClient, private router: Router) {}
+
+  ngOnInit() {
+    this.loadData();
+  }
+
+  loadData() {
+    const token = sessionStorage.getItem('finance.auth');
+    
+    // Get current month and year
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear();
+
+    this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next: (userId) => {
+        // Create parallel requests for both expenses and budgets
+        const expensesUrl = `${this.baseUrl}/api/user/expenses/${userId}/${currentMonth}/${currentYear}`;
+        const budgetsUrl = `${this.baseUrl}/api/user/${userId}/budgets`;
+
+        // Use forkJoin to make parallel requests
+        forkJoin({
+          expenses: this.httpClient.get<any[]>(expensesUrl),
+          budgets: this.httpClient.get<any[]>(budgetsUrl)
+        }).subscribe({
+          next: ({ expenses, budgets }) => {
+            // Process category-wise expenses
+            const categoryExpenses = new Map<string, number>();
+            expenses.forEach(expense => {
+              const currentAmount = categoryExpenses.get(expense.category) || 0;
+              categoryExpenses.set(expense.category, currentAmount + expense.amount);
+            });
+
+            // Process category-wise budgets
+            const categoryBudgets = new Map<string, number>();
+            budgets.forEach(budget => {
+              categoryBudgets.set(budget.category, budget.moneyLimit);
+            });
+
+            // Get unique categories from both expenses and budgets
+            const allCategories = Array.from(new Set([
+              ...categoryExpenses.keys(),
+              ...categoryBudgets.keys()
+            ]));
+
+            // Update radar chart data with both datasets
+            this.radarChartData = {
+              labels: allCategories,
+              datasets: [
+                {
+                  label: 'Monthly Budget',
+                  data: allCategories.map(category => categoryBudgets.get(category) || 0),
+                  fill: true,
+                  backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgb(255, 99, 132)',
+                  pointBackgroundColor: 'rgb(255, 99, 132)',
+                  pointBorderColor: '#fff',
+                },
+                {
+                  label: 'Current Spending',
+                  data: allCategories.map(category => categoryExpenses.get(category) || 0),
+                  fill: true,
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderColor: 'rgb(54, 162, 235)',
+                  pointBackgroundColor: 'rgb(54, 162, 235)',
+                  pointBorderColor: '#fff',
+                }
+              ]
+            };
+
+            // Update chart options for better scale
+            const maxValue = Math.max(
+              ...Array.from(categoryBudgets.values()),
+              ...Array.from(categoryExpenses.values())
+            );
+
+            this.radarChartOptions = {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top',
+                  labels: {
+                    padding: 20,
+                    font: { size: 12 }
+                  }
+                },
+                title: {
+                  display: true,
+                  text: 'Monthly Budget vs. Actual Spending',
+                  padding: 20,
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                }
+              },
+              scales: {
+                r: {
+                  min: 0,
+                  max: Math.ceil(maxValue / 1000) * 1000, // Round to nearest thousand
+                  ticks: {
+                    stepSize: Math.ceil(maxValue / 5000) * 1000, // Create about 5 steps
+                    display: false,
+                  }
+                }
+              }
+            };
+          },
+          error: (error) => {
+            console.error('Failed to load data:', error);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Failed to fetch userId:', error);
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
+      }
+    });
+  }
+
   // Mixed Chart Configuration
   public mixedChartData: ChartData<'bar' | 'line'> = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
