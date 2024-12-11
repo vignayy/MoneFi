@@ -34,16 +34,44 @@ interface inputGoal {
   imports: [CommonModule]
 })
 export class GoalsComponent {
-  goals: Goal[] = [];
-  loading: boolean = false;
-
-  ngOnInit() {
-    this.loadGoals();
-  }
 
   constructor(private httpClient:HttpClient, private dialog: MatDialog, private router:Router, private toastr:ToastrService){};
   baseUrl = "http://localhost:8765";
 
+  goals: Goal[] = [];
+  loading: boolean = false;
+
+  totalRemainingBalance : number | undefined;
+
+
+
+  ngOnInit() {
+    this.loadIncomeFunction();
+    this.loadGoals();
+  }
+
+  loadIncomeFunction(){
+    const token = sessionStorage.getItem('finance.auth');
+    
+    // Get current month and year
+    const currentDate = new Date();
+    let month = currentDate.getMonth()+1; // getMonth() returns 0-based index
+    let year = currentDate.getFullYear();
+
+    if (token) {
+      this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+        next: (userId) => {
+          this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalRemainingIncomeOfPreviousMonth/${month}/${year}`).subscribe({
+            next: (totalRemainingBalance) => {
+              this.totalRemainingBalance = totalRemainingBalance;
+            },
+          });
+        },
+      });
+    }
+  }
+
+  
   loadGoals() {
     this.loading = true;
     const token = sessionStorage.getItem('finance.auth');

@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { ChartConfiguration, ChartData } from 'chart.js';
+import { ChartConfiguration, ChartData, TimeScale } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { MatSelectModule } from '@angular/material/select';
 import { CountUpDirective } from '../shared/directives/count-up.directive';
@@ -186,6 +186,7 @@ export class IncomeComponent {
                 this.incomeSources.push(newIncome);
                 this.calculateTotalIncome();
                 this.updateChartData();
+                this.resetFilters();
               },
               error: (error) => {
                 console.error('Failed to add income data:', error);
@@ -262,11 +263,16 @@ export class IncomeComponent {
 
   deleteIncome(incomeId: number): void {
     console.log(incomeId);
+    const index = this.incomeSources.findIndex(i=>i.id === incomeId);
+    if (index !== -1) {
+      this.incomeSources.splice(index, 1); // Remove the item at the found index
+    }
+    this.calculateTotalIncome();
     this.httpClient.delete<void>(`${this.baseUrl}/api/user/${incomeId}/income`)
       .subscribe({
         next: () => {
           console.log(`Income with ID ${incomeId} deleted successfully.`);
-          this.loadIncomeData(); // Reload the data after successful deletion
+          // this.loadIncomeData(); // Reload the data after successful deletion
         },
         error: (err) => {
           console.error('Error deleting income:', err);

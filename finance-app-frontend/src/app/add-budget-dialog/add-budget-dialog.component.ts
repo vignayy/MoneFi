@@ -1,69 +1,3 @@
-// import { HttpClient } from '@angular/common/http';
-// import { Component } from '@angular/core';
-// import { FormsModule } from '@angular/forms';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatCheckboxModule } from '@angular/material/checkbox';
-// import { MatNativeDateModule } from '@angular/material/core';
-// import { MatDatepickerModule } from '@angular/material/datepicker';
-// import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-// import { MatFormFieldModule } from '@angular/material/form-field';
-// import { MatIconModule } from '@angular/material/icon';
-// import { MatInputModule } from '@angular/material/input';
-// import { MatSelectModule } from '@angular/material/select';
-// import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
-
-// @Component({
-//   selector: 'app-add-budget-dialog',
-//   standalone: true,
-//   imports: [FormsModule,
-//     MatInputModule,
-//     MatCheckboxModule,
-//     MatButtonModule,
-//     MatDialogModule,
-//     MatFormFieldModule,
-//     MatSelectModule,
-//     MatDatepickerModule,
-//     MatNativeDateModule,
-//     MatIconModule],
-//   templateUrl: './add-budget-dialog.component.html',
-//   styleUrl: './add-budget-dialog.component.scss'
-// })
-// export class AddBudgetDialogComponent {
-//   constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>, private httpClient:HttpClient) {};
-//   baseUrl = "http://localhost:8765";
-
-//   budgetSource = {
-//     moneyLimit:''
-//   };
-
-//   totalIncome : number | any;
-
-//   ngOnInit() {
-//     const token = sessionStorage.getItem('finance.auth');
-//     console.log(token);
-
-//     this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
-//       next : (userId) => {
-//         console.log(userId);
-
-//         this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/12/2024`).subscribe({
-//           next : (totalIncome) => {
-//             console.log(totalIncome);
-//             this.totalIncome = totalIncome;
-//           }
-//         })
-//       }
-//     })
-//   }
-
-//   onSave() {
-//     this.dialogRef.close(this.budgetSource);
-//   }
-
-//   onCancel() {
-//     this.dialogRef.close();
-//   }
-// }
 
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -124,12 +58,22 @@ export class AddBudgetDialogComponent {
     private httpClient: HttpClient
   ) {}
 
+
+  
   ngOnInit() {
     const token = sessionStorage.getItem('finance.auth');
+    
+    // Get current month and year
+    const currentDate = new Date();
+    const month = currentDate.getMonth() + 1; // getMonth() returns 0-based index
+    const year = currentDate.getFullYear();
+    console.log(month);
+    console.log(year);
+  
     if (token) {
       this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
         next: (userId) => {
-          this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/12/2024`).subscribe({
+          this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/${month}/${year}`).subscribe({
             next: (totalIncome) => {
               this.totalIncome = totalIncome;
               this.initializeCategories();
@@ -139,6 +83,7 @@ export class AddBudgetDialogComponent {
       });
     }
   }
+  
 
   initializeCategories() {
     // Generate random percentages that sum up to 100
