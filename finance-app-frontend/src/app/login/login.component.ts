@@ -22,10 +22,10 @@ export class LoginComponent {
 
 
   public radarChartData: ChartData<'radar'> = {
-    labels: ['Budgeting', 'Saving', 'Investing', 'Planning', 'Tracking', 'Goals'],
+    labels: ['Budgeting', 'Saving', 'Investing', 'Planning', 'Spending', 'Goals'],
     datasets: [
       {
-        label: 'Current Status',
+        label: 'Target Status',
         data: [65, 59, 90, 81, 56, 55],
         fill: true,
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -34,7 +34,7 @@ export class LoginComponent {
         pointBorderColor: '#fff',
       },
       {
-        label: 'Target Status',
+        label: 'Current Status',
         data: [28, 48, 40, 19, 96, 27],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',

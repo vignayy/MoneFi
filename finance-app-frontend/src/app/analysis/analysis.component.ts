@@ -34,24 +34,41 @@ export class AnalysisComponent {
 
   public mixedChartOptions: ChartConfiguration['options'] = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
         position: 'top',
+        labels: {
+          padding: 20,
+          font: {
+            size: 12
+          }
+        }
       },
       title: {
         display: true,
-        text: 'Monthly Finance Overview'
+        text: 'Monthly Finance Overview',
+        padding: 20,
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
       }
     }
   };
 
   // Radar Chart Configuration
   public radarChartData: ChartData<'radar'> = {
-    labels: ['Budgeting', 'Saving', 'Investing', 'Planning', 'Tracking', 'Goals'],
+    labels: ['Budgeting', 'Saving', 'Investing', 'Planning', 'Spending', 'Goals'],
     datasets: [
       {
-        label: 'Current Status',
+        label: 'Target Status',
         data: [65, 59, 90, 81, 56, 55],
         fill: true,
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -60,7 +77,7 @@ export class AnalysisComponent {
         pointBorderColor: '#fff',
       },
       {
-        label: 'Target Status',
+        label: 'Current Status',
         data: [28, 48, 40, 19, 96, 27],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
@@ -73,13 +90,34 @@ export class AnalysisComponent {
 
   public radarChartOptions: ChartConfiguration['options'] = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          padding: 20,
+          font: {
+            size: 12
+          }
+        }
       },
       title: {
         display: true,
-        text: 'Financial Health Analysis'
+        text: 'Financial Health Analysis',
+        padding: 20,
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
+      }
+    },
+    scales: {
+      r: {
+        min: 0,
+        max: 100,
+        ticks: {
+          stepSize: 20
+        }
       }
     }
   };

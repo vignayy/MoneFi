@@ -372,9 +372,9 @@ export class ExpensesComponent {
 
   getProgressColor(spent: number, total: number): string {
     const percentage = (spent / total) * 100;
-    if (percentage >= 90) return '#E53935';  // Material Red 600
-    if (percentage >= 75) return '#FB8C00';  // Material Orange 600
-    return '#43A047';  // Material Green 600
+    if (percentage >= 90) return '#E54A00';  //  Red E53935
+    if (percentage >= 50) return '#FB8C00';  //  Orange 
+    return '#FFB300';  // Yellow FFB300
   }
 
   private calculateSpentPercentage() {
@@ -396,4 +396,3 @@ export class ExpensesComponent {
     }
   }
 }
-
