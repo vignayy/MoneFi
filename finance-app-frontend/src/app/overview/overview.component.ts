@@ -45,6 +45,9 @@ export class OverviewComponent implements OnInit {
     goalsProgress: 0,
     username: ''
   };
+  // Set the default month to the current month (1-based index)
+  thisMonth = new Date().getMonth() + 1; // Current month in 1-based index
+  thisYear = new Date().getFullYear(); // Current year
 
   constructor(private router: Router, private httpClient:HttpClient) {}
   baseUrl = "http://localhost:8765";
@@ -70,11 +73,11 @@ export class OverviewComponent implements OnInit {
           }
         })
 
-        this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome`).subscribe({
+        this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/${this.thisMonth}/${this.thisYear}`).subscribe({
           next : (totalIncome) => {
             this.summary.income = totalIncome;
 
-            this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalExpense`).subscribe({
+            this.httpClient.get<number>(`${this.baseUrl}/api/user/expenses/${userId}/totalExpenses/${this.thisMonth}/${this.thisYear}`).subscribe({
               next : (totalExpense) => {
                 this.summary.expenses = totalExpense;
                 this.summary.netWorth = totalIncome - totalExpense;

@@ -151,7 +151,7 @@ export class ExpensesComponent {
           }
         });
 
-        this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome`).subscribe({
+        this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalIncome/${this.selectedMonth}/${this.selectedYear}`).subscribe({
           next: (totalIncome) => {
             this.totalIncome = totalIncome;
             this.calculateSpentPercentage();

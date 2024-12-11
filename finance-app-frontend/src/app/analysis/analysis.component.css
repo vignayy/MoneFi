@@ -50,16 +50,18 @@
 }
 
 .chart-card {
-  background: white;
+  /* background: white; */
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: var(--card-shadow);
   height: 100%;
   transition: transform var(--transition-speed);
+  transition: all 0.3s ease;
 }
 
 .chart-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .description-box {
