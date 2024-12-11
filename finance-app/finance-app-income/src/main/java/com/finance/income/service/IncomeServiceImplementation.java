@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -33,6 +34,21 @@ public class IncomeServiceImplementation implements IncomeService {
     @Override
     public List<IncomeModel> getAllIncomesByYear(int userId, int year) {
         return incomeRepository.getAllIncomesByYear(userId, year);
+    }
+
+    @Override
+    public List<Double> getMonthlyIncomes(int userId, int year) {
+        List<Object[]> rawIncomes = incomeRepository.findMonthlyIncomes(userId, year);
+        Double[] monthlyTotals = new Double[12];
+        Arrays.fill(monthlyTotals, 0.0); // Initialize all months to 0
+
+        for (Object[] raw : rawIncomes) {
+            int month = ((Integer) raw[0]) - 1; // Months are 1-based, array is 0-based
+            double total = (Double) raw[1];
+            monthlyTotals[month] = total;
+        }
+
+        return Arrays.asList(monthlyTotals);
     }
 
     @Override

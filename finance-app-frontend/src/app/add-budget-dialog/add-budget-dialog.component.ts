@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
@@ -65,7 +64,7 @@ export class AddBudgetDialogComponent {
     
     // Get current month and year
     const currentDate = new Date();
-    const month = currentDate.getMonth() + 1; // getMonth() returns 0-based index
+    const month = currentDate.getMonth() + 1; 
     const year = currentDate.getFullYear();
     console.log(month);
     console.log(year);

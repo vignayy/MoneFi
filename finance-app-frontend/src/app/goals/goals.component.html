@@ -11,7 +11,39 @@
     </button>
   </div>
 
-  <h2> Your Remaining Balance is: {{totalRemainingBalance}} </h2>
+   <!-- Summary Cards -->
+   <div class="summary-cards">
+    <div class="card total-budget">
+      <div class="card-content">
+        <h3>Total Remaining Balance</h3>
+        <p class="amount"><span [appCountUp]="totalRemainingBalance"></span></p>
+        <p class="period">Monthly Balance</p>
+      </div>
+      <i class="fas fa-wallet icon"></i>
+    </div>
+
+    <div class="card spent">
+      <div class="card-content">
+        <h3>Total Gaol Savings</h3>
+        <p class="amount"><span [appCountUp]="totalGoalSavings"></span></p>
+        <p class="period">This Month</p>
+      </div>
+      <i class="fas fa-credit-card icon"></i>
+    </div>
+
+    <div class="card remaining">
+      <div class="card-content">
+        <h3>Remaining</h3>
+        <p class="amount"><span [appCountUp]="totalNetworth"></span></p>
+        <p class="period">Available</p>
+      </div>
+      <i class="fas fa-piggy-bank icon"></i>
+    </div>
+  </div>
+
+  <!-- <h2> Your Remaining Balance is: {{totalRemainingBalance}} </h2> -->
+  <!-- <h2> Your Toal Goal Savings is: {{totalGoalSavings}} </h2> -->
+  <!-- <h2> Your Toal Networth is: {{totalNetworth}} </h2> -->
 
   <!-- Goals Grid -->
   <div class="goals-grid">
@@ -27,7 +59,6 @@
       </div>
 
       <div class="goal-content">
-        <!-- Progress Circle -->
         <div class="progress-circle-container">
           <div class="progress-circle" 
                [style.background]="'conic-gradient(' + goal.color + ' ' + 
