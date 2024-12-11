@@ -262,7 +262,11 @@ public class UserApiController {
         List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
         return (int) expensesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
+<<<<<<< HEAD
     @GetMapping("/{userId}/totalExpenses/{month}/{year}")
+=======
+    @GetMapping("/expenses/{userId}/totalExpenses/{month}/{year}")
+>>>>>>> main
     public Double getTotalExpenseByMonthAndDate(@PathVariable("userId") int userId,
                                                 @PathVariable("month") int month,
                                                 @PathVariable("year") int year){
@@ -270,6 +274,7 @@ public class UserApiController {
         return expensesList.stream().filter(i->i.getDate().getMonthValue()==month && i.getDate().getYear()==year)
                 .mapToDouble(i->i.getAmount()).sum();
     }
+<<<<<<< HEAD
     @GetMapping("/{userId}/monthlyTotalExpensesList/{year}")
     public List<Double> getMonthlyTotals(@PathVariable("userId") int userId, @PathVariable("year") int year) {
         Double[] value = restTemplate.getForObject("http://FINANCE-APP-EXPENSE/api/expense/"+userId+"/monthlyTotalExpensesList/"+year,Double[].class);
@@ -317,6 +322,8 @@ public class UserApiController {
         }
         return cumulativeSavings;
     }
+=======
+>>>>>>> main
     @PutMapping("/{id}/expense")
     public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense){
         ExpenseModel updatedExpense = expenseService.updateExpense(id, expense);
