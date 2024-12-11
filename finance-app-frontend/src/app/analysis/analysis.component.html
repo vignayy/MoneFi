@@ -20,37 +20,28 @@
         </div>
       </div>
       <div class="description-box">
-        <h2>Category-wise Expense Analysis</h2>
+        <h2>Budget vs. Spending Analysis</h2>
         <div class="description-content">
-          <p class="description-text">This radar chart shows your spending distribution across different expense categories for the current month:</p>
+          <p class="description-text">
+            This radar chart provides a comprehensive comparison between your allocated budget and actual spending across different expense categories for the current month:
+          </p>
           <ul class="description-list">
-            <li><span class="highlight">Categories:</span> Different expense types</li>
-            <li><span class="highlight">Values:</span> Amount spent in each category</li>
+            <li><span class="highlight">Monthly Budget:</span> Your preset spending limits per category</li>
+            <li><span class="highlight">Current Spending:</span> Your actual expenditure this month</li>
           </ul>
           <div class="insight-box">
             <h3>Key Insights</h3>
-            <p>Analyze your spending patterns across categories to identify areas where you might need to adjust your budget allocation.</p>
+            <p>
+              Areas where the blue line (spending) exceeds the pink line (budget) indicate potential overspending. 
+              Use these insights to adjust your budgets or modify spending habits for better financial management.
+            </p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Bottom Row - Mixed Chart and Description -->
-    <div class="chart-row reverse">
-      <div class="description-box">
-        <h2>Annual Financial Overview</h2>
-        <div class="description-content">
-          <p class="description-text">Track your yearly financial journey with this comprehensive chart:</p>
-          <ul class="description-list">
-            <li><span class="highlight">Expenses:</span> Monthly spending patterns</li>
-            <li><span class="highlight">Savings:</span> Progressive savings growth</li>
-          </ul>
-          <div class="insight-box">
-            <h3>Trend Analysis</h3>
-            <p>Monitor the relationship between your expenses and savings to optimize your financial strategy throughout the year.</p>
-          </div>
-        </div>
-      </div>
+    <div class="chart-row">
       <div class="chart-section">
         <div class="chart-card">
           <canvas baseChart 
@@ -58,6 +49,27 @@
                   [options]="mixedChartOptions" 
                   [type]="'bar'">
           </canvas>
+        </div>
+      </div>
+      <div class="description-box">
+        <h2>Financial Flow Analysis</h2>
+        <div class="description-content">
+          <p class="description-text">
+            Track your yearly financial patterns with this comprehensive visualization of income, expenses, and savings:
+          </p>
+          <ul class="description-list">
+            <li><span class="highlight">Income (Blue Line):</span> Monthly earnings trajectory</li>
+            <li><span class="highlight">Expenses (Pink Bars):</span> Monthly spending distribution</li>
+            <li><span class="highlight">Savings (Teal Line):</span> Monthly savings progression</li>
+          </ul>
+          <div class="insight-box">
+            <h3>Trend Analysis</h3>
+            <p>
+              The relationship between these three metrics reveals your financial health. 
+              Higher savings line and lower expense bars relative to income indicate effective money management. 
+              Watch for months where expenses approach income levels.
+            </p>
+          </div>
         </div>
       </div>
     </div>

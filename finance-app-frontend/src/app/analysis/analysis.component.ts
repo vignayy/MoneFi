@@ -19,10 +19,11 @@ export class AnalysisComponent {
   constructor(private httpClient: HttpClient, private router: Router) {}
 
   ngOnInit() {
-    this.loadData();
+    this.loadChartData();
+    this.loadMixedChartData();
   }
 
-  loadData() {
+  loadChartData() {
     const token = sessionStorage.getItem('finance.auth');
     
     // Get current month and year
@@ -138,9 +139,94 @@ export class AnalysisComponent {
     });
   }
 
+  loadMixedChartData() {
+    const token = sessionStorage.getItem('finance.auth');
+    const currentYear = new Date().getFullYear();
+
+    this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next: (userId) => {
+        // Add savings to parallel requests
+        forkJoin({
+          incomes: this.httpClient.get<number[]>(`${this.baseUrl}/api/user/${userId}/monthlyTotalIncomesList/${currentYear}`),
+          expenses: this.httpClient.get<number[]>(`${this.baseUrl}/api/user/${userId}/monthlyTotalExpensesList/${currentYear}`),
+          savings: this.httpClient.get<number[]>(`${this.baseUrl}/api/user/${userId}/monthlySavingsInYear/${currentYear}`)
+        }).subscribe({
+          next: ({ incomes, expenses, savings }) => {
+            // Update mixed chart data with real values including savings
+            this.mixedChartData = {
+              labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+              datasets: [
+                {
+                  type: 'bar',
+                  label: 'Expenses',
+                  data: expenses,
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                  order: 2
+                },
+                {
+                  type: 'line',
+                  label: 'Income',
+                  data: incomes,
+                  fill: false,
+                  borderColor: 'rgb(54, 162, 235)',
+                  tension: 0.4,
+                  order: 0
+                },
+                {
+                  type: 'line',
+                  label: 'Savings',
+                  data: savings,
+                  fill: false,
+                  borderColor: 'rgb(75, 192, 192)',
+                  tension: 0.4,
+                  order: 1
+                }
+              ],
+            };
+
+            // Update chart options for better scale
+            const maxValue = Math.max(...incomes, ...expenses, ...savings);
+            this.mixedChartOptions = {
+              ...this.mixedChartOptions,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: Math.ceil(maxValue / 10000) * 10000,
+                  ticks: {
+                    stepSize: Math.ceil(maxValue / 50000) * 10000
+                  }
+                }
+              },
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Monthly Income, Expenses & Savings Overview',
+                  padding: 20,
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                }
+              }
+            };
+          },
+          error: (error) => {
+            console.error('Failed to load mixed chart data:', error);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Failed to fetch userId:', error);
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
+      }
+    });
+  }
+
   // Mixed Chart Configuration
   public mixedChartData: ChartData<'bar' | 'line'> = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
         type: 'bar',
