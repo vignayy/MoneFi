@@ -63,5 +63,10 @@ public class IncomeApiController {
         incomeService.deleteParticularIncomeBySource(id);
     }
 
+    @GetMapping("/{userId}/monthlyTotalIncomesList/{year}")
+    public List<Double> getMonthlyTotals(@PathVariable("userId") int userId, @PathVariable("year") int year) {
+        return incomeService.getMonthlyIncomes(userId, year);
+    }
+
 
 }

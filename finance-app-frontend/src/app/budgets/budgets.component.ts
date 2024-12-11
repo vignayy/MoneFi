@@ -57,11 +57,9 @@ export class BudgetsComponent {
   budgets: Budget[] = [];
 
 
-  // totalExpenses: number = 0;
   expenses: Expense[] = [];
   filteredExpenses: Expense[] = [];
   loading: boolean = false;
-  // recurringPercentage: number = 0;
   selectedYear: number = new Date().getFullYear();
   selectedMonth: number = 0; // 0 means all months
   selectedCategory: string = '';

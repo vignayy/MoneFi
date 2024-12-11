@@ -5,6 +5,7 @@ import { AddGoalDialogComponent } from '../add-goal-dialog/add-goal-dialog.compo
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CountUpDirective } from '../shared/directives/count-up.directive';
 
 interface Goal {
   id: number;
@@ -31,7 +32,7 @@ interface inputGoal {
   templateUrl: './goals.component.html',
   styleUrls: ['./goals.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, CountUpDirective]
 })
 export class GoalsComponent {
 
@@ -41,9 +42,13 @@ export class GoalsComponent {
   goals: Goal[] = [];
   loading: boolean = false;
 
-  totalRemainingBalance : number | undefined;
+  // totalRemainingBalance : number | undefined;\
+  totalRemainingBalance: number = 0;
+  totalGoalSavings : number = 0;
+  totalNetworth : number = 0;
 
-
+  month : number = 0;
+  year : number = 0;
 
   ngOnInit() {
     this.loadIncomeFunction();
@@ -51,24 +56,9 @@ export class GoalsComponent {
   }
 
   loadIncomeFunction(){
-    const token = sessionStorage.getItem('finance.auth');
-    
-    // Get current month and year
     const currentDate = new Date();
-    let month = currentDate.getMonth()+1; // getMonth() returns 0-based index
-    let year = currentDate.getFullYear();
-
-    if (token) {
-      this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
-        next: (userId) => {
-          this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalRemainingIncomeOfPreviousMonth/${month}/${year}`).subscribe({
-            next: (totalRemainingBalance) => {
-              this.totalRemainingBalance = totalRemainingBalance;
-            },
-          });
-        },
-      });
-    }
+    this.month = currentDate.getMonth()+1;
+    this.year = currentDate.getFullYear();
   }
 
   
@@ -84,13 +74,29 @@ export class GoalsComponent {
         this.httpClient.get<inputGoal[]>(`${this.baseUrl}/api/user/${userId}/goals`).subscribe({
           next: (data) => {
             // console.log(data);
+            let amount = 0;
             if (data && data.length > 0) {
-              this.goals = data.map(goal => this.modelConverterFunction(goal));
+
+              this.goals = data.map(goal => {
+                const convertedGoal = this.modelConverterFunction(goal);
+                amount = amount + goal.currentAmount;
+                console.log(amount);
+                return convertedGoal;
+              });
             } else {
               this.goals = [];
               this.toastr.warning('No goal data is available.', 'No Data');
               this.loading = false;
             }
+            this.totalGoalSavings = amount;
+            this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalRemainingIncomeOfPreviousMonth/${this.month}/${this.year}`).subscribe({
+              next: (totalIncome) => {
+                console.log(totalIncome);
+                console.log(amount);
+                this.totalNetworth = totalIncome;
+                this.totalRemainingBalance = totalIncome - amount;
+              },
+            });
           },
           error: (error) => {
             console.error('Failed to load Goal data:', error);
@@ -316,6 +322,7 @@ export class GoalsComponent {
         next: () => {
           console.log(`Expense with ID ${goalId} deleted successfully.`);
           this.loadGoals(); // Reload the data after successful deletion
+          this.loadIncomeFunction();
         },
         error: (err) => {
           console.error('Error deleting expense:', err);

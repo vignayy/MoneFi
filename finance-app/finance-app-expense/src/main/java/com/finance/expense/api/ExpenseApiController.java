@@ -5,7 +5,6 @@ import com.finance.expense.model.ExpenseModel;
 import com.finance.expense.repository.ExpenseRepository;
 import com.finance.expense.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -83,5 +82,10 @@ public class ExpenseApiController {
 //        List<ExpenseDto> expenses = expenseRepository.findTotalExpensesByCategoryAndPeriod(userId, startDate, endDate);
 //        return ResponseEntity.status(HttpStatus.OK).body(expenses);
 //    }
+
+    @GetMapping("/{userId}/monthlyTotalExpensesList/{year}")
+    public List<Double> getMonthlyTotals(@PathVariable("userId") int userId, @PathVariable("year") int year) {
+        return expenseService.getMonthlyExpenses(userId, year);
+    }
 
 }

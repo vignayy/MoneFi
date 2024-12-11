@@ -14,6 +14,8 @@ public interface IncomeService {
 
     public List<IncomeModel> getAllIncomesByYear(int userId, int year);
 
+    public List<Double> getMonthlyIncomes(int userId, int year);
+
     public IncomeModel updateBySource(int id, IncomeModel income);
 
     public void deleteParticularIncomeBySource(int id);

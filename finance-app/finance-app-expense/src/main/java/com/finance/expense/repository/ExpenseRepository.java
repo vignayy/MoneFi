@@ -33,6 +33,13 @@ public interface ExpenseRepository extends JpaRepository<ExpenseModel, Integer> 
             "AND EXTRACT(YEAR FROM e.date) = :year")
     public List<ExpenseModel> getAllexpensesByYear(int userId, int year);
 
+    @Query("SELECT MONTH(e.date) AS month, SUM(e.amount) AS total " +
+            "FROM ExpenseModel e " +
+            "where e.userId = :userId AND YEAR(e.date)=:year " +
+            "GROUP BY MONTH(e.date) " +
+            "ORDER BY month ASC")
+    public List<Object[]> findMonthlyExpenses(int userId, int year);
+
     @Query("SELECT new com.finance.expense.dto.ExpenseDto(e.category, SUM(e.amount)) " +
             "FROM ExpenseModel e " +
             "WHERE e.userId = :userId AND e.date BETWEEN :startDate AND :endDate " +

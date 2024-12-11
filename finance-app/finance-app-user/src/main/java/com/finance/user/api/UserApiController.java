@@ -112,43 +112,6 @@ public class UserApiController {
         }
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<UserModel>> getAllUsers(){
-//        List<UserModel> usersList = userService.getAllUsers();
-//        if(!usersList.isEmpty()){
-//            return ResponseEntity.status(HttpStatus.OK).body(usersList);
-//        }
-//        else{
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }
-//    }
-
-//    @GetMapping("/username")
-//    public ResponseEntity<UserModel> getUserByEmail(@RequestParam("name") String username){
-//        UserModel user = userService.getUserByUsername(username);
-//        if(user != null){
-//            return ResponseEntity.status(HttpStatus.OK).body(user);
-//        }
-//        else{
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }
-//    }
-
-//    @PutMapping("/{username}/{password}")
-//    public ResponseEntity<UserModel> update(@PathVariable("username") String username, @PathVariable("password") String password) {
-//        UserModel updatedUser = userService.updateUser(username, password);
-//        if (updatedUser != null) {
-//            return ResponseEntity.status(HttpStatus.CREATED).body(updatedUser);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-//        }
-//    }
-
-    @DeleteMapping("/{userId}")
-    public ResponseEntity deleteUser(@PathVariable("userId") int userId){
-        userService.deleteUserById(userId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
 
 
 
@@ -178,8 +141,6 @@ public class UserApiController {
     }
     @GetMapping("/{userId}/totalIncome/{month}/{year}")
     public Integer getTotalIncomeByMonthAndYear(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year){
-//        List<IncomeModel> incomesList = incomeService.getAllIncomes(userId);
-//        return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
         List<IncomeModel> incomesList = incomeService.getAllIncomesByDate(userId, month, year);
         return (int) incomesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
@@ -236,6 +197,12 @@ public class UserApiController {
         return ResponseEntity.ok(incomesList);
 
     }
+    @GetMapping("/{userId}/monthlyTotalIncomesList/{year}")
+    public List<Double> getMonthlyInocmeTotals(@PathVariable("userId") int userId, @PathVariable("year") int year) {
+        Double[] value = restTemplate.getForObject("http://FINANCE-APP-INCOME/api/income/"+userId+"/monthlyTotalIncomesList/"+year,Double[].class);
+        return Arrays.asList(value);
+    }
+    @GetMapping("/userId/")
     @PutMapping("/{id}/income")
     public ResponseEntity<IncomeModel> updateIncome(@PathVariable("id") int id, @RequestBody IncomeModel income){
         IncomeModel updatedIncome = incomeService.updateIncome(id, income);
@@ -255,6 +222,8 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404: Not Found
         }
     }
+
+
 
 
 
@@ -293,7 +262,11 @@ public class UserApiController {
         List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
         return (int) expensesList.stream().mapToDouble(i->i.getAmount()).sum();
     }
+<<<<<<< HEAD
+    @GetMapping("/{userId}/totalExpenses/{month}/{year}")
+=======
     @GetMapping("/expenses/{userId}/totalExpenses/{month}/{year}")
+>>>>>>> main
     public Double getTotalExpenseByMonthAndDate(@PathVariable("userId") int userId,
                                                 @PathVariable("month") int month,
                                                 @PathVariable("year") int year){
@@ -301,6 +274,56 @@ public class UserApiController {
         return expensesList.stream().filter(i->i.getDate().getMonthValue()==month && i.getDate().getYear()==year)
                 .mapToDouble(i->i.getAmount()).sum();
     }
+<<<<<<< HEAD
+    @GetMapping("/{userId}/monthlyTotalExpensesList/{year}")
+    public List<Double> getMonthlyTotals(@PathVariable("userId") int userId, @PathVariable("year") int year) {
+        Double[] value = restTemplate.getForObject("http://FINANCE-APP-EXPENSE/api/expense/"+userId+"/monthlyTotalExpensesList/"+year,Double[].class);
+        return Arrays.asList(value);
+    }
+    @GetMapping("/{userId}/totalSavings/{month}/{year}")
+    public Double getTotalSavingsByMonthAndDate(@PathVariable("userId") int userId,
+                                                @PathVariable("month") int month,
+                                                @PathVariable("year") int year){
+
+        List<IncomeModel> incomesList = incomeService.getAllIncomesByDate(userId, month, year);
+        Double income = incomesList.stream().mapToDouble(i->i.getAmount()).sum();
+
+        List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
+        Double expense = expensesList.stream().filter(i->i.getDate().getMonthValue()==month && i.getDate().getYear()==year)
+                .mapToDouble(i->i.getAmount()).sum();
+
+        return (income - expense);
+    }
+    @GetMapping("/{userId}/monthlySavingsInYear/{year}")
+    public List<Double> getMonthlySavings(@PathVariable("userId") int userId, @PathVariable("year") int year){
+        Double[] incomes = restTemplate.getForObject("http://FINANCE-APP-INCOME/api/income/"+userId+"/monthlyTotalIncomesList/"+year,Double[].class);
+        Double[] expenses = restTemplate.getForObject("http://FINANCE-APP-EXPENSE/api/expense/"+userId+"/monthlyTotalExpensesList/"+year,Double[].class);
+
+        List<Double> savings = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            savings.add(incomes[i] - expenses[i]);
+        }
+        return savings;
+    }
+    @GetMapping("/{userId}/monthlyCumulativeSavingsInYear/{year}")
+    public List<Double> getCumulativeMonthlySavings(@PathVariable("userId") int userId, @PathVariable("year") int year){
+        Double[] incomes = restTemplate.getForObject("http://FINANCE-APP-INCOME/api/income/"+userId+"/monthlyTotalIncomesList/"+year,Double[].class);
+        Double[] expenses = restTemplate.getForObject("http://FINANCE-APP-EXPENSE/api/expense/"+userId+"/monthlyTotalExpensesList/"+year,Double[].class);
+
+        List<Double> savings = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            savings.add(incomes[i] - expenses[i]);
+        }
+
+        List<Double> cumulativeSavings = new ArrayList<>();
+        cumulativeSavings.add(savings.get(0));
+        for(int i=1; i<12; i++){
+            cumulativeSavings.add(savings.get(i)+savings.get(i-1));
+        }
+        return cumulativeSavings;
+    }
+=======
+>>>>>>> main
     @PutMapping("/{id}/expense")
     public ResponseEntity<ExpenseModel> updateExpense(@PathVariable("id") int id, @RequestBody ExpenseModel expense){
         ExpenseModel updatedExpense = expenseService.updateExpense(id, expense);
@@ -320,6 +343,10 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404: Not Found
         }
     }
+
+
+
+
 
 
 
@@ -346,23 +373,21 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-//    @PutMapping("/{id}/budgets")
-//    public ResponseEntity<BudgetModel> updateAllBudgets(@PathVariable("id") int id, BudgetModel budgetModel){
-//         restTemplate.put("http://FINANCE-APP-BUDGET/api/budget/" + id, budgetModel, BudgetModel.class);
-//         return null;
-//    }
-@PutMapping("/{id}/budgets")
-public ResponseEntity<BudgetModel> updateAllBudgets(@PathVariable("id") int id, @RequestBody BudgetModel budgetModel) {
-    ResponseEntity<BudgetModel> response = restTemplate.exchange(
-            "http://FINANCE-APP-BUDGET/api/budget/" + id,
-            HttpMethod.PUT,
-            new HttpEntity<>(budgetModel),
-            BudgetModel.class
-    );
+    @PutMapping("/{id}/budgets")
+    public ResponseEntity<BudgetModel> updateAllBudgets(@PathVariable("id") int id, @RequestBody BudgetModel budgetModel) {
+        ResponseEntity<BudgetModel> response = restTemplate.exchange(
+                "http://FINANCE-APP-BUDGET/api/budget/" + id,
+                HttpMethod.PUT,
+                new HttpEntity<>(budgetModel),
+                BudgetModel.class
+        );
 
-    // Optionally handle the response body or status
-    return response;
-}
+        // Optionally handle the response body or status
+        return response;
+    }
+
+
+
 
 
 
@@ -416,6 +441,9 @@ public ResponseEntity<BudgetModel> updateAllBudgets(@PathVariable("id") int id, 
 
 
 
+
+
+
     // Monthly and Yearly summary api controllers
     @GetMapping("/summary/monthly/{userId}/{month}/{year}")
     public ResponseEntity<MonthlyAndYearlySummaryDto> getMonthlyInsights(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year) {
@@ -457,6 +485,9 @@ public ResponseEntity<BudgetModel> updateAllBudgets(@PathVariable("id") int id, 
     }
 
 
+
+
+    
 
     // frontend overview component calls
     @GetMapping("/{userId}/budgetProgres")
