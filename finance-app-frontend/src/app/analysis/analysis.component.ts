@@ -5,18 +5,39 @@ import { NgChartsModule } from 'ng2-charts';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { AiService } from '../services/ai.service';
+import { ToastrService } from 'ngx-toastr';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-analysis',
   standalone: true,
   imports: [CommonModule, NgChartsModule],
   templateUrl: './analysis.component.html',
-  styleUrl: './analysis.component.css'
+  styleUrl: './analysis.component.scss'
 })
 export class AnalysisComponent {
   baseUrl = "http://localhost:8765";
 
-  constructor(private httpClient: HttpClient, private router: Router) {}
+  // Add new properties
+  isRadarFlipped = false;
+  isMixedFlipped = false;
+  isLineFlipped = false;
+
+  radarAnalysis = '';
+  mixedAnalysis = '';
+  lineAnalysis = '';
+
+  isRadarAnalysisLoading = false;
+  isMixedAnalysisLoading = false;
+  isLineAnalysisLoading = false;
+
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router,
+    private aiService: AiService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.loadChartData();
@@ -424,5 +445,165 @@ export class AnalysisComponent {
         this.router.navigate(['login']);
       }
     });
+  }
+
+  flipCard(chartType: 'radar' | 'mixed' | 'line'): void {
+    switch (chartType) {
+      case 'radar':
+        if (!this.isRadarFlipped && !this.radarAnalysis) {
+          this.generateAIAnalysis('radar');
+        }
+        this.isRadarFlipped = !this.isRadarFlipped;
+        break;
+      case 'mixed':
+        if (!this.isMixedFlipped && !this.mixedAnalysis) {
+          this.generateAIAnalysis('mixed');
+        }
+        this.isMixedFlipped = !this.isMixedFlipped;
+        break;
+      case 'line':
+        if (!this.isLineFlipped && !this.lineAnalysis) {
+          this.generateAIAnalysis('line');
+        }
+        this.isLineFlipped = !this.isLineFlipped;
+        break;
+    }
+  }
+
+  generateAIAnalysis(chartType: 'radar' | 'mixed' | 'line'): void {
+    let analysis: string;
+    let isLoading: boolean;
+    let prompt: string;
+
+    switch (chartType) {
+      case 'radar':
+        if (this.radarAnalysis) return;
+        analysis = this.radarAnalysis;
+        isLoading = this.isRadarAnalysisLoading;
+        prompt = this.generateRadarPrompt();
+        break;
+      case 'mixed':
+        if (this.mixedAnalysis) return;
+        analysis = this.mixedAnalysis;
+        isLoading = this.isMixedAnalysisLoading;
+        prompt = this.generateMixedPrompt();
+        break;
+      case 'line':
+        if (this.lineAnalysis) return;
+        analysis = this.lineAnalysis;
+        isLoading = this.isLineAnalysisLoading;
+        prompt = this.generateLinePrompt();
+        break;
+    }
+
+    this.setAnalysisLoading(chartType, true);
+
+    this.aiService.getAiResponse(prompt)
+      .pipe(
+        finalize(() => this.setAnalysisLoading(chartType, false))
+      )
+      .subscribe({
+        next: (response) => {
+          this.setAnalysis(chartType, response);
+          this.toastr.success('AI analysis generated successfully');
+        },
+        error: (error) => {
+          console.error('AI Analysis Error:', error);
+          this.toastr.error('Failed to generate AI analysis', 'Error');
+          this.setAnalysis(chartType, 'Failed to generate analysis. Please try again.');
+        }
+      });
+  }
+
+  private setAnalysisLoading(chartType: 'radar' | 'mixed' | 'line', loading: boolean): void {
+    switch (chartType) {
+      case 'radar':
+        this.isRadarAnalysisLoading = loading;
+        break;
+      case 'mixed':
+        this.isMixedAnalysisLoading = loading;
+        break;
+      case 'line':
+        this.isLineAnalysisLoading = loading;
+        break;
+    }
+  }
+
+  private setAnalysis(chartType: 'radar' | 'mixed' | 'line', analysis: string): void {
+    switch (chartType) {
+      case 'radar':
+        this.radarAnalysis = analysis;
+        break;
+      case 'mixed':
+        this.mixedAnalysis = analysis;
+        break;
+      case 'line':
+        this.lineAnalysis = analysis;
+        break;
+    }
+  }
+
+  private generateRadarPrompt(): string {
+    const budgetData = this.radarChartData.datasets[0].data;
+    const spendingData = this.radarChartData.datasets[1].data;
+    const categories = this.radarChartData.labels;
+
+    return `
+      Analyze this budget vs spending data:
+      Categories: ${categories?.join(', ')}
+      Budget Values: ${budgetData.join(', ')}
+      Spending Values: ${spendingData.join(', ')}
+
+      Please provide insights about:
+      1. Budget utilization across categories
+      2. Areas of overspending or underspending
+      3. Recommendations for budget adjustments
+      4. Overall budget management effectiveness
+
+      Give response in bullet points and without bold text just give in normal plaintext format.
+      Please keep the analysis concise, use simple language, and focus on actionable insights.
+    `;
+  }
+
+  private generateMixedPrompt(): string {
+    const incomeData = this.mixedChartData.datasets[1].data;
+    const expenseData = this.mixedChartData.datasets[0].data;
+    const savingsData = this.mixedChartData.datasets[2].data;
+
+    return `
+      Analyze this monthly financial flow data:
+      Income Values: ${incomeData.join(', ')}
+      Expense Values: ${expenseData.join(', ')}
+      Savings Values: ${savingsData.join(', ')}
+
+      Please provide insights about:
+      1. Income vs expense patterns
+      2. Saving rate and consistency
+      3. Monthly financial management
+      4. Areas for improvement
+
+      Give response in bullet points and without bold text just give in normal plaintext format.
+      Please keep the analysis concise, use simple language, and focus on actionable insights.
+    `;
+  }
+
+  private generateLinePrompt(): string {
+    const cumulativeData = this.lineChartData.datasets[0].data;
+    const totalSavings = cumulativeData[cumulativeData.length - 1];
+
+    return `
+      I have a user's monthly cumulative savings data for the year ${new Date().getFullYear()}:
+      Monthly Cumulative Values (in ₹): ${cumulativeData.join(', ')}
+      Total Savings: ₹${totalSavings}
+
+      Please analyze this financial data and provide insights about:
+      1. Saving patterns and trends
+      2. Monthly saving consistency
+      3. Areas of improvement if any
+      4. General financial health based on the saving pattern
+
+      Give response in bullet points and without bold text just give in normal plaintext format.
+      Please keep the analysis concise, use simple language, and focus on actionable insights.
+    `;
   }
 }
