@@ -3,7 +3,7 @@
   --secondary-color: #34495e;
   --accent-color: #3498db;
   --text-color: #2c3e50;
-  --background-light: #f8f9fa;
+  --background-light: #f8f9f9;
   --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition-speed: 0.3s;
 }
@@ -61,6 +61,7 @@
 
 .chart-card:hover {
   transform: translateY(-4px);
+  /* background-color: white; */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 

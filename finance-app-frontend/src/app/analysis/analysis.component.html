@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <!-- Bottom Row - Mixed Chart and Description -->
+    <!-- Second Row - Mixed Chart and Description -->
     <div class="chart-row">
       <div class="chart-section">
         <div class="chart-card">
@@ -68,6 +68,39 @@
               The relationship between these three metrics reveals your financial health. 
               Higher savings line and lower expense bars relative to income indicate effective money management. 
               Watch for months where expenses approach income levels.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Third Row - Line Chart and Description -->
+    <div class="chart-row">
+      <div class="chart-section">
+        <div class="chart-card">
+          <canvas baseChart 
+                  [data]="lineChartData" 
+                  [options]="lineChartOptions" 
+                  [type]="'line'">
+          </canvas>
+        </div>
+      </div>
+      <div class="description-box">
+        <h2>Cumulative Savings Growth</h2>
+        <div class="description-content">
+          <p class="description-text">
+            Track your progressive savings accumulation throughout the year with this cumulative trend analysis:
+          </p>
+          <ul class="description-list">
+            <li><span class="highlight">Growth Trajectory:</span> Visualize your savings buildup month by month</li>
+            <li><span class="highlight">Trend Line:</span> Shows the total accumulated savings at each point</li>
+          </ul>
+          <div class="insight-box">
+            <h3>Growth Analysis</h3>
+            <p>
+              The slope of this line indicates your saving momentum. A steeper curve shows accelerated saving,
+              while plateaus might suggest months where saving slowed. Use this trend to set and adjust your
+              long-term savings goals and track your progress toward financial milestones.
             </p>
           </div>
         </div>

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
-import { environment } from '../../environments/environment.development';
 import { ToastrService } from 'ngx-toastr';
+import { AiService } from '../services/ai.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ai-assistant',
@@ -11,57 +11,38 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './ai-assistant.component.html',
   styleUrl: './ai-assistant.component.scss'
 })
-export class AiAssistantComponent implements OnInit {
+export class AiAssistantComponent {
   advice: string = '';
   loading: boolean = false;
   error: string | null = null;
-  private genAI: GoogleGenerativeAI;
 
-  constructor(private toastr:ToastrService) {
-    this.genAI = new GoogleGenerativeAI(environment.API_KEY);
-  }
+  constructor(
+    private aiService: AiService,
+    private toastr: ToastrService
+  ) {}
 
-  ngOnInit() {
-    // this.getFinancialAdvice();
-  }
+  getFinancialAdvice(): void {
+    this.loading = true;
+    this.error = null;
 
-  // async getFinancialAdvice(){
-  //   this.advice = "Hello";
-  // }
+    const prompt = `
+      what is the full form of the word "AI"
+    `;
 
-  async getFinancialAdvice(): Promise<void> {
-    try {
-      const generationConfig = {
-        safetySettings: [
-          {
-            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-          },
-        ],
-        temperature: 0.8,
-        top_p: 0.9,
-        maxOutputTokens: 200,
-      };
-
-      const model = this.genAI.getGenerativeModel({
-        model: 'gemini-pro',
-        ...generationConfig,
+    this.aiService.getAiResponse(prompt)
+      .pipe(
+        finalize(() => this.loading = false)
+      )
+      .subscribe({
+        next: (response) => {
+          this.advice = response;
+          this.toastr.success('AI advice generated successfully');
+        },
+        error: (error) => {
+          this.error = 'Failed to generate AI advice';
+          this.toastr.error(this.error, 'Error');
+          console.error('AI Service Error:', error);
+        }
       });
-
-      const prompt = `
-        what is the best way to save money?
-      `;
-
-      const result = await model.generateContent(prompt);
-      const responseText = result.response.text();
-      // console.log(this.responseText);
-      this.advice = responseText;
-      this.toastr.success('AI advice generated successfully');
-
-    } catch (error) {
-      console.error('Error generating recommendations:', error);
-      this.toastr.error('Failed to generate AI advice', 'Error');
-    }
   }
-
 }
