@@ -215,7 +215,7 @@
 
         .actions {
           display: flex;
-          gap: 1rem;
+          gap: 0.8rem;
 
           button {
             flex: 1;
@@ -230,6 +230,14 @@
             transition: all 0.3s ease;
 
             &.update-btn {
+              background: #b9bdb9;
+              color: white;
+
+              &:hover {
+                background: #9c9e9c;
+              }
+            }
+            &.add-btn {
               background: #4caf50;
               color: white;
 

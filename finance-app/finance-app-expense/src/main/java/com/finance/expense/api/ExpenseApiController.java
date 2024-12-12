@@ -65,23 +65,6 @@ public class ExpenseApiController {
         expenseService.deleteExpenseById(id);
     }
 
-    @GetMapping("/analysis/{userId}/{startDate}/{endDate}")
-    public ResponseEntity<List<ExpenseDto>> getExpensesByCategoryAndPeriod(
-            @PathVariable int userId,
-            @PathVariable("startDate") LocalDate startDate,
-            @PathVariable("endDate") LocalDate endDate) {
-
-        List<ExpenseDto> expenses = expenseRepository.findTotalExpensesByCategoryAndPeriod(userId, startDate, endDate);
-        return ResponseEntity.status(HttpStatus.OK).body(expenses);
-    }
-//    @GetMapping("/analysis/{userId}/{startDate}/{endDate}")
-//    public ResponseEntity<List<ExpenseDto>> getExpensesByCategoryAndPeriod(
-//            @PathVariable int userId,
-//            @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-//            @PathVariable("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-//        List<ExpenseDto> expenses = expenseRepository.findTotalExpensesByCategoryAndPeriod(userId, startDate, endDate);
-//        return ResponseEntity.status(HttpStatus.OK).body(expenses);
-//    }
 
     @GetMapping("/{userId}/monthlyTotalExpensesList/{year}")
     public List<Double> getMonthlyTotals(@PathVariable("userId") int userId, @PathVariable("year") int year) {

@@ -4,21 +4,14 @@ import com.finance.user.dto.BudgetModel;
 import com.finance.user.dto.ExpenseModel;
 import com.finance.user.dto.GoalModel;
 import com.finance.user.dto.IncomeModel;
-import com.finance.user.dto.features.BudgetAlertDto;
-import com.finance.user.dto.features.MonthlyAndYearlySummaryDto;
-import com.finance.user.dto.features.SpendingPatternDto;
 import com.finance.user.model.ProfileModel;
 import com.finance.user.model.UserModel;
 import com.finance.user.repository.ProfileRepository;
 import com.finance.user.repository.UserRepository;
 import com.finance.user.service.UserService;
 import com.finance.user.service.microservices.expense.UserExpenseService;
-import com.finance.user.service.microservices.features.BudgetAlert;
-import com.finance.user.service.microservices.features.MonthlyAndYearlySummary;
-import com.finance.user.service.microservices.features.SpendingAnalysisService;
 import com.finance.user.service.microservices.goal.UserGoalService;
 import com.finance.user.service.microservices.income.UserIncomeService;
-import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +20,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,15 +41,6 @@ public class UserApiController {
 
     @Autowired
     private UserGoalService goalService;
-
-    @Autowired
-    private MonthlyAndYearlySummary monthlyAndYearlySummary;
-
-    @Autowired
-    private BudgetAlert budgetAlert;
-
-    @Autowired
-    private SpendingAnalysisService spendingAnalysisService;
 
     @Autowired
     private UserRepository userRepository;
@@ -424,51 +405,15 @@ public class UserApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404: Not Found
         }
     }
-
-
-
-
-
-
-    // Monthly and Yearly summary api controllers
-    @GetMapping("/summary/monthly/{userId}/{month}/{year}")
-    public ResponseEntity<MonthlyAndYearlySummaryDto> getMonthlyInsights(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year) {
-        MonthlyAndYearlySummaryDto monthlySummaryDto = monthlyAndYearlySummary.getMonthlySummary(userId, month, year);
-        if (monthlySummaryDto != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(monthlySummaryDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @PostMapping("/{userId}/addAmount/{id}/{amount}")
+    public GoalModel addAmount(@PathVariable("id") int id, @PathVariable("amount") double amount, @PathVariable("userId") int userId){
+        GoalModel goalModel = restTemplate.postForObject("http://FINANCE-APP-GOAL/api/goal/"+id+"/addAmount/"+amount, null, GoalModel.class);
+        return goalModel;
     }
-    @GetMapping("/summary/yearly/{id}/{year}")
-    public ResponseEntity<MonthlyAndYearlySummaryDto> getYearlyInsights(@PathVariable("id") int id, @PathVariable("year") int year) {
-        MonthlyAndYearlySummaryDto yearlySummaryDto = monthlyAndYearlySummary.getYearlySummary(id, year);
-        if (yearlySummaryDto != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(yearlySummaryDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-    // budget alert api
-    @GetMapping("/alert/{userId}")
-    public ResponseEntity<List<BudgetAlertDto>> getBudgetAlerts(@PathVariable("userId") int userId) {
-        List<BudgetAlertDto> list = budgetAlert.getBudgetAlerts(userId);
-        if (!list.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(list);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-    // Spending Analysis
-    @GetMapping("/analysis/{userId}")
-    public ResponseEntity<List<SpendingPatternDto>> getSpendingPattern(@PathVariable int userId) {
-        List<SpendingPatternDto> insights = spendingAnalysisService.analyzeSpendingPattern(userId);
-        if (!insights.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(insights);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
+
+
+
+
 
 
 
@@ -476,11 +421,15 @@ public class UserApiController {
     
 
     // frontend overview component calls
-    @GetMapping("/{userId}/budgetProgres")
-    public Double budgetProgress(@PathVariable("userId") int userId){
+    @GetMapping("/{userId}/budgetProgress/{month}/{year}")
+    public Double budgetProgress(@PathVariable("userId") int userId, @PathVariable("month") int month, @PathVariable("year") int year){
         BudgetModel[] list = restTemplate.getForObject("http://FINANCE-APP-BUDGET/api/budget/"+userId, BudgetModel[].class);
         List<BudgetModel> budgetsList = new ArrayList<>(Arrays.asList(list));
-        double currentSpending = budgetsList.stream().mapToDouble(i->i.getCurrentSpending()).sum();
+
+        List<ExpenseModel> expensesList = expenseService.getAllExpenses(userId);
+        double currentSpending = expensesList.stream().filter(i->i.getDate().getMonthValue()==month && i.getDate().getYear()==year)
+                .mapToDouble(i->i.getAmount()).sum();
+
         double moneyLimit = budgetsList.stream().mapToDouble(i->i.getMoneyLimit()).sum();
         return currentSpending/moneyLimit;
     }

@@ -32,7 +32,7 @@ public class BudgetServiceImplementation implements BudgetService{
     @Override
     public List<BudgetModel> getAllBudgets(int userId) {
 
-        return budgetRepository.getBudgetsByUserId(userId);
+        return budgetRepository.getBudgetsByUserId(userId).stream().sorted((a,b)->a.getId()-b.getId()).toList();
     }
 
     @Override

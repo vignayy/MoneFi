@@ -45,12 +45,12 @@
         <div class="tile-header">
           <div class="tile-icon-title-container">
             <mat-icon class="tile-icon">savings</mat-icon>
-            <h3 class="tile-title">Total Savings</h3>
+            <h3 class="tile-title">Budget</h3>
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount"><span [appCountUp]="summary.savings"></span></p>
-          <span class="tile-subtext">Current Balance</span>
+          <p class="tile-amount"><span [appCountUp]="summary.budget"></span></p>
+          <span class="tile-subtext">This month</span>
         </div>
       </div>
 
@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="tile-content">
-          <p class="tile-amount"><span [appCountUp]="summary.netWorth + summary.savings"></span></p>
+          <p class="tile-amount"><span [appCountUp]="summary.netWorth"></span></p>
           <span class="tile-subtext">Total Assets</span>
         </div>
       </div>
@@ -85,6 +85,7 @@
       <p class="progress-description">
         {{ summary.budgetProgress > 75 ? 'Budget is running high! Consider cutting expenses.' : 'You\'re on track with your monthly budget.' }}
       </p>
+      <p>Budget Left : {{summary.budget - summary.expenses}} </p>
     </div>
 
     <div class="progress-container">

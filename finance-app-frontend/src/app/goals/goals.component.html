@@ -15,7 +15,7 @@
    <div class="summary-cards">
     <div class="card total-budget">
       <div class="card-content">
-        <h3>Total Remaining Balance</h3>
+        <h3>Total Balance</h3>
         <p class="amount"><span [appCountUp]="totalRemainingBalance"></span></p>
         <p class="period">Monthly Balance</p>
       </div>
@@ -33,7 +33,7 @@
 
     <div class="card remaining">
       <div class="card-content">
-        <h3>Remaining</h3>
+        <h3>Total Remaining Balance</h3>
         <p class="amount"><span [appCountUp]="totalNetworth"></span></p>
         <p class="period">Available</p>
       </div>
@@ -110,14 +110,19 @@
 
       <!-- Actions -->
       <div class="actions">
+        <button class="add-btn" (click)="addAmount(goal.id)">
+          <i class="fas fa-plus"></i>
+          Add Amount
+        </button>
         <button class="update-btn" (click)="updateGoal(goal)">
-          <i class="fas fa-plus-circle"></i>
+          <i class="fas fa-edit"></i>
           Update Goal
         </button>
         <button class="delete-btn" (click)="deleteGoal(goal.id)">
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash"></i>
           Delete Goal
         </button>
+        
       </div>
     </div>
   </div>

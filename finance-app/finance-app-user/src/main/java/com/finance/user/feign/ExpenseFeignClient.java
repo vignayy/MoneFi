@@ -2,7 +2,6 @@ package com.finance.user.feign;
 
 
 import com.finance.user.dto.ExpenseModel;
-import com.finance.user.dto.features.ExpenseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +31,4 @@ public interface ExpenseFeignClient {
     @DeleteMapping("/api/expense/{id}")
     public void deleteExpenseById(@PathVariable("id") int id);
 
-    @GetMapping("/api/expense/analysis/{userId}/{startDate}/{endDate}")
-    ResponseEntity<List<ExpenseDto>> getExpensesByCategoryAndPeriod(
-            @PathVariable int userId,
-            @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @PathVariable("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
-    );
 }

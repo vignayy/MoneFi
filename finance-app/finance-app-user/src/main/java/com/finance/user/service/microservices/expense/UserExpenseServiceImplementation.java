@@ -25,13 +25,6 @@ public class UserExpenseServiceImplementation implements UserExpenseService {
     public ExpenseModel addExpense(int userId, ExpenseModel expense) {
         expense.setUserId(userId);
         ExpenseModel expenseResponse = expenseFeignClient.saveExpense(expense).getBody();
-
-//        BudgetModel budget = new BudgetModel();
-//        budget.setUserId(userId);
-//        budget.setCategory(expense.getCategory());
-//        budget.setCurrentSpending(expense.getAmount());
-//        BudgetModel budgetResponse = budgetFeignClient.addToBudget(budget).getBody();
-//        System.out.println(budgetResponse);
         return expenseResponse;
     }
 

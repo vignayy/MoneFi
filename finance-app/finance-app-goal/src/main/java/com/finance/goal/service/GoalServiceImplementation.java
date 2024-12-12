@@ -20,7 +20,7 @@ public class GoalServiceImplementation implements GoalService{
 
     @Override
     public List<GoalModel> getAllGoals(int userId) {
-        return goalRepository.findByUserId(userId);
+        return goalRepository.findByUserId(userId).stream().sorted((a,b)->a.getId()-b.getId()).toList();
     }
 
     @Override
