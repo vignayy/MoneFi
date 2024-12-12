@@ -72,7 +72,6 @@ export class BudgetsComponent {
   uniqueCategories: string[] = [];
 
   ngOnInit() {
-    // this.loadBudgetData();
     this.initializeFilters();
     
     // Set the default month to the current month (1-based index)
@@ -80,7 +79,6 @@ export class BudgetsComponent {
     this.selectedYear = new Date().getFullYear(); // Current year
   
     this.loadBudgetData();
-    this.loadExpensesData();
     this.filterExpenses();
   }
   initializeFilters() {
@@ -110,7 +108,6 @@ export class BudgetsComponent {
               this.expenses = expenses;
               this.filteredExpenses = [...expenses]; // Initialize filteredExpenses with all expenses
               this.updateBudgetsWithExpenses();
-              this.calculateTotals();
 
             } else {
               this.toastr.warning('No expenses found for the selected filters.', 'No Data');
@@ -148,7 +145,6 @@ export class BudgetsComponent {
       budget.remaining = budget.moneyLimit - spentInCategory;
     });
 
-    // this.loadExpensesData();
     this.calculateTotals();
   }
 
@@ -171,7 +167,7 @@ export class BudgetsComponent {
             console.log(this.budgets);
             this.calculateTotals();
             // Load expenses after fetching budgets to update categories
-            // this.loadExpensesData();
+            this.loadExpensesData();
           },
           error: (error) => {
             console.error('Failed to load Budget data:', error);
@@ -254,7 +250,6 @@ export class BudgetsComponent {
                 .then(() => {
                   this.toastr.success('All categories added successfully');
                   this.loadBudgetData(); // Refresh data if necessary
-                  this.loadExpensesData();
                 })
                 .catch((error) => {
                   console.error('Failed to add one or more categories:', error);
@@ -318,7 +313,12 @@ export class BudgetsComponent {
   
   
 
+  editBudget(budget : Budget){
 
+  }
+  viewDetails(budget:Budget){
+
+  }
 
   updateUniqueCategories() {
     // Ensure "All Categories" is an option
