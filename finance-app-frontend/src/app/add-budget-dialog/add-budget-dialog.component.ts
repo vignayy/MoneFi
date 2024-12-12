@@ -16,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
   selector: 'app-add-budget-dialog',
   standalone: true,
   templateUrl: './add-budget-dialog.component.html',
-  styleUrl: './add-budget-dialog.component.scss',
+  styleUrl: './add-budget-dialog.component.css',
     imports: [FormsModule,
     MatInputModule,
     MatCheckboxModule,
@@ -49,7 +49,7 @@ export class AddBudgetDialogComponent {
     'House Rent',
     'Emi and loans',
     'Health & Medical',
-    'Miscellaneous',
+    'Miscellaneous'
   ];
 
   constructor(
@@ -84,17 +84,47 @@ export class AddBudgetDialogComponent {
   }
   
 
-  initializeCategories() {
-    // Generate random percentages that sum up to 100
-    const randomPercentages = this.generateRandomPercentages(this.categories.length);
+  // initializeCategories() {
+  //   // Generate random percentages that sum up to 100
+  //   const randomPercentages = this.generateRandomPercentages(this.categories.length);
 
-    // Assign percentages and calculate initial amounts
+  //   // Assign percentages and calculate initial amounts
+  //   this.budgetSource.categories = this.categories.map((category, index) => ({
+  //     category,
+  //     percentage: randomPercentages[index],
+  //     moneyLimit: 0,
+  //   }));
+  // }
+  initializeCategories() {
+    // Define fixed percentages for each category
+    const fixedPercentages = [
+      13, // Food
+      7, // Travelling
+      5,  // Entertainment
+      12, // Groceries
+      10, // Shopping
+      10, // Bills & utilities
+      20, // House Rent
+      10,  // Emi and loans
+      8,  // Health & Medical
+      5   // Miscellaneous
+    ];
+  
+    // Validate that the total percentage sums to 100
+    const totalPercentage = fixedPercentages.reduce((sum, percentage) => sum + percentage, 0);
+    if (totalPercentage !== 100) {
+      throw new Error('Fixed percentages do not sum up to 100. Please adjust the values.');
+    }
+  
+    // Assign percentages and initialize money limits
     this.budgetSource.categories = this.categories.map((category, index) => ({
       category,
-      percentage: randomPercentages[index],
-      moneyLimit: 0,
+      percentage: fixedPercentages[index],
+      moneyLimit: 0, // Initialize moneyLimit to 0
     }));
   }
+  
+  
 
   generateRandomPercentages(count: number): number[] {
     const percentages = Array.from({ length: count }, () => Math.random());
@@ -112,6 +142,13 @@ export class AddBudgetDialogComponent {
   }
 
   onSave() {
+
+    const totalBudget = this.budgetSource.moneyLimit;
+
+    if (totalBudget > this.totalIncome) {
+      alert(`The total budget cannot exceed your total income of ₹${this.totalIncome}. Please adjust your budget.`);
+      return; // Prevent saving the budget
+    }
     const totalPercentage = this.budgetSource.categories.reduce(
       (sum, category) => sum + category.percentage,
       0

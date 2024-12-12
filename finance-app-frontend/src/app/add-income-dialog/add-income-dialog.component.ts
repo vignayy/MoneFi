@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-income-dialog',
@@ -26,7 +27,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ]
 })
 export class AddIncomeDialogComponent {
@@ -35,39 +37,47 @@ export class AddIncomeDialogComponent {
     amount: '',
     date: new Date(),
     category: '',
-    recurring: false
+    recurring: false,
   };
 
-  // // constructor(public dialogRef: MatDialogRef<AddIncomeDialogComponent>) {}
-  // constructor(
-  //   public dialogRef: MatDialogRef<AddIncomeDialogComponent>,
-  //   @Inject(MAT_DIALOG_DATA) public data: any // Inject incoming data
-  // ) {
-  //   this.incomeSource = { ...data }; // Initialize form with pre-populated data
-  // }
   dialogTitle: string;
-  
+
   constructor(
     public dialogRef: MatDialogRef<AddIncomeDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any 
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    const dialogData = data || {}; 
+    const dialogData = data || {};
 
     if (dialogData.isUpdate) {
-      this.dialogTitle = 'Update Income'; 
-      this.incomeSource = { ...dialogData }; 
+      this.dialogTitle = 'Update Income';
+      this.incomeSource = { ...dialogData };
     } else {
-      this.dialogTitle = 'Add New Income'; 
-      this.incomeSource =  { source: '',
-      amount: '',
-      date: new Date(),
-      category: '',
-      recurring: false}
+      this.dialogTitle = 'Add New Income';
+      this.incomeSource = {
+        source: '',
+        amount: '',
+        date: new Date(),
+        category: '',
+        recurring: false,
+      };
     }
   }
 
+  isValid(): boolean {
+    return (
+      this.incomeSource.source.trim() !== '' &&
+      this.incomeSource.amount !== '' &&
+      this.incomeSource.date !== null &&
+      this.incomeSource.category.trim() !== ''
+    );
+  }
+
   onSave() {
-    this.dialogRef.close(this.incomeSource);
+    if (this.isValid()) {
+      this.dialogRef.close(this.incomeSource);
+    } else {
+      alert('Please fill in all required fields before saving.');
+    }
   }
 
   onCancel() {
