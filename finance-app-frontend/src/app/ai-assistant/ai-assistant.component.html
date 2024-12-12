@@ -3,7 +3,7 @@
     
     <div class="advice-section">
       <div *ngIf="loading" class="loading">
-        <i class="fas fa-robot fa-spin"></i>
+        <i class="fas fa-spinner fa-spin"></i>
         <p>Analyzing your financial data...</p>
       </div>
   
@@ -19,38 +19,4 @@
         <button (click)="getFinancialAdvice()">Get New Advice</button>
       </div>
     </div>
-
-    <!-- Added Chart Row Section -->
-    <!-- <div class="chart-row">
-      <div class="chart-section">
-        <div class="chart-card">
-          <canvas baseChart 
-                  [data]="lineChartData" 
-                  [options]="lineChartOptions" 
-                  [type]="'line'">
-          </canvas>
-        </div>
-      </div>
-      <div class="description-box">
-        <h2>Cumulative Savings Growth</h2>
-        <div class="description-content">
-          <p class="description-text">
-            Track your progressive savings accumulation throughout the year with this cumulative trend analysis:
-          </p>
-          <ul class="description-list">
-            <li><span class="highlight">Growth Trajectory:</span> Visualize your savings buildup month by month</li>
-            <li><span class="highlight">Trend Line:</span> Shows the total accumulated savings at each point</li>
-          </ul>
-          <div class="insight-box">
-            <h3>Growth Analysis</h3>
-            <p>
-              The slope of this line indicates your saving momentum. A steeper curve shows accelerated saving,
-              while plateaus might suggest months where saving slowed. Use this trend to set and adjust your
-              long-term savings goals and track your progress toward financial milestones.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-</div>
+  </div>
