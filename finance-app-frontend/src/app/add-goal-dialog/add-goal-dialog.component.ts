@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +10,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog.component';
 
 @Component({
   selector: 'app-add-goal-dialog',
@@ -26,56 +26,59 @@ import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ]
 })
 export class AddGoalDialogComponent {
   goalSource = {
-    goalName:'',
-    currentAmount:'',
-    targetAmount:'',
+    goalName: '',
+    currentAmount: '',
+    targetAmount: '',
     deadLine: new Date(),
     category: '',
   };
 
   dialogTitle: string;
-  
+
   constructor(
     public dialogRef: MatDialogRef<AddGoalDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any 
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    const dialogData = data || {}; 
+    const dialogData = data || {};
 
     if (dialogData.isUpdate) {
-      this.dialogTitle = 'Update Goal'; 
-      this.goalSource = { ...dialogData }; 
+      this.dialogTitle = 'Update Goal';
+      this.goalSource = { ...dialogData };
     } else {
-      this.dialogTitle = 'Add New Goal'; 
-      this.goalSource = { goalName: '', currentAmount: '', targetAmount: '', deadLine: new Date(), category: '' }; // Empty form for adding a new goal
+      this.dialogTitle = 'Add New Goal';
+      this.goalSource = {
+        goalName: '',
+        currentAmount: '',
+        targetAmount: '',
+        deadLine: new Date(),
+        category: '',
+      };
     }
   }
 
+  isValid(): boolean {
+    return (
+      this.goalSource.goalName.trim() !== '' &&
+      this.goalSource.currentAmount !== '' &&
+      this.goalSource.targetAmount !== '' &&
+      this.goalSource.deadLine !== null &&
+      this.goalSource.category.trim() !== ''
+    );
+  }
 
   onSave() {
-    // console.log(this.goalSource);
-    this.dialogRef.close(this.goalSource);
+    if (this.isValid()) {
+      this.dialogRef.close(this.goalSource);
+    } else {
+      alert('Please fill in all required fields before saving.');
+    }
   }
-  // onSave() {
-  //   const formattedGoalSource = {
-  //     ...this.goalSource,
-  //     date: this.formatDate(this.goalSource.date) // Convert date to string
-  //   };
-  
-  //   this.dialogRef.close(formattedGoalSource);
-  // }
-  
-  // formatDate(date: Date): string {
-  //   const yyyy = date.getFullYear();
-  //   const mm = String(date.getMonth() + 1).padStart(2, '0');
-  //   const dd = String(date.getDate()).padStart(2, '0');
-  //   return `${yyyy}-${mm}-${dd}`; // Returns date in 'YYYY-MM-DD' format
-  // }
-  
 
   onCancel() {
     this.dialogRef.close();

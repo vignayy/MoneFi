@@ -1,3 +1,5 @@
+
+import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +19,7 @@ import { AddIncomeDialogComponent } from '../add-income-dialog/add-income-dialog
   styleUrls: ['./add-expense-dialog.component.scss'],
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MatInputModule,
     MatCheckboxModule,
@@ -59,8 +62,21 @@ export class AddExpenseDialogComponent {
     }
   }
 
+  isValid(): boolean {
+    return (
+      this.expenseSource.amount !== '' &&
+      this.expenseSource.date !== null &&
+      this.expenseSource.category.trim() !== '' &&
+      this.expenseSource.description.trim() !== ''
+    );
+  }
+
   onSave() {
-    this.dialogRef.close(this.expenseSource);
+    if (this.isValid()) {
+      this.dialogRef.close(this.expenseSource);
+    } else {
+      alert('Please fill in all required fields before saving.');
+    }
   }
 
   onCancel() {

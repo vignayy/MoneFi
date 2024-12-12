@@ -41,77 +41,88 @@
     </div>
   </div>
 
-  <!-- <h2> Your Remaining Balance is: {{totalRemainingBalance}} </h2> -->
-  <!-- <h2> Your Toal Goal Savings is: {{totalGoalSavings}} </h2> -->
-  <!-- <h2> Your Toal Networth is: {{totalNetworth}} </h2> -->
 
-  <!-- Goals Grid -->
-  <div class="goals-grid">
-    <div class="goal-card" *ngFor="let goal of goals">
-      <div class="goal-header" [style.backgroundColor]="goal.color">
-        <div class="icon-wrapper">
-          <i class="fas" [class]="goal.icon"></i>
-        </div>
-        <div class="goal-info">
-          <h3>{{ goal.goalName }}</h3>
-          <span class="category">{{ goal.category }}</span> 
+<!-- Goals Grid -->
+<div class="goals-grid">
+  <div class="goal-card" *ngFor="let goal of goals">
+    <!-- Existing code for goal details -->
+    <div class="goal-header" [style.backgroundColor]="goal.color">
+      <div class="icon-wrapper">
+        <i class="fas" [class]="goal.icon"></i>
+      </div>
+      <div class="goal-info">
+        <h3>{{ goal.goalName }}</h3>
+        <span class="category">{{ goal.category }}</span>
+      </div>
+    </div>
+
+    <div class="goal-content">
+      <!-- Existing progress circle and other content -->
+      <div class="progress-circle-container">
+        <div
+          class="progress-circle"
+          [style.background]="'conic-gradient(' + goal.color + ' ' +
+          getProgressPercentage(goal.currentAmount, goal.targetAmount) +
+          '%, #f0f0f0 0)'"
+        >
+          <div class="progress-inner">
+            <span class="percentage">
+              {{ getProgressPercentage(goal.currentAmount, goal.targetAmount) | number:'1.0-0' }}%
+            </span>
+            <span class="label">Complete</span>
+          </div>
         </div>
       </div>
 
-      <div class="goal-content">
-        <div class="progress-circle-container">
-          <div class="progress-circle" 
-               [style.background]="'conic-gradient(' + goal.color + ' ' + 
-                                  getProgressPercentage(goal.currentAmount, goal.targetAmount) + 
-                                  '%, #f0f0f0 0)'">
-            <div class="progress-inner">
-              <span class="percentage">
-                {{ getProgressPercentage(goal.currentAmount, goal.targetAmount) | number:'1.0-0' }}%
-              </span>
-              <span class="label">Complete</span>
-            </div>
-          </div>
+      <div class="amount-details">
+        <div class="current">
+          <span class="label">Current</span>
+          <span class="value">{{ goal.currentAmount | currency:'INR' }}</span>
         </div>
+        <div class="target">
+          <span class="label">Target</span>
+          <span class="value">{{ goal.targetAmount | currency:'INR' }}</span>
+        </div>
+      </div>
 
-        <div class="amount-details">
-          <div class="current">
-            <span class="label">Current</span>
-            <span class="value">{{ goal.currentAmount | currency:'INR' }}</span>
-          </div>
-          <div class="target">
-            <span class="label">Target</span>
-            <span class="value">{{ goal.targetAmount | currency:'INR' }}</span>
-          </div>
-        </div>
-        
+      <!-- Timeline -->
+      <div class="timeline">
+        <i class="fas fa-clock"></i>
+        <span class="days-left">{{ getDaysRemaining(goal.deadLine) }} days left</span>
+        <span class="deadline">Due by {{ goal.deadLine | date }}</span>
+      </div>
 
-        <!-- Timeline -->
-        <div class="timeline">
-          <i class="fas fa-clock"></i>
-          <span class="days-left">{{ getDaysRemaining(goal.deadLine) }} days left</span>
-          <span class="deadline">Due by {{ goal.deadLine | date }}</span>
+      <!-- Status Badge -->
+      <div class="status-badge">
+        <div class="status-badge" *ngIf="getGoalStatus(goal) === 'overdue'">
+          <i class="fas fa-exclamation-circle"></i> Overdue
         </div>
-        
+        <div class="status-badge" *ngIf="getGoalStatus(goal) === 'completed-early'">
+          <i class="fas fa-check-circle"></i> Completed Early
+        </div>
+        <div class="status-badge" *ngIf="getGoalStatus(goal) === 'completed-on-time'">
+          <i class="fas fa-check-circle"></i> Completed On Time
+        </div>
+        <div class="status-badge" *ngIf="getGoalStatus(goal) === 'in-progress'">
+          <i class="fas fa-check-circle"></i> On Going 
+        </div>
+      </div>
 
-        <!-- Actions -->
-        <div class="actions">
-          <button class="update-btn" (click)="updateGoal(goal)">
-            <i class="fas fa-plus-circle"></i>
-            Update Goal
-          </button>
-          <!-- <button class="details-btn" (click)="viewGoalDetails(goal)">
-            <i class="fas fa-chart-line"></i>
-            View Details
-          </button> -->
-          <button class="delete-btn" (click)="deleteGoal(goal.id)">
-            <i class="fas fa-trash-alt"></i>
-            Delete Goal
-          </button>
-          
-        </div>
+      <!-- Actions -->
+      <div class="actions">
+        <button class="update-btn" (click)="updateGoal(goal)">
+          <i class="fas fa-plus-circle"></i>
+          Update Goal
+        </button>
+        <button class="delete-btn" (click)="deleteGoal(goal.id)">
+          <i class="fas fa-trash-alt"></i>
+          Delete Goal
+        </button>
       </div>
     </div>
   </div>
+</div>
+
 
   <!-- Empty State -->
   <div class="empty-state" *ngIf="!loading && goals.length === 0">
@@ -127,3 +138,7 @@
     <p>Loading your goals...</p>
   </div>
 </div>
+
+
+
+
