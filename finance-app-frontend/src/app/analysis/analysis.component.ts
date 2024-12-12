@@ -21,6 +21,7 @@ export class AnalysisComponent {
   ngOnInit() {
     this.loadChartData();
     this.loadMixedChartData();
+    this.loadCumulativeData();
   }
 
   loadChartData() {
@@ -334,4 +335,94 @@ export class AnalysisComponent {
       }
     }
   };
+
+  // Add new chart configuration properties
+  public lineChartData: ChartData<'line'> = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Cumulative Savings',
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      }
+    ]
+  };
+
+  public lineChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          padding: 20,
+          font: { size: 12 }
+        }
+      },
+      title: {
+        display: true,
+        text: 'Cumulative Savings Growth',
+        padding: 20,
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: (value) => '₹' + value.toLocaleString()
+        }
+      }
+    }
+  };
+
+  // Add new method to load cumulative data
+  loadCumulativeData() {
+    const token = sessionStorage.getItem('finance.auth');
+    const currentYear = new Date().getFullYear();
+
+    this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next: (userId) => {
+        this.httpClient.get<number[]>(`${this.baseUrl}/api/user/${userId}/monthlyCumulativeSavingsInYear/${currentYear}`)
+          .subscribe({
+            next: (cumulativeData) => {
+              this.lineChartData.datasets[0].data = cumulativeData;
+              
+              // Update chart options for better scale
+              const maxValue = Math.max(...cumulativeData);
+              this.lineChartOptions = {
+                ...this.lineChartOptions,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: Math.ceil(maxValue / 10000) * 10000,
+                    ticks: {
+                      stepSize: Math.ceil(maxValue / 50000) * 10000,
+                      callback: (value) => '₹' + value.toLocaleString()
+                    }
+                  }
+                }
+              };
+            },
+            error: (error) => {
+              console.error('Failed to load cumulative data:', error);
+            }
+          });
+      },
+      error: (error) => {
+        console.error('Failed to fetch userId:', error);
+        sessionStorage.removeItem('finance.auth');
+        this.router.navigate(['login']);
+      }
+    });
+  }
 }
