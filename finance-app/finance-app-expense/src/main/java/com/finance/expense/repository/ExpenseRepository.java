@@ -40,15 +40,6 @@ public interface ExpenseRepository extends JpaRepository<ExpenseModel, Integer> 
             "ORDER BY month ASC")
     public List<Object[]> findMonthlyExpenses(int userId, int year);
 
-    @Query("SELECT new com.finance.expense.dto.ExpenseDto(e.category, SUM(e.amount)) " +
-            "FROM ExpenseModel e " +
-            "WHERE e.userId = :userId AND e.date BETWEEN :startDate AND :endDate " +
-            "GROUP BY e.category")
-    List<ExpenseDto> findTotalExpensesByCategoryAndPeriod(@Param("userId") int userId,
-                                                          @Param("startDate") LocalDate startDate,
-                                                          @Param("endDate") LocalDate endDate);
-
-
 
 
 }

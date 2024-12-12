@@ -1,6 +1,7 @@
 package com.finance.goal.api;
 
 import com.finance.goal.model.GoalModel;
+import com.finance.goal.repository.GoalRepository;
 import com.finance.goal.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,9 @@ public class GoalApiController {
 
     @Autowired
     private GoalService goalService;
+
+    @Autowired
+    private GoalRepository goalRepository;
 
     @PostMapping
     public ResponseEntity<GoalModel> saveGoal(@RequestBody GoalModel goal) {
@@ -49,5 +53,12 @@ public class GoalApiController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") int id) {
         goalService.deleteGoalById(id);
+    }
+
+    @PostMapping("/{id}/addAmount/{amount}")
+    public GoalModel addAmount(@PathVariable("id") int id, @PathVariable("amount") double amount){
+        GoalModel goalModel = goalRepository.findById(id).orElse(null);
+        goalModel.setCurrentAmount(goalModel.getCurrentAmount() + amount);
+        return goalService.save(goalModel);
     }
 }

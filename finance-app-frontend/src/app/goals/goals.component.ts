@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CountUpDirective } from '../shared/directives/count-up.directive';
+import { AddAmountGoalComponent } from '../add-amount-goal/add-amount-goal.component';
 
 interface Goal {
   id: number;
@@ -118,6 +119,10 @@ export class GoalsComponent {
       width: '500px',
       panelClass: 'income-dialog',
     });
+
+    if(this.totalRemainingBalance === 0){
+      alert("You don't have savings till previous month. Adding goal money will be deducted next month!")
+    }
   
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -135,26 +140,30 @@ export class GoalsComponent {
               // userId: userId, // Add userId if your backend requires it
               deadLine:formattedDate,
             };
-            this.httpClient.post<inputGoal>(`${this.baseUrl}/api/user/${userId}/goal`, goalData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }).subscribe({
-              next: (newGoal) => {
-                // console.log(newGoal);
-                // this.goals = newGoal.map(goal => this.modelConverterFunction(goal));
-                const newGoalConverted = this.modelConverterFunction(newGoal); // Convert single goal
-                this.goals.push(newGoalConverted); // Add to existing goals array
-                // console.log(this.goals);
-                this.loadGoals();
-              },
-              error: (error) => {
-                console.error('Failed to add goal data:', error);
-              },
-              complete: () => {
-                this.loading = false;
-              },
-            });
+            if(goalData.currentAmount < this.totalRemainingBalance){
+              this.httpClient.post<inputGoal>(`${this.baseUrl}/api/user/${userId}/goal`, goalData, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }).subscribe({
+                next: (newGoal) => {
+                  // console.log(newGoal);
+                  // this.goals = newGoal.map(goal => this.modelConverterFunction(goal));
+                  const newGoalConverted = this.modelConverterFunction(newGoal); // Convert single goal
+                  this.goals.push(newGoalConverted); // Add to existing goals array
+                  // console.log(this.goals);
+                  this.loadGoals();
+                },
+                error: (error) => {
+                  console.error('Failed to add goal data:', error);
+                },
+                complete: () => {
+                  this.loading = false;
+                },
+              });
+            }else{
+              alert("Cannot add the goal! Entered amount is greater than the remaining amount")
+            }
           },
           error: (error) => {
             console.error('Failed to fetch userId:', error);
@@ -168,6 +177,44 @@ export class GoalsComponent {
     });
   }
 
+  addAmount(id: number) {
+
+    const token = sessionStorage.getItem('finance.auth');
+    console.log(token);
+    console.log(id);
+  
+    this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
+      next: (userId) => {
+        console.log(userId);
+  
+        // Open the dialog to get the amount
+        const dialogRef = this.dialog.open(AddAmountGoalComponent, {
+          width: '300px',
+          data: { id }
+        });
+  
+        // Handle the dialog's close event
+        dialogRef.afterClosed().subscribe((amount) => {
+          if (amount !== undefined && amount > 0 && amount < this.totalRemainingBalance) {
+            this.httpClient
+              .post<inputGoal>(`${this.baseUrl}/api/user/${userId}/addAmount/${id}/${amount}`, null)
+              .subscribe({
+                next: (response) => {
+                  console.log(response);
+                  this.loadGoals();
+                },
+                error: (error) => {
+                  console.error('Error adding amount:', error);
+                }
+              });
+          }else {
+            alert("Entered money is greater than the remaining amount")
+          }
+        });
+      }
+    });
+  }
+  
 
   updateGoal(goal: inputGoal) {
     const dialogRef = this.dialog.open(AddGoalDialogComponent, {
@@ -177,7 +224,7 @@ export class GoalsComponent {
     });
     console.log(goal);
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (result && result.currentAmount < this.totalRemainingBalance) {
         const token = sessionStorage.getItem('finance.auth');
         this.httpClient.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
           next: (userId) => {
@@ -221,6 +268,8 @@ export class GoalsComponent {
           },
         });
         
+      }else {
+        alert("Cannot edit the goal! Please enter the valid amount")
       }
     });
   }
@@ -289,22 +338,6 @@ export class GoalsComponent {
     return Math.min((currentAmount / targetAmount) * 100, 100); // Ensure it doesn't exceed 100%
   }
 
-  // getDaysRemaining(deadline: Date): number {
-  //   if (!deadline) {
-  //     console.error('Deadline is undefined or null');
-  //     return NaN;
-  //   }
-  
-  //   const deadlineDate = deadline;
-  //   if (isNaN(deadlineDate.getTime())) {
-  //     console.error('Invalid deadline date:', deadline);
-  //     return NaN;
-  //   }
-  
-  //   const today = new Date();
-  //   const diffTime = deadlineDate.getTime() - today.getTime();
-  //   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  // }
   getDaysRemaining(deadline: Date): number {
     if (!deadline) {
       console.error('Deadline is undefined or null');

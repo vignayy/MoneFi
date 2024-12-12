@@ -110,6 +110,7 @@ export class BudgetsComponent {
               this.expenses = expenses;
               this.filteredExpenses = [...expenses]; // Initialize filteredExpenses with all expenses
               this.updateBudgetsWithExpenses();
+              this.calculateTotals();
 
             } else {
               this.toastr.warning('No expenses found for the selected filters.', 'No Data');
@@ -147,6 +148,7 @@ export class BudgetsComponent {
       budget.remaining = budget.moneyLimit - spentInCategory;
     });
 
+    // this.loadExpensesData();
     this.calculateTotals();
   }
 
@@ -252,6 +254,7 @@ export class BudgetsComponent {
                 .then(() => {
                   this.toastr.success('All categories added successfully');
                   this.loadBudgetData(); // Refresh data if necessary
+                  this.loadExpensesData();
                 })
                 .catch((error) => {
                   console.error('Failed to add one or more categories:', error);
@@ -315,12 +318,7 @@ export class BudgetsComponent {
   
   
 
-  editBudget(budget : Budget){
 
-  }
-  viewDetails(budget:Budget){
-
-  }
 
   updateUniqueCategories() {
     // Ensure "All Categories" is an option
