@@ -1,6 +1,7 @@
 package com.finance.user.service;
 
 import com.finance.user.model.UserModel;
+import com.finance.user.repository.ProfileRepository;
 import com.finance.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ public class UserServiceImplementation implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProfileRepository profileRepository;
 
     @Override
     public UserModel save(UserModel user) {
@@ -51,6 +55,6 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public String getNameFromUserId(int userId) {
-        return userRepository.getNameFromUserId(userId);
+        return profileRepository.getNameFromUserId(userId);
     }
 }

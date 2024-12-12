@@ -98,10 +98,6 @@ public class UserApiController {
 //    public ResponseEntity<Integer> getUserIdByEmail(@PathVariable("email") String email){
 //        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserIdFromEmail(email));
 //    }
-    @GetMapping("/getName/{userId}")
-    public String getNameFromUserId(@PathVariable("userId") int userId){
-        return userService.getNameFromUserId(userId);
-    }
     @PostMapping
     public ResponseEntity<UserModel> save(@RequestBody UserModel user) {
         UserModel user2 = userService.save(user);
@@ -181,8 +177,6 @@ public class UserApiController {
         // Return the remaining amount as an integer
         return (int) (totalIncome - totalExpenses);
     }
-
-
     @GetMapping("/incomes/{userId}/{month}/{year}")
     public ResponseEntity<List<IncomeModel>> getAllIncomesByDate(@PathVariable("userId") int userId,
                                                                    @PathVariable("month") int month,
@@ -509,6 +503,11 @@ public class UserApiController {
     @GetMapping("/profile/{userId}")
     public ProfileModel getProfile(@PathVariable("userId") int userId){
         return profileRepository.findByUserId(userId);
+    }
+    @GetMapping("/getName/{userId}")
+    public String getNameFromUserId(@PathVariable("userId") int userId){
+        return userService.getNameFromUserId(userId);
+
     }
 
 }

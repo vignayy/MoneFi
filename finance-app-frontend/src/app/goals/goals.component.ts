@@ -239,7 +239,7 @@ export class GoalsComponent {
     let icon = '';
     let color = '';
     
-    if (data.category === 'Travel') {
+    if (data.category === 'Vacation') {
       icon = 'fa-plane';
       color = '#2196F3';
     } else if (data.category === 'Savings') {
@@ -258,11 +258,14 @@ export class GoalsComponent {
       icon = 'fa-home';
       color = '#009688';
     } else if (data.category === 'Investments') { 
-      icon = 'fa-chart-line'; // Investment-related icon
-      color = '#3F51B5';      // Investment-related color
+      icon = 'fa-chart-line'; 
+      color = '#3F51B5';      
+    } else if (data.category === 'Electronics') {
+      icon = 'fa-laptop'; 
+      color = '#00BCD4'; 
     } else {
-      icon = 'fa-question-circle'; // Default icon
-      color = '#9E9E9E';           // Default color
+      icon = 'fa-globe'; 
+      color = '#607D8B'; 
     }
   
     return {
@@ -279,17 +282,36 @@ export class GoalsComponent {
   
   
 
+  // getProgressPercentage(currentAmount: number, targetAmount: number): number {
+  //   return (currentAmount / targetAmount) * 100;
+  // }
   getProgressPercentage(currentAmount: number, targetAmount: number): number {
-    return (currentAmount / targetAmount) * 100;
+    return Math.min((currentAmount / targetAmount) * 100, 100); // Ensure it doesn't exceed 100%
   }
 
+  // getDaysRemaining(deadline: Date): number {
+  //   if (!deadline) {
+  //     console.error('Deadline is undefined or null');
+  //     return NaN;
+  //   }
+  
+  //   const deadlineDate = deadline;
+  //   if (isNaN(deadlineDate.getTime())) {
+  //     console.error('Invalid deadline date:', deadline);
+  //     return NaN;
+  //   }
+  
+  //   const today = new Date();
+  //   const diffTime = deadlineDate.getTime() - today.getTime();
+  //   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // }
   getDaysRemaining(deadline: Date): number {
     if (!deadline) {
       console.error('Deadline is undefined or null');
       return NaN;
     }
   
-    const deadlineDate = deadline;
+    const deadlineDate = new Date(deadline);
     if (isNaN(deadlineDate.getTime())) {
       console.error('Invalid deadline date:', deadline);
       return NaN;
@@ -335,6 +357,21 @@ export class GoalsComponent {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
+  }
+
+  getGoalStatus(goal: Goal): string {
+    const progressPercentage = this.getProgressPercentage(goal.currentAmount, goal.targetAmount);
+    const daysRemaining = this.getDaysRemaining(goal.deadLine);
+  
+    if (progressPercentage >= 100) {
+      return daysRemaining > 0 ? 'completed-early' : 'completed-on-time';
+    }
+  
+    if (daysRemaining <= 0) {
+      return 'overdue';
+    }
+  
+    return 'in-progress';
   }
 
 }
