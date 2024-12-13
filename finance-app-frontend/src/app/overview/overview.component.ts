@@ -170,7 +170,7 @@ export class OverviewComponent implements OnInit {
   }
 
   viewReports() {
-    this.router.navigate(['dashboard/analysis']);
+    this.router.navigate(['dashboard/ai-assistant']);
   }
 
 }
