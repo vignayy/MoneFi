@@ -26,7 +26,7 @@ export class LoginComponent {
     datasets: [
       {
         label: 'Target Status',
-        data: [65, 59, 90, 81, 56, 55],
+        data: [65, 59, 80, 42, 56, 55],
         fill: true,
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgb(255, 99, 132)',
@@ -35,7 +35,7 @@ export class LoginComponent {
       },
       {
         label: 'Current Status',
-        data: [28, 48, 40, 19, 96, 27],
+        data: [28, 48, 40, 19, 65, 27],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgb(54, 162, 235)',

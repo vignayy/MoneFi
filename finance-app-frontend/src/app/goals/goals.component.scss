@@ -181,15 +181,30 @@
           }
         }
 
-        .status-badge {
+        .status-badges-container {
           display: flex;
+          justify-content: center;
           align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 1.5rem;
-          padding: 0.1rem;
-          background: #f1eeee;
+          width: 100%;
+          margin: 1rem 0;
+          background-color: #f1eeee;
           border-radius: 8px;
-          color: #1b1a19;
+        
+          .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            
+            i {
+              font-size: 1rem;
+            }
+          }
         }
 
 
@@ -215,59 +230,65 @@
 
         .actions {
           display: flex;
-          gap: 0.8rem;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
+          padding: 10px;
+        }
 
-          button {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .add-btn {
+          flex: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 8px 16px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+        }
 
-            &.update-btn {
-              background: #b9bdb9;
-              color: white;
+        .add-btn:hover {
+          background-color: #45a049;
+        }
 
-              &:hover {
-                background: #9c9e9c;
-              }
-            }
-            &.add-btn {
-              background: #4caf50;
-              color: white;
+        .icon-buttons {
+          flex: 1;
+          display: flex;
+          gap: 8px;
+        }
 
-              &:hover {
-                background: #43a047;
-              }
-            }
+        .icon-btn {
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+        }
 
-            &.details-btn {
-              background: #f5f5f5;
-              color: #666;
+        .update-btn {
+          background-color: #2196F3;
+          color: white;
+        }
 
-              &:hover {
-                background: #eeeeee;
-              }
-            }
+        .update-btn:hover {
+          background-color: #1976D2;
+        }
 
-            &.delete-btn {
-              background: #f44336;
-              color: white;
+        .delete-btn {
+          background-color: #f44336;
+          color: white;
+        }
 
-              &:hover {
-                background: #d32f2f;
-              }
-
-              i {
-                font-size: 1rem;
-              }
-            }
-          }
+        .delete-btn:hover {
+          background-color: #d32f2f;
         }
       }
     }
@@ -321,23 +342,6 @@
         opacity: 0.2;
       }
 
-      &.total-budget {
-        background: linear-gradient(135deg, #673ab7, #9c27b0);
-        .card-content {
-          h3, .amount, .period {
-            color: white;
-          }
-        }
-        .icon {
-          color: white;
-        }
-      }
-
-      &.spent {
-        background: white;
-        border: 1px solid #eee;
-      }
-
       &.remaining {
         background: #e8f5e9;
         .card-content {
@@ -346,6 +350,25 @@
           }
         }
       }
+      
+      &.goal-savings {
+        background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+        .card-content {
+          h3, .amount, .period {
+            color: white;
+          }
+        }
+        .icon {
+          color: white;
+          opacity: 0.5;
+        }
+      }
+
+      &.available-balance {
+        background: white;
+        border: 1px solid #eee;
+      }
+
     }
   }
 

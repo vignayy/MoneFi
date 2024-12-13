@@ -268,8 +268,6 @@ export class GoalsComponent {
           },
         });
         
-      }else {
-        alert("Cannot edit the goal! Please enter the valid amount")
       }
     });
   }

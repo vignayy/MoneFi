@@ -13,32 +13,34 @@
 
    <!-- Summary Cards -->
    <div class="summary-cards">
-    <div class="card total-budget">
-      <div class="card-content">
-        <h3>Total Balance</h3>
-        <p class="amount"><span [appCountUp]="totalRemainingBalance"></span></p>
-        <p class="period">Monthly Balance</p>
-      </div>
-      <i class="fas fa-wallet icon"></i>
-    </div>
-
-    <div class="card spent">
-      <div class="card-content">
-        <h3>Total Gaol Savings</h3>
-        <p class="amount"><span [appCountUp]="totalGoalSavings"></span></p>
-        <p class="period">This Month</p>
-      </div>
-      <i class="fas fa-credit-card icon"></i>
-    </div>
 
     <div class="card remaining">
       <div class="card-content">
         <h3>Total Remaining Balance</h3>
         <p class="amount"><span [appCountUp]="totalNetworth"></span></p>
-        <p class="period">Available</p>
+        <p class="period">Previous Month</p>
       </div>
       <i class="fas fa-piggy-bank icon"></i>
     </div>
+
+    <div class="card goal-savings">
+      <div class="card-content">
+        <h3>Total Gaol Savings</h3>
+        <p class="amount"><span [appCountUp]="totalGoalSavings"></span></p>
+        <p class="period">Overall</p>
+      </div>
+      <i class="fas fa-bullseye icon"></i>
+    </div>
+
+    <div class="card available-balance">
+      <div class="card-content">
+        <h3>Available Balance</h3>
+        <p class="amount"><span [appCountUp]="totalRemainingBalance"></span></p>
+        <p class="period">Previous Month</p>
+      </div>
+      <i class="fas fa-wallet icon"></i>
+    </div>
+
   </div>
 
 
@@ -92,8 +94,8 @@
         <span class="deadline">Due by {{ goal.deadLine | date }}</span>
       </div>
 
-      <!-- Status Badge -->
-      <div class="status-badge">
+      <!-- Status Badges Container -->
+      <div class="status-badges-container">
         <div class="status-badge" *ngIf="getGoalStatus(goal) === 'overdue'">
           <i class="fas fa-exclamation-circle"></i> Overdue
         </div>
@@ -104,7 +106,7 @@
           <i class="fas fa-check-circle"></i> Completed On Time
         </div>
         <div class="status-badge" *ngIf="getGoalStatus(goal) === 'in-progress'">
-          <i class="fas fa-check-circle"></i> On Going 
+          <i class="fas fa-hourglass-half"></i> On Going 
         </div>
       </div>
 
@@ -114,15 +116,14 @@
           <i class="fas fa-plus"></i>
           Add Amount
         </button>
-        <button class="update-btn" (click)="updateGoal(goal)">
-          <i class="fas fa-edit"></i>
-          Update Goal
-        </button>
-        <button class="delete-btn" (click)="deleteGoal(goal.id)">
-          <i class="fas fa-trash"></i>
-          Delete Goal
-        </button>
-        
+        <div class="icon-buttons">
+          <button class="icon-btn update-btn" (click)="updateGoal(goal)" title="Update Goal">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="icon-btn delete-btn" (click)="deleteGoal(goal.id)" title="Delete Goal">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>

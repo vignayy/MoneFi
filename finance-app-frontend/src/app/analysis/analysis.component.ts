@@ -582,7 +582,7 @@ export class AnalysisComponent {
       3. Monthly financial management
       4. Areas for improvement
 
-      Give response in bullet points and without bold text just give in normal plaintext format.
+      Please provide the analysis in plain text format, without any bold text, bullet points, or special formatting.
       Please keep the analysis concise, use simple language, and focus on actionable insights.
     `;
   }
