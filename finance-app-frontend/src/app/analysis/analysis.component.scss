@@ -223,7 +223,7 @@
 }
 
 .insight-box {
-  background: #f8f9f9;
+  background: linear-gradient(145deg, #f1f9ff, #e8f4fd);
   padding: 1.2rem;
   border-radius: 12px;
   margin-top: auto;
@@ -273,6 +273,21 @@
   }
 }
 
+/* Back side styling */
+.description-box-back {
+  background: linear-gradient(145deg, #ffffff, #f5f7fa);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.description-box-back h2 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 0.5rem;
+}
+
 
 .analysis-loading {
   display: flex;
@@ -295,8 +310,12 @@
 
 .analysis-text {
   white-space: pre-line;
-  line-height: 1.6;
-  color: #2c3e50;
+  color: #34495e;
+  background: linear-gradient(145deg, #f1f9ff, #e8f4fd);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(189, 195, 199, 0.3);
+  font-weight: 500;
 }
 
 @media (max-width: 1200px) {

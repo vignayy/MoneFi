@@ -48,7 +48,7 @@
   /* Base button styling for better aesthetics */
   .dialog-actions button {
     padding: 8px 16px;
-    border-radius: 25px; /* Rounded corners */
+    border-radius: 8px; /* Rounded corners */
     font-size: 14px;
     font-weight: bold;
     transition: all 0.3s ease; /* Smooth hover effect */
