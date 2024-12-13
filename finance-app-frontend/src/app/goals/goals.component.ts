@@ -81,7 +81,7 @@ export class GoalsComponent {
               this.goals = data.map(goal => {
                 const convertedGoal = this.modelConverterFunction(goal);
                 amount = amount + goal.currentAmount;
-                console.log(amount);
+                // console.log(amount);
                 return convertedGoal;
               });
             } else {
@@ -92,8 +92,8 @@ export class GoalsComponent {
             this.totalGoalSavings = amount;
             this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalRemainingIncomeOfPreviousMonth/${this.month}/${this.year}`).subscribe({
               next: (totalIncome) => {
-                console.log(totalIncome);
-                console.log(amount);
+                // console.log(totalIncome);
+                // console.log(amount);
                 this.totalNetworth = totalIncome;
                 this.totalRemainingBalance = totalIncome - amount;
               },

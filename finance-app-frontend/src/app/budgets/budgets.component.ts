@@ -103,7 +103,7 @@ export class BudgetsComponent {
         this.httpClient.get<Expense[]>(url).subscribe({
           next: (expenses) => {
             if (expenses && expenses.length > 0) {
-              console.log(expenses);
+              // console.log(expenses);
 
               this.expenses = expenses;
               this.filteredExpenses = [...expenses]; // Initialize filteredExpenses with all expenses
@@ -164,7 +164,7 @@ export class BudgetsComponent {
         this.httpClient.get<Budget[]>(`${this.baseUrl}/api/user/${userId}/budgets`).subscribe({
           next: (budgets) => {
             this.budgets = budgets;
-            console.log(this.budgets);
+            // console.log(this.budgets);
             this.calculateTotals();
             // Load expenses after fetching budgets to update categories
             this.loadExpensesData();
