@@ -112,10 +112,10 @@ export class OverviewComponent implements OnInit {
 
         this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalRemainingIncomeOfPreviousMonth/${this.thisMonth}/${this.thisYear}`).subscribe({
           next : (totalRemainingIncome) => {
-            console.log(totalRemainingIncome);
+            // console.log(totalRemainingIncome);
             this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/totalCurrentGoalIncome`).subscribe({
               next : (totalGoalIncome) => {
-                console.log(totalGoalIncome);
+                // console.log(totalGoalIncome);
                 this.summary.netWorth = totalRemainingIncome + (this.summary.income - this.summary.expenses);
               }
             })
@@ -127,7 +127,7 @@ export class OverviewComponent implements OnInit {
 
         this.httpClient.get<number>(`${this.baseUrl}/api/user/${userId}/budgetProgress/${this.thisMonth}/${this.thisYear}`).subscribe({
           next : (totalBudgetIncome) => {
-            console.log(totalBudgetIncome);
+            // console.log(totalBudgetIncome);
             this.summary.budgetProgress = parseFloat((totalBudgetIncome * 100).toFixed(2));;
           },
           error : (error) => {

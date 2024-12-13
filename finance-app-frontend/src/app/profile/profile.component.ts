@@ -54,7 +54,7 @@ export class ProfileComponent implements OnInit {
   // Fetch profile data from backend
   getProfile(): void {
     const token = sessionStorage.getItem('finance.auth');
-    console.log(token);
+    // console.log(token);
 
     this.http.get<number>(`${this.baseUrl}/auth/token/${token}`).subscribe({
       next : (userId) => {
