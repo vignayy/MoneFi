@@ -5,11 +5,12 @@ import { AiService } from '../services/ai.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { finalize, forkJoin } from 'rxjs';
+import { FormatAdvicePipe } from '../shared/pipes/format-advice.pipe';
 
 @Component({
   selector: 'app-ai-assistant',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormatAdvicePipe],
   templateUrl: './ai-assistant.component.html',
   styleUrl: './ai-assistant.component.scss'
 })
@@ -29,7 +30,7 @@ export class AiAssistantComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.getFinancialAdvice();
+    this.getFinancialAdvice();
   }
 
   getFinancialAdvice(): void {
