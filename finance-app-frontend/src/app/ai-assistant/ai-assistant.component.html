@@ -1,13 +1,13 @@
 <div class="ai-assistant-container">
     <h2>
       <i class="fas fa-robot"></i>
-      MoneFi AI Financial Assistant
+      MoneFi AI Financial Report
     </h2>
     
     <div class="advice-section">
       <div *ngIf="loading" class="loading">
         <i class="fas fa-cog fa-spin"></i>
-        <p>Analyzing your financial data and generating insights...</p>
+        <p>Analyzing your financial data...</p>
       </div>
   
       <div *ngIf="error" class="error">
@@ -24,7 +24,7 @@
         <div class="advice-content" [innerHTML]="advice | formatAdvice"></div>
         <button (click)="getFinancialAdvice()">
           <i class="fas fa-sync-alt"></i>
-          Update Financial Advice
+          Update Financial Report
         </button>
       </div>
     </div>
